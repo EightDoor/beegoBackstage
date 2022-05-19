@@ -9,7 +9,8 @@ package routers
 
 import (
 	"beegoBackstage/controllers"
-
+	"beegoBackstage/middleware"
+	_ "beegoBackstage/middleware"
 	beego "github.com/beego/beego/v2/server/web"
 )
 
@@ -26,5 +27,8 @@ func init() {
 			),
 		),
 	)
+
+	// 登录校验
+	beego.InsertFilter("/v1/*", beego.BeforeRouter, middleware.FilterUser)
 	beego.AddNamespace(ns)
 }
