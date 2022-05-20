@@ -16,19 +16,11 @@ import (
 
 func init() {
 	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/object",
-			beego.NSInclude(
-				&controllers.ObjectController{},
-			),
-		),
-		beego.NSNamespace("/user",
-			beego.NSInclude(
-				&controllers.UserController{},
-			),
-		),
+		beego.NSNamespace("/api"),
+		beego.NSNamespace("/login", beego.NSInclude(&controllers.LoginController{})),
 	)
 
 	// 登录校验
-	beego.InsertFilter("/v1/*", beego.BeforeRouter, middleware.FilterUser)
+	beego.InsertFilter("/v1/api/*", beego.BeforeRouter, middleware.FilterUser)
 	beego.AddNamespace(ns)
 }
