@@ -10,17 +10,26 @@ package routers
 import (
 	"beegoBackstage/controllers"
 	"beegoBackstage/middleware"
-	_ "beegoBackstage/middleware"
+	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
 )
 
 func init() {
-	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/api"),
+	ns := beego.NewNamespace("/api",
+		beego.NSInclude(&controllers.TestController{}),
+
+		// 白名单路由
 		beego.NSNamespace("/login", beego.NSInclude(&controllers.LoginController{})),
 	)
 
+	whiteList := [...]string{"login"}
 	// 登录校验
-	beego.InsertFilter("/v1/api/*", beego.BeforeRouter, middleware.FilterUser)
+	filterUrl := "("
+	for _, v := range whiteList {
+		filterUrl += v + "|"
+	}
+	filterUrl += ")"
+	logs.Info(filterUrl, "验证白名单")
+	beego.InsertFilter("/api/login/"+filterUrl, beego.BeforeRouter, middleware.FilterUser)
 	beego.AddNamespace(ns)
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"beegoBackstage/models"
 	_ "beegoBackstage/routers"
 	"fmt"
 	"github.com/beego/beego/v2/client/orm"
@@ -19,6 +20,8 @@ func mysqlInit() {
 	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&loc=Local", user, passwd, host, port, dbname)
 	logs.Debug(dataSource)
 	orm.RegisterDataBase("default", "mysql", dataSource)
+	// 注册model
+	models.RegisterModels()
 	// 开启查询调试模式
 	orm.Debug = true
 }
@@ -28,10 +31,11 @@ func init() {
 }
 
 func main() {
-
+	logs.Debug(beego.BConfig.RunMode)
 	if beego.BConfig.RunMode == "dev" {
 		beego.BConfig.WebConfig.DirectoryIndex = true
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
+
 	beego.Run()
 }

@@ -4,7 +4,18 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9a893104-d33b-41d6-8735-ac62ae66a8a3" name="Changes" comment="" />
+    <list default="true" id="9a893104-d33b-41d6-8735-ac62ae66a8a3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/controllers/Test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/RegisterModels.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/Test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/beegoBackstage" beforeDir="false" afterPath="$PROJECT_DIR$/beegoBackstage" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/Login.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/Login.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routers/commentsRouter_controllers.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/routers/router.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -47,14 +58,20 @@
     "configurable.GoLibrariesConfigurable.is.expanded": "true",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/Users/zhoukai",
+    "last_opened_file_path": "/Users/zhoukai/Desktop/go-project/beegoBackstage",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/models" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
