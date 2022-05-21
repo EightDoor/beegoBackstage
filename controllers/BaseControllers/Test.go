@@ -32,3 +32,12 @@ func (c *TestController) Get() {
 	qs.All(&t)
 	c.RSuccess(utils.R{Data: t})
 }
+
+// GetPaging
+// @router /testPaging [get]
+func (c *TestController) GetPaging() {
+	// orm查询数据
+	o := orm.NewOrm()
+	qs := o.QueryTable("test")
+	c.RPaging(qs)
+}

@@ -34,4 +34,13 @@ func init() {
 			Filters:          nil,
 			Params:           nil})
 
+	beego.GlobalControllerRouter["beegoBackstage/controllers/BaseControllers:TestController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/BaseControllers:TestController"],
+		beego.ControllerComments{
+			Method:           "GetPaging",
+			Router:           `/testPaging`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
 }

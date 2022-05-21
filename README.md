@@ -3,6 +3,7 @@
   - bee run
   - 初始化swagger文档 `bee run -downdoc=true -gendoc=true`
 - swagger访问: http://localhost:8080
+- 进程内监控 访问: http://localhost:8088/
 - 注解路由生成 `bee generate routers`
 
 ## 注意
