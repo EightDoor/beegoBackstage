@@ -1,4 +1,4 @@
-package models
+package BaseModels
 
 type Test struct {
 	Id    int

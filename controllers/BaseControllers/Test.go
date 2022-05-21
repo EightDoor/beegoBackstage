@@ -1,7 +1,7 @@
-package controllers
+package BaseControllers
 
 import (
-	"beegoBackstage/models"
+	"beegoBackstage/models/BaseModels"
 	"github.com/beego/beego/v2/client/orm"
 	"github.com/beego/beego/v2/server/web"
 )
@@ -15,7 +15,7 @@ type TestController struct {
 func (c *TestController) Post() {
 	// orm查询数据
 	o := orm.NewOrm()
-	id, err := o.Insert(models.Test{Id: 1, Value: "5"})
+	id, err := o.Insert(BaseModels.Test{Id: 1, Value: "5"})
 	if err != nil {
 		c.Data["json"] = id
 	}
@@ -27,7 +27,7 @@ func (c *TestController) Post() {
 func (c *TestController) Get() {
 	// orm查询数据
 	o := orm.NewOrm()
-	t := new([]models.Test)
+	t := new([]BaseModels.Test)
 	err := o.Read(&t)
 	if err != nil {
 		c.Data["json"] = t

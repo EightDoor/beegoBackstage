@@ -1,7 +1,7 @@
 package main
 
 import (
-	"beegoBackstage/models"
+	"beegoBackstage/models/BaseModels"
 	_ "beegoBackstage/routers"
 	"fmt"
 	"github.com/beego/beego/v2/client/orm"
@@ -21,7 +21,7 @@ func mysqlInit() {
 	logs.Debug(dataSource)
 	orm.RegisterDataBase("default", "mysql", dataSource)
 	// 注册model
-	models.RegisterModels()
+	BaseModels.RegisterModels()
 	// 开启查询调试模式
 	orm.Debug = true
 }
