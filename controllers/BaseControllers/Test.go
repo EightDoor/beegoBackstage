@@ -2,12 +2,12 @@ package BaseControllers
 
 import (
 	"beegoBackstage/models/BaseModels"
+	"beegoBackstage/utils"
 	"github.com/beego/beego/v2/client/orm"
-	"github.com/beego/beego/v2/server/web"
 )
 
 type TestController struct {
-	web.Controller
+	utils.BaseController
 }
 
 // Post
@@ -27,11 +27,8 @@ func (c *TestController) Post() {
 func (c *TestController) Get() {
 	// orm查询数据
 	o := orm.NewOrm()
-	t := new([]BaseModels.Test)
-	err := o.Read(&t)
-	if err != nil {
-		c.Data["json"] = t
-	}
-	c.Data["json"] = "出错了"
-	c.ServeJSON()
+	var t []*BaseModels.Test
+	qs := o.QueryTable("test")
+	qs.All(&t)
+	c.RSuccess(utils.R{Data: t})
 }

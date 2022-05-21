@@ -1,6 +1,6 @@
 package BaseModels
 
 type Test struct {
-	Id    int
-	Value string
+	Id    int    `json:"id"`
+	Value string `json:"value"`
 }
