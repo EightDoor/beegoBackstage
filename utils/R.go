@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/beego/beego/v2/client/orm"
 	"github.com/beego/beego/v2/core/logs"
+	"github.com/beego/beego/v2/core/validation"
 	"github.com/beego/beego/v2/server/web"
 	"strconv"
 )
@@ -136,5 +137,26 @@ func formatJsonRPagingCall(result *rPaging) {
 	}
 	if _, err := json.Marshal(&result); err != nil {
 		logs.Error(err, "R json 转换失败")
+	}
+}
+
+// CustomValid 表单校验
+func (c *BaseController) CustomValid(data interface{}) {
+	valid := validation.Validation{}
+	rValid, rValidErr := valid.Valid(data)
+	if rValidErr != nil {
+		logs.Error(rValidErr, data, "表单校验失败")
+		c.RError(R{
+			Msg: rValidErr.Error(),
+		})
+	}
+
+	if !rValid {
+		for _, err := range valid.Errors {
+			logs.Info(err.Key, err.Message)
+		}
+		c.RError(R{
+			Data: valid.Errors,
+		})
 	}
 }

@@ -82,6 +82,10 @@ func (c *UserController) UpdatePassword() {
 	var user BaseModels.SysUser
 	o := orm.NewOrm()
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &userPassword)
+
+	// 表单校验
+	c.CustomValid(userPassword)
+
 	logs.Info(userPassword, "密码为")
 	if err != nil {
 		c.RBack(utils.R{Data: "json format err"}, err)
@@ -94,14 +98,10 @@ func (c *UserController) UpdatePassword() {
 		logs.Info(userIsError, "userIsError")
 		if userIsError == nil && user.Account != "" {
 			logs.Info(user, "是否查询到用户")
-			if userPassword.NewPassword != "" {
-				msg, err := o.QueryTable(BaseModels.SysUser{}).Filter("id", userPassword.Id).Update(orm.Params{
-					"password": utils.PasswordEncryption(userPassword.NewPassword),
-				})
-				c.RBack(utils.R{Data: msg}, err)
-			} else {
-				c.RError(utils.R{Data: "", Msg: "请传入新密码"})
-			}
+			msg, err := o.QueryTable(BaseModels.SysUser{}).Filter("id", userPassword.Id).Update(orm.Params{
+				"password": utils.PasswordEncryption(userPassword.NewPassword),
+			})
+			c.RBack(utils.R{Data: msg}, err)
 
 		} else {
 			c.RBack(utils.R{Data: userIsError}, errors.New("查询用户密码 失败"))
