@@ -38,6 +38,7 @@ func (c *UserController) Post() {
 	o := orm.NewOrm()
 	// 解析body参数
 	json.Unmarshal(c.Ctx.Input.RequestBody, &user)
+	c.CustomValid(&user)
 	user.Password = utils.PasswordEncryption(user.Password)
 	result, err := o.Insert(&user)
 	if err == nil && result > 0 {
@@ -67,6 +68,7 @@ func (c *UserController) Update() {
 	o := orm.NewOrm()
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &user)
 	logs.Error(err, "update-err")
+	c.CustomValid(&user)
 	if err != nil {
 		c.RBack(utils.R{Data: "json format err"}, err)
 	} else {
@@ -75,17 +77,15 @@ func (c *UserController) Update() {
 	}
 }
 
-// UpdatePassword
+// UpdatePassword 更新密码
 // @router /user/password [post]
 func (c *UserController) UpdatePassword() {
 	var userPassword BaseModels.SysUserUpdatePassword
 	var user BaseModels.SysUser
 	o := orm.NewOrm()
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &userPassword)
-
 	// 表单校验
 	c.CustomValid(userPassword)
-
 	logs.Info(userPassword, "密码为")
 	if err != nil {
 		c.RBack(utils.R{Data: "json format err"}, err)
@@ -98,13 +98,31 @@ func (c *UserController) UpdatePassword() {
 		logs.Info(userIsError, "userIsError")
 		if userIsError == nil && user.Account != "" {
 			logs.Info(user, "是否查询到用户")
-			msg, err := o.QueryTable(BaseModels.SysUser{}).Filter("id", userPassword.Id).Update(orm.Params{
-				"password": utils.PasswordEncryption(userPassword.NewPassword),
-			})
-			c.RBack(utils.R{Data: msg}, err)
-
+			if userPassword.NewPassword != "" {
+				msg, err := o.QueryTable(BaseModels.SysUser{}).Filter("id", userPassword.Id).Update(orm.Params{
+					"password": utils.PasswordEncryption(userPassword.NewPassword),
+				})
+				c.RBack(utils.R{Data: msg}, err)
+			} else {
+				c.RError(utils.R{Msg: "请填写新密码"})
+			}
 		} else {
 			c.RBack(utils.R{Data: userIsError}, errors.New("查询用户密码 失败"))
 		}
 	}
+}
+
+// ResetPassword
+// @router /user/resetPassword [post]
+func (c *UserController) ResetPassword() {
+	var userPassword BaseModels.SysUserUpdatePassword
+	// 读取body参数
+	c.GetBodyToJson(&userPassword)
+	// 表单验证
+	c.CustomValid(&userPassword)
+	o := orm.NewOrm()
+	result, err := o.QueryTable(BaseModels.SysUser{}).Filter("id", userPassword.Id).Update(orm.Params{
+		"password": utils.PasswordEncryption(userPassword.Password),
+	})
+	c.RBack(utils.R{Data: result}, err)
 }

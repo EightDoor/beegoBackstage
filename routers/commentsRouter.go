@@ -97,4 +97,13 @@ func init() {
 			Filters:          nil,
 			Params:           nil})
 
+	beego.GlobalControllerRouter["beegoBackstage/controllers/BaseControllers:UserController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/BaseControllers:UserController"],
+		beego.ControllerComments{
+			Method:           "ResetPassword",
+			Router:           `/user/resetPassword`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
 }

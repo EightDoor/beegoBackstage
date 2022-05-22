@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9a893104-d33b-41d6-8735-ac62ae66a8a3" name="Changes" comment="feat: 用户管理(增删改查,修改密码)">
+    <list default="true" id="9a893104-d33b-41d6-8735-ac62ae66a8a3" name="Changes" comment="feat(R): 表单校验">
       <change afterPath="$PROJECT_DIR$/controllers/BaseControllers/SysUser.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
@@ -102,7 +102,8 @@
     <MESSAGE value="fix: 统一返回数据R" />
     <MESSAGE value="fix: 分页" />
     <MESSAGE value="feat: 用户管理(增删改查,修改密码)" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 用户管理(增删改查,修改密码)" />
+    <MESSAGE value="feat(R): 表单校验" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(R): 表单校验" />
   </component>
   <component name="VgoProject">
     <environment>

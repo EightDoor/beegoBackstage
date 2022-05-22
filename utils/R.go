@@ -140,6 +140,15 @@ func formatJsonRPagingCall(result *rPaging) {
 	}
 }
 
+// GetBodyToJson
+// body接受参数解析 JSON
+func (c *BaseController) GetBodyToJson(data interface{}) {
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, data)
+	if err != nil {
+		c.RError(R{Msg: err.Error()})
+	}
+}
+
 // CustomValid 表单校验
 func (c *BaseController) CustomValid(data interface{}) {
 	valid := validation.Validation{}
