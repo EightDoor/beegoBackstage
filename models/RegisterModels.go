@@ -7,5 +7,5 @@ import (
 
 // RegisterModels orm使用，需要注册Model
 func RegisterModels() {
-	orm.RegisterModel(new(BaseModels.Test))
+	orm.RegisterModel(new(BaseModels.Test), new(BaseModels.SysUser))
 }

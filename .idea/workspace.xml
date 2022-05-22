@@ -4,10 +4,15 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9a893104-d33b-41d6-8735-ac62ae66a8a3" name="Changes" comment="fix: 统一返回数据R">
+    <list default="true" id="9a893104-d33b-41d6-8735-ac62ae66a8a3" name="Changes" comment="fix: 分页">
+      <change afterPath="$PROJECT_DIR$/controllers/BaseControllers/SysUser.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commModels/CommModel.go" beforeDir="false" afterPath="$PROJECT_DIR$/commModels/CommModel.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/conf/app.example.conf" beforeDir="false" afterPath="$PROJECT_DIR$/conf/app.example.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/BaseControllers/Test.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/BaseControllers/Test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/RegisterModels.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/RegisterModels.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routers/commentsRouter.go" beforeDir="false" afterPath="$PROJECT_DIR$/routers/commentsRouter.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/routers/router.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/R.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/R.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -95,7 +100,8 @@
     <MESSAGE value="feat: 数据库配置" />
     <MESSAGE value="fix: 目录结构调整" />
     <MESSAGE value="fix: 统一返回数据R" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: 统一返回数据R" />
+    <MESSAGE value="fix: 分页" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: 分页" />
   </component>
   <component name="VgoProject">
     <environment>

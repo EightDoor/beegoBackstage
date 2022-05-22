@@ -8,3 +8,5 @@
 
 ## 注意
 - 注解路由 controller 下创建文件`// @router / [get]` 前后不能存在别的内容,否则无法生成路由
+- controller 统一继承 `utils.BaseController`
+- 

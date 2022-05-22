@@ -51,6 +51,16 @@ func (c *BaseController) RSuccess(result R) {
 	c.ServeJSON()
 }
 
+// RBack 返回内容
+func (c *BaseController) RBack(result R, err error) {
+	if err != nil {
+		result.Msg = err.Error()
+		c.RError(result)
+	} else {
+		c.RSuccess(result)
+	}
+}
+
 // RError 失败返回
 func (c *BaseController) RError(result R) {
 	if result.Code == 0 {
@@ -66,7 +76,7 @@ func (c *BaseController) RError(result R) {
 
 // RPaging 分页返回
 // TODO 待改进，是否可以去掉dataInfo参数，去掉存在问题(根据反射获取不到对应的struct结构)
-func (c *BaseController) RPaging(rpage RPage) {
+func (c *BaseController) RPaging(rPage RPage) {
 	result := new(rPaging)
 	rData := new(rPagingData)
 	page := 1
@@ -94,12 +104,12 @@ func (c *BaseController) RPaging(rpage RPage) {
 	result.Code = 0
 	result.Msg = "success"
 
-	rpage.OrmResult.Limit(size).Offset((page - 1) * size).All(rpage.Data)
-	callCount, callCountError := rpage.OrmResult.Count()
+	rPage.OrmResult.Limit(size).Offset((page - 1) * size).All(rPage.Data)
+	callCount, callCountError := rPage.OrmResult.Count()
 	if callCountError == nil {
 		count = int(callCount)
 	}
-	rData.List = rpage.Data
+	rData.List = rPage.Data
 	rData.PageNum = page
 	rData.PageSize = size
 	rData.Count = count
@@ -112,19 +122,19 @@ func (c *BaseController) RPaging(rpage RPage) {
 // 格式化json R
 func formatJsonCall(result *R) {
 	if _, dataErr := json.Marshal(&result.Data); dataErr != nil {
-		logs.Debug(dataErr, "传入的data json 转换失败")
+		logs.Error(dataErr, "传入的data json 转换失败")
 	}
 	if _, err := json.Marshal(&result); err != nil {
-		logs.Debug(err, "R json 转换失败")
+		logs.Error(err, "R json 转换失败")
 	}
 }
 
 // 格式化json rPaging
 func formatJsonRPagingCall(result *rPaging) {
 	if _, dataErr := json.Marshal(&result.Data); dataErr != nil {
-		logs.Debug(dataErr, "传入的data json 转换失败")
+		logs.Error(dataErr, "传入的data json 转换失败")
 	}
 	if _, err := json.Marshal(&result); err != nil {
-		logs.Debug(err, "R json 转换失败")
+		logs.Error(err, "R json 转换失败")
 	}
 }
