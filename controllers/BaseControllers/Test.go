@@ -38,6 +38,9 @@ func (c *TestController) Get() {
 func (c *TestController) GetPaging() {
 	// orm查询数据
 	o := orm.NewOrm()
+	var dataInfo []*BaseModels.Test
 	qs := o.QueryTable("test")
-	c.RPaging(qs)
+	c.RPaging(utils.RPage{
+		OrmResult: qs,
+		Data:      &dataInfo})
 }
