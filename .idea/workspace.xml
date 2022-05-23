@@ -5,15 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9a893104-d33b-41d6-8735-ac62ae66a8a3" name="Changes" comment="feat: 重置密码">
-      <change afterPath="$PROJECT_DIR$/controllers/BaseControllers/SysUser.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/back/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/commModels/CommModel.go" beforeDir="false" afterPath="$PROJECT_DIR$/commModels/CommModel.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/conf/app.example.conf" beforeDir="false" afterPath="$PROJECT_DIR$/conf/app.example.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/RegisterModels.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/RegisterModels.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routers/commentsRouter.go" beforeDir="false" afterPath="$PROJECT_DIR$/routers/commentsRouter.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/routers/router.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/R.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/R.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/beegoBackstage" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/commModels/CommModel.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/conf/app.example.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/BaseControllers/Login.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/BaseControllers/SysUser.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/BaseControllers/Test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/BusinessController/Business.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lastupdate.tmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/LoginFilter.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/BaseModels/SysUser.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/BaseModels/Test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/BusinessModels/Business.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/RegisterModels.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/routers/commentsRouter.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/routers/router.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/default_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/R.go" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +41,7 @@
       </list>
     </option>
   </component>
-  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../Program Files/Go" />
+  <component name="GOROOT" url="file:///usr/local/go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -45,35 +59,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.format.on.save.advertiser.fired&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;configurable..is.expanded&quot;: &quot;true&quot;,
-    &quot;configurable.GoLibrariesConfigurable.is.expanded&quot;: &quot;true&quot;,
-    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/zhoukai/Desktop/go-project/beegoBackstage/conf&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.format.on.save.advertiser.fired": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "configurable..is.expanded": "true",
+    "configurable.GoLibrariesConfigurable.is.expanded": "true",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "/Users/zhoukai/Desktop/go-project/beegoBackstage/conf",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/conf" />
       <recent name="C:\Users\zhoukai\Desktop\go-project\beegoBackstage\conf" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/back" />
       <recent name="C:\Users\zhoukai\Desktop\go-project\beegoBackstage\models" />
       <recent name="C:\Users\zhoukai\Desktop\go-project\beegoBackstage\models\base" />
       <recent name="C:\Users\zhoukai\Desktop\go-project\beegoBackstage\controllers\base" />
