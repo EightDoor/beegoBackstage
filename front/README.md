@@ -24,7 +24,6 @@
 - [ ] 个人用户修改密码
 - [ ] 用户登陆日志记录
 - [ ] 接口请求记录
-- [x] 使用 @nestjsx/crud-request  定制查询条件
 # 问题
 - [x] 刷新 顶部面包屑显示不对问题
 - [x] 刷新页面  默认选中当前选择的路由
@@ -32,8 +31,6 @@
 - [ ] 表单无法重置，重置失效，以后更新版本看看是否可行
 
 # 其他
-- 配套后台 nodejs
-  - [vue3-admin-nest](https://github.com/EightDoor/vue3-admin-nest)
 - 注意事项
   - 创建组件的时候，如果为动态路由，需要添加 isRouter: true (后续更改方式)
   - 动态路由方案参考 https://juejin.cn/post/6951557699079569422
