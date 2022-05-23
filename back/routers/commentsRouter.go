@@ -160,6 +160,24 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:LoginController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:LoginController"],
+        beego.ControllerComments{
+            Method: "RefreshToken",
+            Router: `/refreshToken`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:LoginController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:LoginController"],
+        beego.ControllerComments{
+            Method: "ValidateToken",
+            Router: `/validateToken`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:MenuController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:MenuController"],
         beego.ControllerComments{
             Method: "Get",
