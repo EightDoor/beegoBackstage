@@ -27,8 +27,8 @@ func (c *UserController) Get() {
 func (c *UserController) GetAll() {
 	var user []*BaseModels.SysUser
 	o := orm.NewOrm()
-	result, err := o.QueryTable(BaseModels.SysUser{}).All(&user)
-	c.RBack(utils.R{Data: result}, err)
+	_, err := o.QueryTable(BaseModels.SysUser{}).All(&user)
+	c.RBack(utils.R{Data: user}, err)
 }
 
 // Post
