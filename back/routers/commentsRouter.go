@@ -155,7 +155,7 @@ func init() {
         beego.ControllerComments{
             Method: "Get",
             Router: `/`,
-            AllowHTTPMethods: []string{"get"},
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
