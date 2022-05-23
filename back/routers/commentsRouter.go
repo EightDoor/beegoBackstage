@@ -97,6 +97,15 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:DictController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:DictController"],
+        beego.ControllerComments{
+            Method: "DictQueryItem",
+            Router: `/dictQueryItem/:id`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:DictItemController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:DictItemController"],
         beego.ControllerComments{
             Method: "Get",
@@ -241,6 +250,33 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:RoleController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:RoleController"],
+        beego.ControllerComments{
+            Method: "RoleMenuRelationList",
+            Router: `/roleMenuRelationList/:id`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:SysRoleMenuController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:SysRoleMenuController"],
+        beego.ControllerComments{
+            Method: "RoleMenuRelation",
+            Router: `/roleMenuRelation`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:SysUserRoleController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:SysUserRoleController"],
+        beego.ControllerComments{
+            Method: "Relation",
+            Router: `/userRoleRelation`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:TestController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:TestController"],
         beego.ControllerComments{
             Method: "Post",
@@ -327,6 +363,15 @@ func init() {
             Method: "ResetPassword",
             Router: `/user/resetPassword`,
             AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:UserController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:UserController"],
+        beego.ControllerComments{
+            Method: "UserRoleList",
+            Router: `/userRoleList/:id`,
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

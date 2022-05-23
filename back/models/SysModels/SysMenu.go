@@ -1,6 +1,9 @@
 package SysModels
 
-import CommModels "beegoBackstage/commModels"
+import (
+	CommModels "beegoBackstage/commModels"
+	"github.com/beego/beego/v2/client/orm"
+)
 
 type SysMenu struct {
 	CommModels.BaseModel
@@ -14,4 +17,25 @@ type SysMenu struct {
 	Type     int    `json:"type" valid:"Required" label:"菜单类型： 1. 目录 2. 菜单  3. 按钮"`
 	Perms    string `json:"perms"`
 	Name     string `json:"name"`
+}
+
+// GetRoleIdMenus
+// 根据角色id 查询菜单列表
+func GetRoleIdMenus(id int, list *[]SysMenu) error {
+	var rError error
+	var sysRoleMenu []SysRoleMenu
+	// 查询关联表ids
+	var ids []int
+	o := orm.NewOrm()
+	_, err := o.QueryTable(SysRoleMenu{}).Filter("roleId", id).All(&sysRoleMenu)
+	if err == nil {
+		for _, v := range sysRoleMenu {
+			ids = append(ids, v.MenuId)
+		}
+		_, resultError := o.QueryTable(SysMenu{}).Filter("id__in", ids).All(list)
+		rError = resultError
+	} else {
+		rError = err
+	}
+	return rError
 }

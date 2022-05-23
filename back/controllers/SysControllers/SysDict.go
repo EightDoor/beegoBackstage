@@ -74,3 +74,23 @@ func (c *DictController) Update() {
 		c.RBack(utils.R{Data: msg}, err)
 	}
 }
+
+// DictQueryItem 根据字典id 查询字典项
+// @router /dictQueryItem/:id [get]
+func (c *DictController) DictQueryItem() {
+	var sysDictItem []SysModels.SysDictItem
+	id, err := c.GetInt(":id")
+	if err == nil {
+		o := orm.NewOrm()
+		_, rError := o.QueryTable(SysModels.SysDictItem{}).Filter("dictId", id).All(&sysDictItem)
+		if rError == nil {
+			c.RSuccess(utils.R{
+				Data: sysDictItem,
+			})
+		} else {
+			c.RError(utils.R{Msg: err.Error()})
+		}
+	} else {
+		c.RError(utils.R{Msg: err.Error()})
+	}
+}

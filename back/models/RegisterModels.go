@@ -8,6 +8,7 @@ import (
 // RegisterModels orm使用，需要注册Model
 func RegisterModels() {
 	orm.RegisterModel(
+		// sys
 		new(SysModels.Test),
 		new(SysModels.SysUser),
 		new(SysModels.SysRole),
@@ -15,5 +16,7 @@ func RegisterModels() {
 		new(SysModels.SysDept),
 		new(SysModels.SysDict),
 		new(SysModels.SysDictItem),
+		new(SysModels.SysUserRole),
+		new(SysModels.SysRoleMenu),
 	)
 }

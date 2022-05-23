@@ -74,3 +74,26 @@ func (c *RoleController) Update() {
 		c.RBack(utils.R{Data: msg}, err)
 	}
 }
+
+// RoleMenuRelationList 角色关联菜单列表
+// @router /roleMenuRelationList/:id [get]
+func (c *RoleController) RoleMenuRelationList() {
+	var sysMenu []SysModels.SysMenu
+	id, err := c.GetInt(":id")
+	if err == nil {
+		rError := SysModels.GetRoleIdMenus(id, &sysMenu)
+		if rError == nil {
+			c.RSuccess(utils.R{
+				Data: sysMenu,
+			})
+		} else {
+			c.RError(utils.R{
+				Msg: rError.Error(),
+			})
+		}
+	} else {
+		c.RError(utils.R{
+			Msg: err.Error(),
+		})
+	}
+}

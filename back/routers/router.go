@@ -16,6 +16,7 @@ import (
 
 func init() {
 	ns := beego.NewNamespace("/api",
+		// sys
 		beego.NSInclude(&SysControllers.TestController{}),
 		beego.NSInclude(&SysControllers.UserController{}),
 		beego.NSInclude(&SysControllers.RoleController{}),
@@ -23,6 +24,8 @@ func init() {
 		beego.NSInclude(&SysControllers.DeptController{}),
 		beego.NSInclude(&SysControllers.DictController{}),
 		beego.NSInclude(&SysControllers.DictItemController{}),
+		beego.NSInclude(&SysControllers.SysUserRoleController{}),
+		beego.NSInclude(&SysControllers.SysRoleMenuController{}),
 
 		// 白名单路由
 		beego.NSNamespace("/login", beego.NSInclude(&SysControllers.LoginController{})),

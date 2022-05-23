@@ -126,3 +126,26 @@ func (c *UserController) ResetPassword() {
 	})
 	c.RBack(utils.R{Data: result}, err)
 }
+
+// UserRoleList 查询用户关联角色列表
+// @router /userRoleList/:id [get]
+func (c *UserController) UserRoleList() {
+	var role []SysModels.SysRole
+	id, err := c.GetInt(":id")
+	if err == nil {
+		err := SysModels.GetRoleList(id, &role)
+		if err == nil {
+			c.RSuccess(utils.R{
+				Data: role,
+			})
+		} else {
+			c.RError(utils.R{
+				Msg: err.Error(),
+			})
+		}
+	} else {
+		c.RError(utils.R{
+			Data: "请传递查询路劲id, userRoleList/:id",
+		})
+	}
+}
