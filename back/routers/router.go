@@ -8,7 +8,7 @@
 package routers
 
 import (
-	"beegoBackstage/controllers/BaseControllers"
+	"beegoBackstage/controllers/SysControllers"
 	"beegoBackstage/middleware"
 	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
@@ -16,12 +16,16 @@ import (
 
 func init() {
 	ns := beego.NewNamespace("/api",
-		beego.NSInclude(&BaseControllers.TestController{}),
-		beego.NSInclude(&BaseControllers.UserController{}),
-		beego.NSInclude(&BaseControllers.RoleController{}),
+		beego.NSInclude(&SysControllers.TestController{}),
+		beego.NSInclude(&SysControllers.UserController{}),
+		beego.NSInclude(&SysControllers.RoleController{}),
+		beego.NSInclude(&SysControllers.MenuController{}),
+		beego.NSInclude(&SysControllers.DeptController{}),
+		beego.NSInclude(&SysControllers.DictController{}),
+		beego.NSInclude(&SysControllers.DictItemController{}),
 
 		// 白名单路由
-		beego.NSNamespace("/login", beego.NSInclude(&BaseControllers.LoginController{})),
+		beego.NSNamespace("/login", beego.NSInclude(&SysControllers.LoginController{})),
 	)
 
 	whiteList := [...]string{"login"}

@@ -8,8 +8,8 @@ import (
 type BaseModel struct {
 	Id        int       `json:"id" orm:"auto"`
 	CreatedAt time.Time `json:"createdAt" orm:"auto_now_add;"`
-	UpdatedAt time.Time `json:"updatedAt"`
-	DeletedAt time.Time `json:"deletedAt"`
+	UpdatedAt time.Time `json:"updatedAt" orm:"-"`
+	DeletedAt time.Time `json:"deletedAt" orm:"-"`
 }
 
 // Valid 自定义校验
