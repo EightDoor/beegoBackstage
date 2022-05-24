@@ -1,8 +1,8 @@
-import { Commit } from 'vuex';
-import { RouteRecordRaw } from 'vue-router';
-import { Key } from 'ant-design-vue/es/_util/type';
-import { message } from 'ant-design-vue';
-import { cloneDeep } from 'lodash-es';
+import { Commit } from "vuex";
+import { RouteRecordRaw } from "vue-router";
+import { Key } from "ant-design-vue/es/_util/type";
+import { message } from "ant-design-vue";
+import { cloneDeep } from "lodash-es";
 
 import {
   COLLAPSED,
@@ -13,23 +13,24 @@ import {
   SET_SYS,
   SETUSERINFO,
   USERINFOMENUS,
-} from '@/store/mutation-types';
+} from "@/store/mutation-types";
+import { LoginType, MenuType, UserInformation, UserType } from "@/types/sys";
+import http from "@/utils/request";
 import {
-  LoginType, MenuType, UserInformation, UserType,
-} from '@/types/sys';
-import http from '@/utils/request';
-import { LIST_OF_ALL_STORED_MENU_ITEMS, PERMISSIONBUTTONS, TOKEN } from '@/utils/constant';
-import { MenuItem } from '@/types/layout/menu';
+  LIST_OF_ALL_STORED_MENU_ITEMS,
+  PERMISSIONBUTTONS,
+  TOKEN,
+} from "@/utils/constant";
+import { MenuItem } from "@/types/layout/menu";
 
-import { ListObjCompare, ListToTree } from '@/utils';
-import store from '../index';
-import log from '@/utils/log';
-import utilLocalStore from '@/utils/store';
+import { ListObjCompare, ListToTree } from "@/utils";
+import store from "../index";
+import log from "@/utils/log";
+import utilLocalStore from "@/utils/store";
 
 interface GetToken {
-    accessToken: string;
-    expiresIn: string;
-    msg: string;
+  token: string;
+  expirationTime: string;
 }
 export interface SysStoreType {
   menus: MenuType[];
@@ -40,18 +41,19 @@ export interface SysStoreType {
 }
 export type CustomMenus = RouteRecordRaw & Partial<MenuType>;
 
-const getUserInfo = (): Promise<UserInformation | null> => new Promise((resolve, reject) => {
-  http<UserInformation>({
-    url: 'auth/userInfo',
-    method: 'get',
-  })
-    .then((res) => {
-      resolve(res.data);
+const getUserInfo = (): Promise<UserInformation | null> =>
+  new Promise((resolve, reject) => {
+    http<UserInformation>({
+      url: "userInfo",
+      method: "get",
     })
-    .catch((err) => {
-      reject(err);
-    });
-});
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
 
 async function findModName(modules: any, keyName?: string) {
   const list: any[] = [];
@@ -67,37 +69,35 @@ async function findModName(modules: any, keyName?: string) {
 }
 
 async function baseLayout(item: CustomMenus[]): Promise<RouteRecordRaw[]> {
-  const modules = await import.meta.globEager('../../layout/layout/**.vue');
+  const modules = await import.meta.globEager("../../layout/layout/**.vue");
   // 加载基础页面结构 layout
-  const list:CustomMenus[] = [];
-  const result: any[] = await findModName(modules, 'LayoutHome');
+  const list: CustomMenus[] = [];
+  const result: any[] = await findModName(modules, "LayoutHome");
   if (result.length > 0) {
     const data = item.filter((v) => v.isHome);
-    let redirect = '';
+    let redirect = "";
     if (data.length > 0) {
       redirect = String(data[0].path);
     }
-    list.push(
-      {
-        path: '/',
-        name: 'LayoutHome',
-        component: result[0],
-        id: Date.now(),
-        parentId: 0,
-        children: [],
-        // 重定向地址
-        redirect,
-      },
-    );
+    list.push({
+      path: "/",
+      name: "LayoutHome",
+      component: result[0],
+      id: Date.now(),
+      parentId: 0,
+      children: [],
+      // 重定向地址
+      redirect,
+    });
   } else {
-    message.error('layout文件读取失败，请检查');
+    message.error("layout文件读取失败，请检查");
   }
   return list;
 }
 
 // 查询是否存在上级
 function queryWhetherParent(parentId: number, item: MenuType[]) {
-  let rPath = '';
+  let rPath = "";
   const data = item.find((v) => v.id === parentId);
   if (data) {
     if (data.parentId !== 0) {
@@ -106,10 +106,12 @@ function queryWhetherParent(parentId: number, item: MenuType[]) {
     rPath += `/${data.name}`;
     return rPath;
   }
-  return '';
+  return "";
 }
 
-const formatMenuTree = async (menuData: MenuType[]): Promise<RouteRecordRaw[]> => {
+const formatMenuTree = async (
+  menuData: MenuType[]
+): Promise<RouteRecordRaw[]> => {
   // {
   //   name: 'home',
   //     path: 'home',
@@ -121,12 +123,15 @@ const formatMenuTree = async (menuData: MenuType[]): Promise<RouteRecordRaw[]> =
   //   redirect: '/home',
   // },
   const result: CustomMenus[] = [];
-  const modules = await import.meta.globEager('../../views/**/*.vue');
-  const childModules = await import.meta.globEager('../../views/**.vue');
+  const modules = await import.meta.globEager("../../views/**/*.vue");
+  const childModules = await import.meta.globEager("../../views/**.vue");
 
   // TODO 待验证是否必须要,     if (!file.isRouter) return;
   menuData.forEach((menuItem) => {
-    const fileKey = Object.keys(modules).find((key) => modules[key].default && modules[key].default.name === menuItem.name);
+    const fileKey = Object.keys(modules).find(
+      (key) =>
+        modules[key].default && modules[key].default.name === menuItem.name
+    );
     if (fileKey) {
       const allPath = queryWhetherParent(menuItem.parentId, menuData);
       const file = modules[fileKey].default;
@@ -151,11 +156,11 @@ const formatMenuTree = async (menuData: MenuType[]): Promise<RouteRecordRaw[]> =
   const l = await baseLayout(result);
   const [layout] = l;
   layout.children = ListToTree(result);
-  log.d(layout, '加载的路由');
+  log.d(layout, "加载的路由");
 
   return [layout];
 };
-function ListToTreeMenus(jsonData, id = 'id', pid = 'parentId'): MenuItem[] {
+function ListToTreeMenus(jsonData, id = "id", pid = "parentId"): MenuItem[] {
   const result: MenuItem[] = [];
   const temp = {};
   for (let i = 0; i < jsonData.length; i += 1) {
@@ -200,7 +205,7 @@ export default {
     [SET_MENUS_MUTATION](state: SysStoreType, payload: UserInformation): void {
       const menus = formatMenus(payload.menus);
       let result: MenuItem[] = [];
-      const list = cloneDeep(menus.sort(ListObjCompare('orderNum')));
+      const list = cloneDeep(menus.sort(ListObjCompare("orderNum")));
       list.forEach((item) => {
         if (!item.hidden) {
           result.push({
@@ -241,9 +246,9 @@ export default {
       state.userInfoMenus = [];
       state.menus = [];
       state.userInfo = {
-        nickName: '',
+        nickName: "",
         status: 0,
-        account: '',
+        account: "",
         deptId: -1,
       };
     },
@@ -263,8 +268,12 @@ export default {
               commit(USERINFOMENUS, res);
               commit(SETUSERINFO, res);
               commit(SET_MENUS_MUTATION, res);
-              await utilLocalStore.set(LIST_OF_ALL_STORED_MENU_ITEMS, res.menus);
+              await utilLocalStore.set(
+                LIST_OF_ALL_STORED_MENU_ITEMS,
+                res.menus
+              );
               const menus = await formatMenuTree(formatMenus(res.menus));
+              log.i(menus, "menus -- tree");
               resolve({
                 userInfo: res.userInfo,
                 menus,
@@ -283,13 +292,13 @@ export default {
           password: payload.pass_word,
         };
         http<GetToken>({
-          url: 'auth/login',
-          method: 'post',
+          url: "login",
+          method: "post",
           body,
         })
           .then(async (res) => {
-            localStorage.setItem(TOKEN, res.data?.accessToken ?? '');
-            resolve(res.data?.accessToken ?? '');
+            localStorage.setItem(TOKEN, res.data?.token ?? "");
+            resolve(res.data?.token ?? "");
           })
           .catch((err) => {
             reject(err);

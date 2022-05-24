@@ -1,18 +1,18 @@
-import { ColumnProps } from 'ant-design-vue/lib/table/interface';
+import { ColumnProps } from "ant-design-vue/lib/table/interface";
 
 // 请求接口分页
 export interface PaginType {
-  page?: number;
+  pageNum?: number;
   pageSize?: number;
   total?: number;
 }
 
 interface CommReqList<T> extends PaginType {
-  data: T[]
+  list: T[];
 }
 export interface CommonResponse<T> {
   list: CommReqList<T> | null;
-  data: T | null
+  data: any;
 }
 
 // 表格默认的分页
@@ -37,7 +37,7 @@ interface AntColumnSlot {
   width?: number;
 }
 
-interface AntColumn extends ColumnProps, AntColumnSlot { }
+interface AntColumn extends ColumnProps, AntColumnSlot {}
 
 // 表格
 export interface TableDataType<T> extends PaginType {

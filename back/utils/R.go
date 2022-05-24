@@ -29,7 +29,7 @@ type rPaging struct {
 }
 
 type rPagingData struct {
-	Count    int         `json:"count"`
+	Total    int         `json:"total"`
 	PageSize int         `json:"pageSize"`
 	PageNum  int         `json:"pageNum"`
 	List     interface{} `json:"list"`
@@ -113,7 +113,7 @@ func (c *BaseController) RPaging(rPage RPage) {
 	rData.List = rPage.Data
 	rData.PageNum = page
 	rData.PageSize = size
-	rData.Count = count
+	rData.Total = count
 	result.Data = rData
 	formatJsonRPagingCall(result)
 	c.Data["json"] = result

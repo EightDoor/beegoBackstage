@@ -141,7 +141,7 @@ const SysMenu = defineComponent({
     ]);
     const width = 150;
     const tableCont = reactive<TableDataType<MenuType>>({
-      page: 1,
+      pageNum: 1,
       pageSize: 1000,
       total: 0,
       loading: false,
@@ -248,16 +248,16 @@ const SysMenu = defineComponent({
       tableCont.loading = true;
       http<MenuType>({
         url: `/menu${searchParam({
-          page: tableCont.page,
-          limit: tableCont.pageSize,
+          pageNum: tableCont.pageNum,
+          pageSize: tableCont.pageSize,
         })}`,
         method: 'GET',
       }).then((res) => {
-        const list = cloneDeep(res.list?.data.sort(ListObjCompare('order_num'))) || [];
+        const list = cloneDeep(res.list?.list.sort(ListObjCompare('order_num'))) || [];
         tableCont.loading = false;
         tableCont.data = ListToTree(list);
         tableCont.total = res.list?.total;
-        const treeMenus = cloneDeep(res.list?.data || []);
+        const treeMenus = cloneDeep(res.list?.list || []);
         treeMenus.forEach((item) => {
           item.value = String(item.id);
         });
@@ -281,9 +281,10 @@ const SysMenu = defineComponent({
           let method: Method = 'POST';
           if (validateInfos.id) {
             method = 'PUT';
+            data.id = validateInfos.id
           }
           http<MenuType>({
-            url: validateInfos.id ? `menu/${validateInfos.id}` : 'menu',
+            url: 'menu',
             method,
             body: data,
           }).then(() => {
@@ -325,7 +326,7 @@ const SysMenu = defineComponent({
       });
     }
     function Change(pagination: TablePaginType) {
-      tableCont.page = pagination.current;
+      tableCont.pageNum = pagination.current;
       getList();
     }
 

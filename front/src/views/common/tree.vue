@@ -85,10 +85,10 @@ const CommonTree = defineComponent({
         })}`,
         method: 'GET',
       }).then((res) => {
-        res.list?.data.forEach((item: MenuType) => {
+        res.list?.list.forEach((item: MenuType) => {
           item.key = item.id;
         });
-        const list = res.list?.data.sort(ListObjCompare('orderNum'));
+        const list = res.list?.list.sort(ListObjCompare('orderNum'));
         treeData.spinningLoading = false;
         treeData.data = ListToTree(list || []);
         console.log(treeData.data, 'data');

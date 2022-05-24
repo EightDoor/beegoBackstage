@@ -1,46 +1,45 @@
-import axios, { Method } from 'axios';
-import { message, notification } from 'ant-design-vue';
-import { CommonResponse } from '@/types/type';
-import { RequestAuthorizedFailed, TOKEN } from '@/utils/constant';
-import { ClearInfo } from '@/utils/index';
-import log from './log';
+import axios, { Method } from "axios";
+import { message, notification } from "ant-design-vue";
+import { CommonResponse } from "@/types/type";
+import { RequestAuthorizedFailed, TOKEN } from "@/utils/constant";
+import { ClearInfo } from "@/utils/index";
+import log from "./log";
 
 const instance = axios.create({
-  baseURL: '/api',
+  baseURL: "/api",
   timeout: 5000,
 });
 // 请求拦截器
 instance.interceptors.request.use(
   (config) => {
     config.headers = {
-      Authorization: `Bearer ${localStorage.getItem(TOKEN) ?? ''}`,
+      Authorization: `Bearer ${localStorage.getItem(TOKEN) ?? ""}`,
     };
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
 // 相应拦截器
 instance.interceptors.response.use(
   (response) => {
     const { data } = response;
+    log.i(data, "data");
     if (response.status === 200 && data.code === 0) {
-      //
-    } else if (response.status === 201 && data.code === 0) {
-      //
+      // 请求成功
     } else if (data.code === RequestAuthorizedFailed) {
-      message.info('token失效, 请重新登录');
+      message.info("token失效, 请重新登录");
       ClearInfo();
     } else {
-      log.d(data, 'response error data');
+      log.d(data, "response error data");
       notification.error({
-        message: `错误码: ${data.code}`,
-        description: data.data.msg,
+        message: `错误码: ${data.code} ${data.data ? "," + data.data : ""}`,
+        description: data.msg,
       });
     }
     return response.data;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
 interface HttpCustomType {
@@ -71,12 +70,10 @@ function httpCustom<T = any>(c: HttpCustomType): Promise<CommonResponse<T>> {
             list: null,
           });
         } else {
-          resolve(
-            {
-              data: null,
-              list: null,
-            },
-          );
+          resolve({
+            data: null,
+            list: null,
+          });
         }
       })
       .catch((err) => {

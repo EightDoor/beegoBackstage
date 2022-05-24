@@ -26,9 +26,10 @@ func init() {
 			beego.NSInclude(&SysControllers.DictItemController{}),
 			beego.NSInclude(&SysControllers.SysUserRoleController{}),
 			beego.NSInclude(&SysControllers.SysRoleMenuController{}),
+
+			// 白名单路由
+			beego.NSNamespace("/login", beego.NSInclude(&SysControllers.LoginController{})),
 		),
-		// 白名单路由
-		beego.NSNamespace("/login", beego.NSInclude(&SysControllers.LoginController{})),
 	)
 	// 登录校验
 	beego.InsertFilter("/api/v1/*", beego.BeforeRouter, middleware.FilterUser)

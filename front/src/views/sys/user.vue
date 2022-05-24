@@ -121,7 +121,6 @@
 import {
   defineComponent, onMounted, reactive, toRaw, ref,
 } from 'vue';
-import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import { Method } from 'axios';
 import { TableDataType, TablePaginType } from '@/types/type';
@@ -205,9 +204,9 @@ const SysUser = defineComponent({
         },
       ],
     };
-    const tableData = reactive<TableDataType<UserType>>({
+    let tableData = reactive<TableDataType<UserType>>({
       data: [],
-      page: 1,
+      pageNum: 1,
       pageSize: 10,
       total: 0,
       loading: false,
@@ -259,11 +258,12 @@ const SysUser = defineComponent({
         })}`,
         method: 'GET',
       }).then((res) => {
+        log.i(res, 'user-res')
         tableData.loading = false;
-        tableData.page = res.list?.page;
+        tableData.pageNum = res.list?.pageNum;
         tableData.pageSize = res.list?.pageSize;
         tableData.total = res.list?.total;
-        tableData.data = res.list?.data || [];
+        tableData.data = res.list?.list || [];
         log.i(tableData, 'table');
       });
     }
@@ -275,7 +275,7 @@ const SysUser = defineComponent({
         })}`,
         method: 'GET',
       }).then((res) => {
-        const list = res.list?.data.sort(ListObjCompare('orderNum'));
+        const list = res.list?.list.sort(ListObjCompare('orderNum'));
         if (list) {
           list.forEach((item) => {
             item.title = item.name;
@@ -294,7 +294,7 @@ const SysUser = defineComponent({
         })}`,
         method: 'get',
       }).then((res) => {
-        roleList.value = res.list?.data || [];
+        roleList.value = res.list?.list || [];
       });
     }
     onMounted(() => {
@@ -325,9 +325,10 @@ const SysUser = defineComponent({
         const data = toRaw(formData);
         commonDrawerData.loading = true;
         if (editId.id) {
-          url = `user/${editId.id}`;
           method = 'PUT';
+          data.id = editId.id;
         }
+        data.deptId = String(data.deptId)
         if (data.avatar) {
           data.avatar = BusinessUtils.formatUploadImg(data.avatar);
         }
@@ -395,7 +396,7 @@ const SysUser = defineComponent({
         formData.email = record.email;
         formData.status = record.status;
         formData.avatar = BusinessUtils.formatUploadShow(record.avatar);
-        formData.deptId = Number(record.deptId);
+        formData.deptId = String(record.deptId);
         formData.phoneNum = record.phoneNum;
       }
     }
@@ -406,7 +407,7 @@ const SysUser = defineComponent({
       });
     }
     function Change(pagin: TablePaginType) {
-      tableData.page = pagin.current;
+      tableData.pageNum = pagin.current;
       getList();
     }
     function Allocate(record: UserType) {
@@ -416,17 +417,13 @@ const SysUser = defineComponent({
         allocationTree.allocateId = String(record.id);
       }
       http<SysUserRole>({
-        url: `/user/roleList/${record.id}${searchParam({
-          page: 1,
-          limit: 1000,
-        })}`,
+        url: `/userRoleList/${record.id}`,
         method: 'get',
       }).then((res) => {
+        log.d(res, 'res')
         const list: number[] = [];
-        res.list?.data.forEach((item) => {
-          if (item.id != null) {
-            list.push(Number(item.roleId));
-          }
+        res.data?.forEach((item) => {
+          list.push(Number(item.id));
         });
         selectkeys.value = list;
         allocationTree.loading = false;
@@ -437,19 +434,15 @@ const SysUser = defineComponent({
     }
     function SubmitOk() {
       const userId = Number(allocationTree.allocateId);
-      const result = selectkeys.value.map((item) => ({
+      const result = {
         userId,
-        roleId: Number(item),
-      }));
-      const data: UserAndRole = {
-        userId,
-        data: result,
-      };
+        roleId: selectkeys.value
+      }
       allocationTree.loading = true;
       http<UserType>({
-        url: '/user/userRole',
+        url: '/userRoleRelation',
         method: 'post',
-        body: data,
+        body: result,
       })
         .then(() => {
           message.success('更新成功');
@@ -468,7 +461,7 @@ const SysUser = defineComponent({
     function updatePasswdHandleOk() {
       if (password.value) {
         http<boolean>({
-          url: '/user/updatePasswd',
+          url: '/user/resetPassword',
           method: 'post',
           body: {
             id: updateData.value.id,
@@ -476,12 +469,8 @@ const SysUser = defineComponent({
           },
         }).then((res) => {
           console.log(res.data, 'res');
-          if (res.data) {
-            message.success('修改成功');
-            updatePasswdVis.value = false;
-          } else {
-            message.error('修改失败');
-          }
+          message.success('修改成功');
+          updatePasswdVis.value = false;
         });
       } else {
         message.info('请输入新密码');

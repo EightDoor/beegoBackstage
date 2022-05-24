@@ -32,8 +32,13 @@ func GetRoleIdMenus(id int, list *[]SysMenu) error {
 		for _, v := range sysRoleMenu {
 			ids = append(ids, v.MenuId)
 		}
-		_, resultError := o.QueryTable(SysMenu{}).Filter("id__in", ids).All(list)
-		rError = resultError
+		if len(ids) > 0 {
+			_, resultError := o.QueryTable(SysMenu{}).Filter("id__in", ids).All(list)
+			rError = resultError
+		} else {
+			rError = nil
+		}
+
 	} else {
 		rError = err
 	}

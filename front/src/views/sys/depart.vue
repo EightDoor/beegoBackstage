@@ -78,7 +78,7 @@ const SysDepart = defineComponent({
   components: { CommonButton, CommonDrawer },
   setup() {
     const tableCont = reactive<TableDataType<DepartType>>({
-      page: 1,
+      pageNum: 1,
       pageSize: 10,
       total: 0,
       loading: false,
@@ -139,12 +139,12 @@ const SysDepart = defineComponent({
       tableCont.loading = true;
       http<DepartType>({
         url: `/dept${searchParam({
-          page: tableCont.page,
+          page: tableCont.pageNum,
           limit: tableCont.pageSize,
         })}`,
         method: 'GET',
       }).then((res) => {
-        const list = res.list?.data.sort(ListObjCompare('order_num')) || [];
+        const list = res.list?.list.sort(ListObjCompare('order_num')) || [];
         tableCont.loading = false;
         tableCont.data = ListToTree(list);
         tableCont.total = res.list?.total;
@@ -168,9 +168,11 @@ const SysDepart = defineComponent({
           let method: Method = 'POST';
           if (formData.id) {
             method = 'PUT';
+            data.id = formData.id
           }
+          data.parentId = Number(data.parentId)
           http<DepartType>({
-            url: formData.id ? `dept/${formData.id}` : 'dept',
+            url: 'dept',
             method,
             body: data,
           }).then(() => {
@@ -195,7 +197,7 @@ const SysDepart = defineComponent({
       drawerData.title = '添加';
       drawerData.visible = true;
       resetFields();
-      formData.parentId = '0';
+      formData.parentId = '-1';
     }
 
     function Editor(record: DepartType) {
@@ -215,7 +217,7 @@ const SysDepart = defineComponent({
       });
     }
     function Change(pagination: TablePaginType) {
-      tableCont.page = pagination.current;
+      tableCont.pageNum = pagination.current;
       getList();
     }
 

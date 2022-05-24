@@ -74,6 +74,7 @@ import CommonDrawer, { DrawerProps } from '@/components/Drawer/Drawer.vue';
 import CommonButton from '@/components/Button/Button.vue';
 import CommonTree from '@/views/common/tree.vue';
 import { searchParam } from '@/utils/search_param';
+import log  from '@/utils/log';
 
 export interface AllocateType {
   visible: boolean;
@@ -117,7 +118,7 @@ const SysRole = defineComponent({
     };
     const tableData = reactive<TableDataType<RoleType>>({
       data: [],
-      page: 1,
+      pageNum: 1,
       pageSize: 10,
       total: 0,
       loading: false,
@@ -143,15 +144,15 @@ const SysRole = defineComponent({
       tableData.loading = true;
       http<RoleType>({
         url: `role${searchParam({
-          page: tableData.page,
+          page: tableData.pageNum,
           limit: tableData.pageSize,
         })}`,
         method: 'GET',
       }).then((res) => {
         tableData.loading = false;
-        tableData.page = res.list?.page;
+        tableData.pageNum = res.list?.pageNum;
         tableData.total = res.list?.total;
-        tableData.data = res.list?.data || [];
+        tableData.data = res.list?.list || [];
         console.log(tableData, 'data');
       });
     }
@@ -166,8 +167,8 @@ const SysRole = defineComponent({
         const body = toRaw(formData);
         commonDrawerData.loading = true;
         if (editId.id) {
-          url = `role/${editId.id}`;
           method = 'PUT';
+          body.id = editId.id
         }
         http({
           url,
@@ -210,7 +211,7 @@ const SysRole = defineComponent({
       });
     }
     function Change(pagin: TablePaginType) {
-      tableData.page = pagin.current;
+      tableData.pageNum = pagin.current;
       getList();
     }
     function PowerAllocation(record: RoleType) {
@@ -220,14 +221,16 @@ const SysRole = defineComponent({
         allocationTree.allocateId = String(record.id);
       }
       http<MenuType>({
-        url: `/role/menus/${record.id}`,
+        url: `/roleMenuRelationList/${record.id}`,
         method: 'get',
       }).then((res) => {
         if (res && res.data) {
-          const menus = res.data.menuId?.split(',').map((item) => Number(item));
-          if (menus) {
-            allocationTree.data = menus;
-          }
+          log.i(res.data, 'res-roleMenuRelationList')
+          let ids: number[] = []
+          res.data.forEach((item)=>{
+            ids.push(item.id)
+          })
+          allocationTree.data = ids;
         } else {
           allocationTree.data = [];
         }
@@ -239,12 +242,12 @@ const SysRole = defineComponent({
     }
     function SubmitOk(val: CommonTreeSelectKeys) {
       const data = {
-        roleId: allocationTree.allocateId,
-        menuId: val.checked.join(','),
+        roleId: Number(allocationTree.allocateId),
+        menuId: val.checked,
       };
       allocationTree.loading = true;
       http<MenuType>({
-        url: '/role/relationAndMenu',
+        url: 'roleMenuRelation',
         method: 'post',
         body: data,
       })

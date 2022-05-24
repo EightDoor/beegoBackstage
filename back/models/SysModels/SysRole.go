@@ -26,12 +26,15 @@ func GetRoleList(id int, list *[]SysRole) error {
 			ids = append(ids, v.RoleId)
 		}
 		logs.Info(ids, "查询到的角色列表 - ids")
-		_, resultErr := o.QueryTable(SysRole{}).Filter("id__in", ids).All(list)
-		if resultErr == nil {
-			logs.Info(len(*list), "查询到的角色列表数量")
-		} else {
-			rError = resultErr
+		if len(ids) > 0 {
+			_, resultErr := o.QueryTable(SysRole{}).Filter("id__in", ids).All(list)
+			if resultErr == nil {
+				logs.Info(len(*list), "查询到的角色列表数量")
+			} else {
+				rError = resultErr
+			}
 		}
+		rError = nil
 	} else {
 		rError = err
 	}
