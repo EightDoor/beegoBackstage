@@ -7,6 +7,51 @@ import (
 
 func init() {
 
+    beego.GlobalControllerRouter["beegoBackstage/controllers/DemoCrud:DemoCrudController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/DemoCrud:DemoCrudController"],
+        beego.ControllerComments{
+            Method: "Get",
+            Router: `/demoCrud`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["beegoBackstage/controllers/DemoCrud:DemoCrudController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/DemoCrud:DemoCrudController"],
+        beego.ControllerComments{
+            Method: "Post",
+            Router: `/demoCrud`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["beegoBackstage/controllers/DemoCrud:DemoCrudController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/DemoCrud:DemoCrudController"],
+        beego.ControllerComments{
+            Method: "Update",
+            Router: `/demoCrud`,
+            AllowHTTPMethods: []string{"put"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["beegoBackstage/controllers/DemoCrud:DemoCrudController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/DemoCrud:DemoCrudController"],
+        beego.ControllerComments{
+            Method: "Del",
+            Router: `/demoCrud/:id`,
+            AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["beegoBackstage/controllers/DemoCrud:DemoCrudController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/DemoCrud:DemoCrudController"],
+        beego.ControllerComments{
+            Method: "GetAll",
+            Router: `/demoCrud/all`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:DeptController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:DeptController"],
         beego.ControllerComments{
             Method: "Get",

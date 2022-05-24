@@ -1,19 +1,19 @@
-import * as api from './api';
-import log from '@/utils/log';
-import { crudSearchParam } from '@/utils/search_param';
+import * as api from './api'
+import log from '@/utils/log'
+import { crudSearchParam } from '@/utils/search_param'
 // 构建crudOptions的方法
 export default function ({ expose }) {
   const pageRequest = (query) => {
-    const params = crudSearchParam(query);
-    return api.GetList(params);
-  };
+    const params = crudSearchParam(query)
+    return api.GetList(params)
+  }
   const editRequest = async ({ form, row }) => {
-    form.id = row.id;
-    return api.UpdateObj(form);
-  };
-  const delRequest = (id) => api.DelObj(id);
+    form.id = row.id
+    return api.UpdateObj(form)
+  }
+  const delRequest = id => api.DelObj(id)
 
-  const addRequest = ({ form }) => api.AddObj(form);
+  const addRequest = ({ form }) => api.AddObj(form)
   return {
     crudOptions: {
     // 请求配置
@@ -44,5 +44,5 @@ export default function ({ expose }) {
       },
     // 其他crud配置
     },
-  };
+  }
 }

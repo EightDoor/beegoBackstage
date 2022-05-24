@@ -1,6 +1,7 @@
 package models
 
 import (
+	"beegoBackstage/models/DemoCrud"
 	"beegoBackstage/models/SysModels"
 	"github.com/beego/beego/v2/client/orm"
 )
@@ -18,5 +19,8 @@ func RegisterModels() {
 		new(SysModels.SysDictItem),
 		new(SysModels.SysUserRole),
 		new(SysModels.SysRoleMenu),
+
+		// other
+		new(DemoCrud.DemoCrud),
 	)
 }

@@ -8,6 +8,7 @@
 package routers
 
 import (
+	DemoCrud2 "beegoBackstage/controllers/DemoCrud"
 	"beegoBackstage/controllers/SysControllers"
 	"beegoBackstage/middleware"
 	beego "github.com/beego/beego/v2/server/web"
@@ -26,6 +27,9 @@ func init() {
 			beego.NSInclude(&SysControllers.DictItemController{}),
 			beego.NSInclude(&SysControllers.SysUserRoleController{}),
 			beego.NSInclude(&SysControllers.SysRoleMenuController{}),
+
+			// other
+			beego.NSInclude(&DemoCrud2.DemoCrudController{}),
 
 			// 白名单路由
 			beego.NSNamespace("/login", beego.NSInclude(&SysControllers.LoginController{})),

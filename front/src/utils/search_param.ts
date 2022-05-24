@@ -30,10 +30,10 @@ const searchParam = (params: any) => {
  */
 const crudSearchParam = (params: ParamsType) => {
   log.d(params, 'crud请求参数')
-  const result: CreateQueryParams = {
-    limit: params.page.pageSize ?? 10,
-    page: params.page.currentPage ?? 1,
+  const result = {
+    pageSize: params.page.pageSize ?? 10,
+    pageNum: params.page.currentPage ?? 1,
   }
-  return `?${RequestQueryBuilder.create(result).query()}`
+  return searchParam(result)
 }
 export { searchParam, crudSearchParam }
