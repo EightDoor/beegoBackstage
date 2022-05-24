@@ -4,6 +4,7 @@
 - 进程内监控 访问: [http://localhost:8088/](http://localhost:8088/)
 - 注解路由生成 `bee generate routers`
 # 打包
+- CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build main.go
 - bee pack
 ## 注意
 
