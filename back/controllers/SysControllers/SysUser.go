@@ -1,6 +1,7 @@
 package SysControllers
 
 import (
+	"beegoBackstage/models"
 	"beegoBackstage/models/SysModels"
 	"beegoBackstage/utils"
 	"encoding/json"
@@ -146,6 +147,33 @@ func (c *UserController) UserRoleList() {
 	} else {
 		c.RError(utils.R{
 			Data: "请传递查询路劲id, userRoleList/:id",
+		})
+	}
+}
+
+// GetTokenUserInfo 根据token获取用户菜单、角色
+// @router /userInfo [get]
+func (c *UserController) GetTokenUserInfo() {
+	token := c.Ctx.Input.Header("Authorization")
+	if token != "" {
+		userId, userIdErr := utils.ValidateToken(token)
+		if userIdErr == nil {
+			result, sysUserInfoDataErr := SysModels.GetUserInfoData(userId)
+			if sysUserInfoDataErr == nil {
+				c.RSuccess(utils.R{Data: result})
+			} else {
+				c.RError(utils.R{Msg: sysUserInfoDataErr.Error(), Data: "查询出错"})
+			}
+		} else {
+			c.RError(utils.R{
+				Msg:  userIdErr.Error(),
+				Code: models.NO_AUTHORIZATION,
+			})
+		}
+	} else {
+		c.RError(utils.R{
+			Msg:  "headers Authorization 不存在",
+			Code: models.NO_AUTHORIZATION,
 		})
 	}
 }

@@ -1,6 +1,7 @@
 package SysControllers
 
 import (
+	"beegoBackstage/models"
 	"beegoBackstage/models/SysModels"
 	"beegoBackstage/utils"
 	"github.com/beego/beego/v2/client/orm"
@@ -67,9 +68,9 @@ func (c *LoginController) RefreshToken() {
 			loginCall.ExpirationTime = time.Unix(refreshTime, 0)
 			c.RSuccess(utils.R{Data: loginCall})
 		} else {
-			c.RError(utils.R{Msg: err.Error()})
+			c.RError(utils.R{Msg: err.Error(), Code: models.NO_AUTHORIZATION})
 		}
 	} else {
-		c.RError(utils.R{Msg: "Authorization不能为空"})
+		c.RError(utils.R{Msg: "Authorization不能为空", Code: models.NO_AUTHORIZATION})
 	}
 }

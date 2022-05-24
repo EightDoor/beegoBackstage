@@ -34,15 +34,13 @@ func GenerateToken(id int) (string, time.Time) {
 }
 
 // ValidateToken 验证token
-func ValidateToken(tokenStr string) (interface{}, error) {
+func ValidateToken(tokenStr string) (int, error) {
 	var customErr error
 	var userId interface{}
-	kv := strings.Split(tokenStr, " ")
-	if len(kv) != 2 || kv[0] != "Bearer" {
-		logs.Error("AuthString invalid:", tokenStr)
-		return 0, errors.New("authorization 不存在 Bearer")
+	tokenResult, rError := ParserToken(tokenStr)
+	if rError != nil {
+		return 0, rError
 	}
-	tokenResult := kv[1]
 	configKey, _ := web.AppConfig.String("jwtKey")
 	token, err := jwt.Parse(tokenResult, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -61,18 +59,16 @@ func ValidateToken(tokenStr string) (interface{}, error) {
 	} else {
 		logs.Error(err, "token验证失败")
 	}
-	return userId, customErr
+	return int(userId.(float64)), customErr
 }
 
 // RefreshToken
 // 只有在过期之前才能刷新
 func RefreshToken(tokenStr string) (string, int64, error) {
-	kv := strings.Split(tokenStr, " ")
-	if len(kv) != 2 || kv[0] != "Bearer" {
-		logs.Error("AuthString invalid:", tokenStr)
-		return "", 0, errors.New("authorization 不存在 Bearer")
+	tokenResult, tokenRErr := ParserToken(tokenStr)
+	if tokenRErr != nil {
+		return "", 0, tokenRErr
 	}
-	tokenResult := kv[1]
 	token, err := jwt.ParseWithClaims(tokenResult, jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
 		configKey, _ := web.AppConfig.String("jwtKey")
 		return []byte(configKey), nil
@@ -100,4 +96,15 @@ func RefreshToken(tokenStr string) (string, int64, error) {
 		return "", 0, newTokenErr
 	}
 	return newTokenStr, expirAt, err
+}
+
+// ParserToken token 获取
+func ParserToken(tokenStr string) (string, error) {
+	kv := strings.Split(tokenStr, " ")
+	if len(kv) != 2 || kv[0] != "Bearer" {
+		logs.Error("AuthString invalid:", tokenStr)
+		return "", errors.New("authorization 不存在 Bearer")
+	}
+	tokenResult := kv[1]
+	return tokenResult, nil
 }
