@@ -58,6 +58,7 @@ func ValidateToken(tokenStr string) (int, error) {
 		customErr = nil
 	} else {
 		logs.Error(err, "token验证失败")
+		return 0, errors.New(err.Error() + " token验证失败")
 	}
 	return int(userId.(float64)), customErr
 }
@@ -103,7 +104,7 @@ func ParserToken(tokenStr string) (string, error) {
 	kv := strings.Split(tokenStr, " ")
 	if len(kv) != 2 || kv[0] != "Bearer" {
 		logs.Error("AuthString invalid:", tokenStr)
-		return "", errors.New("authorization 不存在 Bearer")
+		return "", errors.New("Authorization 不存在 Bearer")
 	}
 	tokenResult := kv[1]
 	return tokenResult, nil

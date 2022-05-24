@@ -1,11 +1,19 @@
 package middleware
 
 import (
-	"github.com/beego/beego/v2/core/logs"
+	"beegoBackstage/models"
+	"beegoBackstage/utils"
 	"github.com/beego/beego/v2/server/web/context"
 )
 
 var FilterUser = func(ctx *context.Context) {
-	//_, ok := ctx.in
-	logs.Info("进入登录校验!")
+	var r utils.R
+	token := ctx.Input.Header("Authorization")
+	r.Code = models.NO_AUTHORIZATION
+	// 验证token
+	_, err := utils.ValidateToken(token)
+	if err != nil {
+		r.Msg = err.Error()
+		ctx.JSONResp(r)
+	}
 }
