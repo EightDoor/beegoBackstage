@@ -17,6 +17,7 @@ type DemoCrudController struct {
 func (c *DemoCrudController) Get() {
 	var model []*DemoCrud.DemoCrud
 	o := orm.NewOrm()
+
 	result := o.QueryTable(DemoCrud.DemoCrud{})
 	c.RPaging(utils.RPage{OrmResult: result, Data: &model})
 }
