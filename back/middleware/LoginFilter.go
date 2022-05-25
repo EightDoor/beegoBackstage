@@ -4,6 +4,7 @@ import (
 	"beegoBackstage/models"
 	"beegoBackstage/utils"
 	"github.com/beego/beego/v2/core/logs"
+	"github.com/beego/beego/v2/server/web"
 	"github.com/beego/beego/v2/server/web/context"
 	"strings"
 )
@@ -27,11 +28,15 @@ var FilterUser = func(ctx *context.Context) {
 		ctx.JSONResp(r)
 	}
 
-	// TODO 过滤PUT、DELETE、POST 不能操作
-	if ctx.Request.Method == "PUT" || ctx.Request.Method == "DELETE" || ctx.Request.Method == "POST" {
-		r.Msg = "演示版本，不可以操作"
-		r.Data = ""
-		r.Code = models.DEMO_ENV
-		ctx.JSONResp(r)
+	// 读取配置值
+	env, _ := web.AppConfig.String("runmode")
+	if env == "prod" {
+		// TODO 过滤PUT、DELETE、POST 不能操作
+		if ctx.Request.Method == "PUT" || ctx.Request.Method == "DELETE" || ctx.Request.Method == "POST" {
+			r.Msg = "演示版本，不可以操作"
+			r.Data = ""
+			r.Code = models.DEMO_ENV
+			ctx.JSONResp(r)
+		}
 	}
 }

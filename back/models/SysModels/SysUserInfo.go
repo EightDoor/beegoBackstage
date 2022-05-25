@@ -1,6 +1,7 @@
 package SysModels
 
 import (
+	"encoding/json"
 	"github.com/beego/beego/v2/client/orm"
 	"github.com/beego/beego/v2/core/logs"
 )
@@ -60,7 +61,25 @@ func GetUserInfoData(id int) (SysUserInfo, error) {
 	if menusErr != nil {
 		return sysUserInfo, menusErr
 	}
-	sysUserInfo.Menus = sysMenu
+	// 查询出来重复的数据，去重处理
+
+	sysUserInfo.Menus = removeDuplicate(sysMenu)
 	logs.Info(sysMenu, "用户拥有菜单、角色列表")
 	return sysUserInfo, nil
+}
+
+func removeDuplicate(list []SysMenu) []SysMenu {
+	resultMap := map[string]bool{}
+	for _, v := range list {
+		data, _ := json.Marshal(v)
+		resultMap[string(data)] = true
+	}
+
+	var result []SysMenu
+	for k := range resultMap {
+		var t SysMenu
+		json.Unmarshal([]byte(k), &t)
+		result = append(result, t)
+	}
+	return result
 }
