@@ -17,6 +17,7 @@ import Directive from '@/directive/index'
 
 // 引入fast-crud
 import '@fast-crud/fast-crud/dist/style.css'
+import log from '@/utils/log'
 
 const app = createApp(App)
 Directive(app)
@@ -39,16 +40,17 @@ app.use(FastCrud, {
         transformQuery: ({ page, form, sort }) =>
         // 转换为你pageRequest所需要的请求参数结构
           ({ page, form, sort }),
-        transformRes: ({ res }) =>
-        // 将pageRequest的返回数据，转换为fast-crud所需要的格式
-        // return {records,currentPage,pageSize,total};
-          ({
+        transformRes: ({ res }) => {
+          // 将pageRequest的返回数据，转换为fast-crud所需要的格式
+          // return {records,currentPage,pageSize,total};
+          log.d(res, 'res')
+          return {
             records: res.list.list,
             currentPage: res.list.pageNum,
-            pageSize: 20,
+            pageSize: res.list.pageSize,
             total: res.list.total,
-          }),
-
+          }
+        },
       },
     }
   },

@@ -1,7 +1,8 @@
 import * as api from './api'
 import { crudSearchParam } from '@/utils/search_param'
+import log from '@/utils/log'
 // 构建crudOptions的方法
-export default function () {
+export default function ({ expose }) {
   const pageRequest = (query) => {
     const params = crudSearchParam(query)
     return api.GetList(params)
@@ -11,7 +12,7 @@ export default function () {
     return api.UpdateObj(form)
   }
   const delRequest = id => api.DelObj(id)
-
+  log.d(expose, 'expose')
   const addRequest = ({ form }) => api.AddObj(form)
   return {
     crudOptions: {

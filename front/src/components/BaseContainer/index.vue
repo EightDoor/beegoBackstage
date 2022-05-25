@@ -13,7 +13,7 @@ export default defineComponent({
 
 <style lang="less">
 .card_container {
-  height: 80vh;
-  border: 1px solud red;
+  //height: 80vh;
+  //overflow-y: auto;
 }
 </style>
