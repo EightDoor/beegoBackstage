@@ -1,5 +1,4 @@
 import * as api from './api'
-import log from '@/utils/log'
 import { crudSearchParam } from '@/utils/search_param'
 // 构建crudOptions的方法
 export default function ({ expose }) {
