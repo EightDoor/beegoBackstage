@@ -3,6 +3,9 @@
   - bee run
 - 进程内监控 访问: [http://localhost:8088/](http://localhost:8088/)
 - 注解路由生成 `bee generate routers`
+# 打包
+- CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build main.go
+- bee pack
 ## 注意
 
 - 注解路由 controller 下创建文件`// @router / [get]` 前后不能存在别的内容,否则无法生成路由
@@ -33,16 +36,14 @@
 - 统一返回
   - Controller统一继承utils.BaseController
   - 成功返回
-
 ```go
-	// orm查询数据
-	o := orm.NewOrm()
-	var t []*BaseModels.Test
-	qs := o.QueryTable("test")
-	qs.All(&t)
-	c.RSuccess(utils.R{Data: t})
+    // orm查询数据
+    o := orm.NewOrm()
+    var t []*BaseModels.Test
+    qs := o.QueryTable("test")
+    qs.All(&t)
+    c.RSuccess(utils.R{Data: t})
 ```
-
 - 失败返回
 
 ```go

@@ -1,148 +1,30 @@
-<template>
-  <common-button v-bt-auth:add="{ title: true }" title="添加" icon-name="add" @change="ChangAdd" />
-  <a-table
-    style="margin-top: 15px"
-    :columns="tableData.columns"
-    :data-source="tableData.data"
-    :loading="tableData.loading"
-    row-key="id"
-    :pagination="{
-      total: tableData.total,
-    }"
-    @change="Change"
-  >
-    <template #bodyCell="{column, text, record}">
-      <template v-if="column.key === 'status'">
-        <div :style="text === 0 ? { color: 'red' } : { color: 'green' }">{{ formatStatus(text) }}</div>
-      </template>
-      <template v-if="column.key === 'depart'">{{ record.deptId }}</template>
-      <template v-if="column.key === 'avatar'">
-        <a-tag v-if="!record.avatar" color="red">暂无头像</a-tag>
-        <img v-else class="avatar" :src="record.avatar" :alt="record.nickName">
-      </template>
-
-      <template v-if="column.key === 'action'">
-        <a-button
-            v-bt-auth:power
-            type="primary"
-            style="margin-right: 15px"
-            @click="Allocate(record)"
-        />
-        <a-button v-bt-auth:edit type="primary" style="margin-right: 15px" @click="Editor(record)" />
-        <a-button v-bt-auth:updatePassword danger style="margin-right: 15px" @click="updatePassword(record)" />
-        <a-popconfirm title="确定删除吗?" ok-text="删除" cancel-text="取消" @confirm="Del(record)">
-          <a-button v-bt-auth:del danger />
-        </a-popconfirm>
-      </template>
-    </template>
-  </a-table>
-  <common-drawer
-    :title="commonDrawerData.title"
-    :visible="commonDrawerData.visible"
-    :loading="commonDrawerData.loading"
-    ok-text="确定"
-    cancel-text="取消"
-    @on-ok="Submit()"
-    @on-close="commonDrawerData.visible = false"
-  >
-    <a-form
-        :model="formData"
-        ref="formRef"
-        :rules="rules"
-        :label-col="{ span: 4 }"
-        :wrapper-col="{ span: 20 }"
-        name="avatar"
-    >
-      <a-form-item label="头像">
-        <image-upload v-model:list="formData.avatar"/>
-      </a-form-item>
-      <a-form-item label="账号"  name="modelRef">
-        <a-input v-model:value="formData.account"></a-input>
-      </a-form-item>
-      <a-form-item label="昵称"  name="nickName">
-        <a-input v-model:value="formData.nickName"></a-input>
-      </a-form-item>
-      <a-form-item label="部门"  name="deptId">
-        <a-tree-select
-          v-model:value="formData.deptId"
-          style="width: 100%"
-          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-          :tree-data="treeOptions.options"
-          placeholder="请选择部门"
-          tree-default-expand-all
-        ></a-tree-select>
-      </a-form-item>
-      <a-form-item label="状态"  name="status">
-        <a-radio-group v-model:value="formData.status" name="radioGroup">
-          <a-radio :value="0">失效</a-radio>
-          <a-radio :value="1">有效</a-radio>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item label="邮箱" name="email">
-        <a-input v-model:value="formData.email"></a-input>
-      </a-form-item>
-      <a-form-item label="手机号码" name="phoneNum">
-        <a-input v-model:value="formData.phoneNum"></a-input>
-      </a-form-item>
-      <a-form-item v-if="!editId.id" label="密码" name="passWord">
-        <a-input v-model:value="formData.passWord"></a-input>
-      </a-form-item>
-    </a-form>
-  </common-drawer>
-  <common-drawer
-    title="角色列表"
-    ok-text="确定"
-    cancel-text="取消"
-    :visible="allocationTree.visible"
-    :loading="allocationTree.loading"
-    @on-close="Close"
-    @on-ok="SubmitOk"
-  >
-    <a-spin :spinning="allocationTree.loading">
-      <a-checkbox-group
-        v-if="roleList.length > 0"
-        v-model:value="selectkeys"
-        class="checkoutContainer"
-      >
-        <div v-for="(item, index) in roleList" :key="index">
-          <a-checkbox :value="item.id">{{ item.remark }}</a-checkbox>
-        </div>
-      </a-checkbox-group>
-      <a-empty v-else />
-    </a-spin>
-  </common-drawer>
-
-  <!-- 修改密码 -->
-  <a-modal v-model:visible="updatePasswdVis" title="修改密码" @ok="updatePasswdHandleOk">
-    <a-input v-model:value="password" placeholder="请输入新密码" />
-  </a-modal>
-</template>
 <script lang="ts">
 import {
-  defineComponent, onMounted, reactive, toRaw, ref,
-} from 'vue';
-import { message } from 'ant-design-vue';
-import { Method } from 'axios';
-import { TableDataType, TablePaginType } from '@/types/type';
-import { DepartType, RoleType, UserType } from '@/types/sys';
-import http from '@/utils/request';
-import CommonDrawer, { DrawerProps } from '@/components/Drawer/Drawer.vue';
-import CommonButton from '@/components/Button/Button.vue';
-import { ListObjCompare, ListToTree } from '@/utils';
-import { AllocateType } from '@/views/sys/role.vue';
-import { searchParam } from '@/utils/search_param';
-import log from '@/utils/log';
-import ImageUpload from '@/components/ImageUpload/index.vue';
-import BusinessUtils from '@/utils/business';
+  defineComponent, onMounted, reactive, ref, toRaw,
+} from 'vue'
+import { message } from 'ant-design-vue'
+import type { Method } from 'axios'
+import type { TableDataType, TablePaginType } from '@/types/type'
+import type { DepartType, RoleType, UserType } from '@/types/sys'
+import http from '@/utils/request'
+import type { DrawerProps } from '@/components/Drawer/Drawer.vue'
+import CommonDrawer from '@/components/Drawer/Drawer.vue'
+import CommonButton from '@/components/Button/Button.vue'
+import { ListObjCompare, ListToTree } from '@/utils'
+import type { AllocateType } from '@/views/sys/role.vue'
+import { searchParam } from '@/utils/search_param'
+import log from '@/utils/log'
+import ImageUpload from '@/components/ImageUpload/index.vue'
+import BusinessUtils from '@/utils/business'
 
 interface SysUserRole {
-  userId: number;
-  roleId: number;
-  id?: number;
+  userId: number
+  roleId: number
+  id?: number
 }
 interface UserAndRole {
-  userId: number;
-  data: SysUserRole[],
+  userId: number
+  data: SysUserRole[]
 }
 
 const SysUser = defineComponent({
@@ -154,14 +36,14 @@ const SysUser = defineComponent({
     ImageUpload,
   },
   setup() {
-    const selectkeys = ref<number[]>([]);
-    const roleList = ref<RoleType[]>([]);
+    const selectkeys = ref<number[]>([])
+    const roleList = ref<RoleType[]>([])
     const allocationTree = reactive<AllocateType>({
       visible: false,
       loading: false,
       allocateId: '',
-    });
-    const formRef = ref();
+    })
+    const formRef = ref()
     const formData = reactive<UserType>({
       account: '',
       nickName: '',
@@ -170,20 +52,20 @@ const SysUser = defineComponent({
       avatar: [],
       deptId: 0,
       phoneNum: '',
-    });
-    const treeOptions = reactive<{ options: DepartType[] }>({ options: [] });
-    const editId = reactive<{ id: number | undefined }>({ id: 0 });
+    })
+    const treeOptions = reactive<{ options: DepartType[] }>({ options: [] })
+    const editId = reactive<{ id: number | undefined }>({ id: 0 })
     const commonDrawerData = reactive<DrawerProps>({
       title: '添加',
       loading: false,
       visible: false,
-    });
+    })
     const uploadImageData = reactive({
       fileList: [],
       loading: false,
       imageUrl: '',
       action: 'test',
-    });
+    })
     const rules = {
       account: [
         {
@@ -203,8 +85,8 @@ const SysUser = defineComponent({
           message: '请选择部门',
         },
       ],
-    };
-    let tableData = reactive<TableDataType<UserType>>({
+    }
+    const tableData = reactive<TableDataType<UserType>>({
       data: [],
       pageNum: 1,
       pageSize: 10,
@@ -247,10 +129,10 @@ const SysUser = defineComponent({
           dataIndex: 'action',
         },
       ],
-    });
+    })
 
     function getList() {
-      tableData.loading = true;
+      tableData.loading = true
       http<UserType>({
         url: `user${searchParam({
           limit: 10,
@@ -259,13 +141,13 @@ const SysUser = defineComponent({
         method: 'GET',
       }).then((res) => {
         log.i(res, 'user-res')
-        tableData.loading = false;
-        tableData.pageNum = res.list?.pageNum;
-        tableData.pageSize = res.list?.pageSize;
-        tableData.total = res.list?.total;
-        tableData.data = res.list?.list || [];
-        log.i(tableData, 'table');
-      });
+        tableData.loading = false
+        tableData.pageNum = res.list?.pageNum
+        tableData.pageSize = res.list?.pageSize
+        tableData.total = res.list?.total
+        tableData.data = res.list?.list || []
+        log.i(tableData, 'table')
+      })
     }
     function getDepartList() {
       http<DepartType>({
@@ -275,16 +157,16 @@ const SysUser = defineComponent({
         })}`,
         method: 'GET',
       }).then((res) => {
-        const list = res.list?.list.sort(ListObjCompare('orderNum'));
+        const list = res.list?.list.sort(ListObjCompare('orderNum'))
         if (list) {
           list.forEach((item) => {
-            item.title = item.name;
-            item.value = item.id;
-            item.key = item.id;
-          });
-          treeOptions.options = ListToTree(list);
+            item.title = item.name
+            item.value = item.id
+            item.key = item.id
+          })
+          treeOptions.options = ListToTree(list)
         }
-      });
+      })
     }
     function getRoleList() {
       http<RoleType>({
@@ -294,170 +176,170 @@ const SysUser = defineComponent({
         })}`,
         method: 'get',
       }).then((res) => {
-        roleList.value = res.list?.list || [];
-      });
+        roleList.value = res.list?.list || []
+      })
     }
     onMounted(() => {
-      getList();
-      getDepartList();
-      getRoleList();
-    });
+      getList()
+      getDepartList()
+      getRoleList()
+    })
 
     function formatStatus(text: number): string {
-      let result = '';
+      let result = ''
       switch (text) {
         case 0:
-          result = '失效';
-          break;
+          result = '失效'
+          break
         case 1:
-          result = '有效';
-          break;
+          result = '有效'
+          break
         default:
-          result = '未知';
+          result = '未知'
       }
-      return result;
+      return result
     }
 
     function Submit() {
       formRef.value.validate().then(() => {
-        let url = 'user';
-        let method: Method = 'POST';
-        const data = toRaw(formData);
-        commonDrawerData.loading = true;
+        const url = 'user'
+        let method: Method = 'POST'
+        const data = toRaw(formData)
+        commonDrawerData.loading = true
         if (editId.id) {
-          method = 'PUT';
-          data.id = editId.id;
+          method = 'PUT'
+          data.id = editId.id
         }
+        // @ts-expect-error
         data.deptId = String(data.deptId)
-        if (data.avatar) {
-          data.avatar = BusinessUtils.formatUploadImg(data.avatar);
-        }
+        if (data.avatar)
+          data.avatar = BusinessUtils.formatUploadImg(data.avatar)
+
         http({
           url,
           method,
           body: data,
         }).then(() => {
-          message.success(`${commonDrawerData.title}成功`);
-          commonDrawerData.loading = false;
-          commonDrawerData.visible = false;
-          getList();
-        });
-      });
+          message.success(`${commonDrawerData.title}成功`)
+          commonDrawerData.loading = false
+          commonDrawerData.visible = false
+          getList()
+        })
+      })
     }
     function ChangAdd() {
-      if (formRef.value) {
-        formRef.value.resetFields();
-      }
-      commonDrawerData.visible = true;
-      editId.id = 0;
+      if (formRef.value)
+        formRef.value.resetFields()
+
+      commonDrawerData.visible = true
+      editId.id = 0
     }
 
     function getBase64(img, callback) {
-      const reader = new FileReader();
-      reader.addEventListener('load', () => callback(reader.result));
-      reader.readAsDataURL(img);
+      const reader = new FileReader()
+      reader.addEventListener('load', () => callback(reader.result))
+      reader.readAsDataURL(img)
     }
 
     function handleChange(info) {
       if (info.file.status === 'uploading') {
-        uploadImageData.loading = true;
-        return;
+        uploadImageData.loading = true
+        return
       }
       if (info.file.status === 'done') {
         // Get this url from response in real world.
         getBase64(info.file.originFileObj, (imageUrl: string) => {
-          uploadImageData.imageUrl = imageUrl;
-          uploadImageData.loading = false;
-        });
+          uploadImageData.imageUrl = imageUrl
+          uploadImageData.loading = false
+        })
       }
-      if (info.file.status === 'error') {
-        uploadImageData.loading = false;
-      }
+      if (info.file.status === 'error')
+        uploadImageData.loading = false
     }
     function beforeUpload(file) {
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-      if (!isJpgOrPng) {
-        message.error('请上传jpg格式图片');
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        message.error('图片上传最大为2M');
-      }
-      return isJpgOrPng && isLt2M;
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
+      if (!isJpgOrPng)
+        message.error('请上传jpg格式图片')
+
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isLt2M)
+        message.error('图片上传最大为2M')
+
+      return isJpgOrPng && isLt2M
     }
 
     function Editor(record: UserType) {
       if (record.id) {
-        editId.id = record.id;
-        commonDrawerData.title = '修改';
-        commonDrawerData.visible = true;
-        formData.account = record.account;
-        formData.nickName = record.nickName;
-        formData.email = record.email;
-        formData.status = record.status;
-        formData.avatar = BusinessUtils.formatUploadShow(record.avatar);
-        formData.deptId = String(record.deptId);
-        formData.phoneNum = record.phoneNum;
+        editId.id = record.id
+        commonDrawerData.title = '修改'
+        commonDrawerData.visible = true
+        formData.account = record.account
+        formData.nickName = record.nickName
+        formData.email = record.email
+        formData.status = record.status
+        formData.avatar = BusinessUtils.formatUploadShow(record.avatar)
+        formData.deptId = String(record.deptId)
+        formData.phoneNum = record.phoneNum
       }
     }
     function Del(record: UserType) {
       http({ url: `user/${record.id}`, method: 'delete' }).then(() => {
-        message.success('删除成功');
-        getList();
-      });
+        message.success('删除成功')
+        getList()
+      })
     }
     function Change(pagin: TablePaginType) {
-      tableData.pageNum = pagin.current;
-      getList();
+      tableData.pageNum = pagin.current
+      getList()
     }
     function Allocate(record: UserType) {
-      allocationTree.loading = true;
-      allocationTree.visible = true;
-      if (record.id != null) {
-        allocationTree.allocateId = String(record.id);
-      }
+      allocationTree.loading = true
+      allocationTree.visible = true
+      if (record.id != null)
+        allocationTree.allocateId = String(record.id)
+
       http<SysUserRole>({
         url: `/userRoleList/${record.id}`,
         method: 'get',
       }).then((res) => {
         log.d(res, 'res')
-        const list: number[] = [];
+        const list: number[] = []
         res.data?.forEach((item) => {
-          list.push(Number(item.id));
-        });
-        selectkeys.value = list;
-        allocationTree.loading = false;
-      });
+          list.push(Number(item.id))
+        })
+        selectkeys.value = list
+        allocationTree.loading = false
+      })
     }
     function Close() {
-      allocationTree.visible = false;
+      allocationTree.visible = false
     }
     function SubmitOk() {
-      const userId = Number(allocationTree.allocateId);
+      const userId = Number(allocationTree.allocateId)
       const result = {
         userId,
-        roleId: selectkeys.value
+        roleId: selectkeys.value,
       }
-      allocationTree.loading = true;
+      allocationTree.loading = true
       http<UserType>({
         url: '/userRoleRelation',
         method: 'post',
         body: result,
       })
         .then(() => {
-          message.success('更新成功');
-          allocationTree.loading = false;
-          allocationTree.visible = false;
+          message.success('更新成功')
+          allocationTree.loading = false
+          allocationTree.visible = false
         })
         .catch(() => {
-          allocationTree.loading = false;
-        });
+          allocationTree.loading = false
+        })
     }
 
     // 修改密码
-    const updatePasswdVis = ref(false);
-    const updateData = ref();
-    const password = ref();
+    const updatePasswdVis = ref(false)
+    const updateData = ref()
+    const password = ref()
     function updatePasswdHandleOk() {
       if (password.value) {
         http<boolean>({
@@ -468,18 +350,19 @@ const SysUser = defineComponent({
             password: password.value,
           },
         }).then((res) => {
-          console.log(res.data, 'res');
-          message.success('修改成功');
-          updatePasswdVis.value = false;
-        });
-      } else {
-        message.info('请输入新密码');
+          console.log(res.data, 'res')
+          message.success('修改成功')
+          updatePasswdVis.value = false
+        })
+      }
+      else {
+        message.info('请输入新密码')
       }
     }
     function updatePassword(row) {
-      updatePasswdVis.value = true;
-      updateData.value = row;
-      console.log(row, 'row');
+      updatePasswdVis.value = true
+      updateData.value = row
+      console.log(row, 'row')
     }
     return {
       // data
@@ -512,12 +395,145 @@ const SysUser = defineComponent({
       // form
       rules,
       formData,
-    };
+    }
   },
-});
+})
 
-export default SysUser;
+export default SysUser
 </script>
+
+<template>
+  <CommonButton v-bt-auth:add="{ title: true }" title="添加" icon-name="add" @change="ChangAdd" />
+  <a-table
+    style="margin-top: 15px"
+    :columns="tableData.columns"
+    :data-source="tableData.data"
+    :loading="tableData.loading"
+    row-key="id"
+    :pagination="{
+      total: tableData.total,
+    }"
+    @change="Change"
+  >
+    <template #bodyCell="{ column, text, record }">
+      <template v-if="column.key === 'status'">
+        <div :style="text === 0 ? { color: 'red' } : { color: 'green' }">
+          {{ formatStatus(text) }}
+        </div>
+      </template>
+      <template v-if="column.key === 'depart'">
+        {{ record.deptId }}
+      </template>
+      <template v-if="column.key === 'avatar'">
+        <a-tag v-if="!record.avatar" color="red">
+          暂无头像
+        </a-tag>
+        <img v-else class="avatar" :src="record.avatar" :alt="record.nickName">
+      </template>
+
+      <template v-if="column.key === 'action'">
+        <a-button
+          v-bt-auth:power
+          type="primary"
+          style="margin-right: 15px"
+          @click="Allocate(record)"
+        />
+        <a-button v-bt-auth:edit type="primary" style="margin-right: 15px" @click="Editor(record)" />
+        <a-button v-bt-auth:updatePassword danger style="margin-right: 15px" @click="updatePassword(record)" />
+        <a-popconfirm title="确定删除吗?" ok-text="删除" cancel-text="取消" @confirm="Del(record)">
+          <a-button v-bt-auth:del danger />
+        </a-popconfirm>
+      </template>
+    </template>
+  </a-table>
+  <CommonDrawer
+    :title="commonDrawerData.title"
+    :visible="commonDrawerData.visible"
+    :loading="commonDrawerData.loading"
+    ok-text="确定"
+    cancel-text="取消"
+    @on-ok="Submit()"
+    @on-close="commonDrawerData.visible = false"
+  >
+    <a-form
+      ref="formRef"
+      :model="formData"
+      :rules="rules"
+      :label-col="{ span: 4 }"
+      :wrapper-col="{ span: 20 }"
+      name="avatar"
+    >
+      <a-form-item label="头像">
+        <ImageUpload v-model:list="formData.avatar" />
+      </a-form-item>
+      <a-form-item label="账号" name="modelRef">
+        <a-input v-model:value="formData.account" />
+      </a-form-item>
+      <a-form-item label="昵称" name="nickName">
+        <a-input v-model:value="formData.nickName" />
+      </a-form-item>
+      <a-form-item label="部门" name="deptId">
+        <a-tree-select
+          v-model:value="formData.deptId"
+          style="width: 100%"
+          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+          :tree-data="treeOptions.options"
+          placeholder="请选择部门"
+          tree-default-expand-all
+        />
+      </a-form-item>
+      <a-form-item label="状态" name="status">
+        <a-radio-group v-model:value="formData.status" name="radioGroup">
+          <a-radio :value="0">
+            失效
+          </a-radio>
+          <a-radio :value="1">
+            有效
+          </a-radio>
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item label="邮箱" name="email">
+        <a-input v-model:value="formData.email" />
+      </a-form-item>
+      <a-form-item label="手机号码" name="phoneNum">
+        <a-input v-model:value="formData.phoneNum" />
+      </a-form-item>
+      <a-form-item v-if="!editId.id" label="密码" name="passWord">
+        <a-input v-model:value="formData.passWord" />
+      </a-form-item>
+    </a-form>
+  </CommonDrawer>
+  <CommonDrawer
+    title="角色列表"
+    ok-text="确定"
+    cancel-text="取消"
+    :visible="allocationTree.visible"
+    :loading="allocationTree.loading"
+    @on-close="Close"
+    @on-ok="SubmitOk"
+  >
+    <a-spin :spinning="allocationTree.loading">
+      <a-checkbox-group
+        v-if="roleList.length > 0"
+        v-model:value="selectkeys"
+        class="checkoutContainer"
+      >
+        <div v-for="(item, index) in roleList" :key="index">
+          <a-checkbox :value="item.id">
+            {{ item.remark }}
+          </a-checkbox>
+        </div>
+      </a-checkbox-group>
+      <a-empty v-else />
+    </a-spin>
+  </CommonDrawer>
+
+  <!-- 修改密码 -->
+  <a-modal v-model:visible="updatePasswdVis" title="修改密码" @ok="updatePasswdHandleOk">
+    <a-input v-model:value="password" placeholder="请输入新密码" />
+  </a-modal>
+</template>
+
 <style scoped lang="less">
 .checkoutContainer {
   display: flex;
