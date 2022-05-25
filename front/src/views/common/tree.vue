@@ -7,6 +7,7 @@ import http from '@/utils/request'
 import type { MenuType } from '@/types/sys'
 import { ListObjCompare, ListToTree } from '@/utils'
 import { searchParam } from '@/utils/search_param'
+import log from '@/utils/log'
 
 interface TreeDataType {
   spinningLoading: boolean
@@ -55,8 +56,8 @@ const CommonTree = defineComponent({
       treeData.spinningLoading = true
       http<MenuType>({
         url: `/menu${searchParam({
-          page: 1,
-          limit: 1000,
+          pageNum: 1,
+          pageSize: 1000,
         })}`,
         method: 'GET',
       }).then((res) => {
@@ -64,6 +65,7 @@ const CommonTree = defineComponent({
           item.key = item.id
         })
         const list = res.list?.list.sort(ListObjCompare('orderNum'))
+        log.i(list, '排序的列表')
         treeData.spinningLoading = false
         treeData.data = ListToTree(list || [])
         console.log(treeData.data, 'data')

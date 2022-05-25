@@ -5,6 +5,13 @@ import log from './log'
 import type { CommonResponse } from '@/types/type'
 import { RequestAuthorizedFailed, TOKEN } from '@/utils/constant'
 import { ClearInfo } from '@/utils/index'
+import * as sysTool from '@/utils/systemTool'
+
+const infoData = {
+  ip: sessionStorage.getItem('ip') ?? '',
+  brower: sysTool.GetCurrentBrowser(),
+  os: sysTool.GetOs(),
+}
 
 const instance = axios.create({
   baseURL: '/api',
@@ -15,6 +22,9 @@ instance.interceptors.request.use(
   (config) => {
     config.headers = {
       Authorization: `Bearer ${localStorage.getItem(TOKEN) ?? ''}`,
+      customIp: infoData.ip,
+      customBrower: infoData.brower,
+      customOs: infoData.os,
     }
     return config
   },

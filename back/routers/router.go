@@ -9,6 +9,7 @@ package routers
 
 import (
 	DemoCrud2 "beegoBackstage/controllers/DemoCrud"
+	"beegoBackstage/controllers/JournalControllers"
 	"beegoBackstage/controllers/SysControllers"
 	"beegoBackstage/middleware"
 	beego "github.com/beego/beego/v2/server/web"
@@ -27,6 +28,9 @@ func init() {
 			beego.NSInclude(&SysControllers.DictItemController{}),
 			beego.NSInclude(&SysControllers.SysUserRoleController{}),
 			beego.NSInclude(&SysControllers.SysRoleMenuController{}),
+
+			// user log
+			beego.NSInclude(&JournalControllers.LoginLogController{}),
 
 			// other
 			beego.NSInclude(&DemoCrud2.DemoCrudController{}),

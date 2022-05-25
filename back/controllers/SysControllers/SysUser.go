@@ -2,12 +2,14 @@ package SysControllers
 
 import (
 	"beegoBackstage/models"
+	"beegoBackstage/models/JournalModels"
 	"beegoBackstage/models/SysModels"
 	"beegoBackstage/utils"
 	"encoding/json"
 	"errors"
 	"github.com/beego/beego/v2/client/orm"
 	"github.com/beego/beego/v2/core/logs"
+	"github.com/beego/beego/v2/server/web"
 )
 
 type UserController struct {
@@ -157,6 +159,19 @@ func (c *UserController) GetTokenUserInfo() {
 	token := c.Ctx.Input.Header("Authorization")
 	if token != "" {
 		userId, userIdErr := utils.ValidateToken(token)
+
+		// 用户log日志
+		userLog, _ := web.AppConfig.Bool("userLog")
+		logs.Info(userLog, "userLog")
+		if userLog {
+			var logLogin JournalModels.LogLogin
+			var sysUser SysModels.SysUser
+			sysUser.Id = userId
+			logLogin.User = &sysUser
+			logLogin.Ip = c.Ctx.Input.Header("customIp")
+			logLogin.Equipment = c.Ctx.Input.Header("customOs")
+			JournalModels.LogLoginCreate(logLogin)
+		}
 		if userIdErr == nil {
 			result, sysUserInfoDataErr := SysModels.GetUserInfoData(userId)
 			if sysUserInfoDataErr == nil {

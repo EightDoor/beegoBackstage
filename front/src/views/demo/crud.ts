@@ -16,7 +16,10 @@ export default function ({ expose }) {
   const addRequest = ({ form }) => api.AddObj(form)
   return {
     crudOptions: {
-    // 请求配置
+      pagination: {
+        show: false,
+      },
+      // 请求配置
       request: {
         pageRequest, // 列表数据请求
         addRequest, // 添加请求

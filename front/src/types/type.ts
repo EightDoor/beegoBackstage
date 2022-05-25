@@ -1,8 +1,8 @@
 // 请求接口分页
 export interface PaginType {
-  pageNum?: number
-  pageSize?: number
-  total?: number
+  pageNum: number
+  pageSize: number
+  total: number
 }
 
 interface CommReqList<T> extends PaginType {

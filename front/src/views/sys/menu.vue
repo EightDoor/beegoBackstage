@@ -181,6 +181,8 @@ const SysMenu = defineComponent({
             method = 'PUT'
             data.id = validateInfos.id
           }
+          data.parentId = Number(data.parentId)
+          data.isHome = data.isHome ? 1 : 0
           http<MenuType>({
             url: 'menu',
             method,

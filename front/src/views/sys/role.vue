@@ -87,8 +87,8 @@ const SysRole = defineComponent({
       tableData.loading = true
       http<RoleType>({
         url: `role${searchParam({
-          page: tableData.pageNum,
-          limit: tableData.pageSize,
+          pageNum: tableData.pageNum,
+          pageSize: tableData.pageSize,
         })}`,
         method: 'GET',
       }).then((res) => {
