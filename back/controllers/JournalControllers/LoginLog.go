@@ -16,7 +16,7 @@ type LoginLogController struct {
 func (c *LoginLogController) Get() {
 	var model []JournalModels.LogLogin
 	o := orm.NewOrm()
-	qs := o.QueryTable(JournalModels.LogLogin{})
+	qs := o.QueryTable(JournalModels.LogLogin{}).RelatedSel()
 	logs.Info(model, "model")
 	c.RPaging(utils.RPage{
 		OrmResult: qs,

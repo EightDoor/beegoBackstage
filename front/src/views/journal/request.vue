@@ -39,9 +39,11 @@ export default defineComponent({
         dataIndex: 'createTime',
       }])
 
-    function change(page, pageSize) {
-      log.i(page, 'page')
+    function change(pageNum, pageSize) {
+      log.i(pageNum, 'page')
       log.i(pageSize, 'pageSize')
+      page.value.pageNum = pageNum.current
+      getList()
     }
 
     function getList() {
@@ -75,9 +77,9 @@ export default defineComponent({
 
 <template>
   <a-table
-    :data-source="dataSource" :columns="columns" :pagination="{
-      change,
+    :data-source="dataSource"
+    :columns="columns" :pagination="{
       total: page.total,
-    }"
+    }" @change="change"
   />
 </template>

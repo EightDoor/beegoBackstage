@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
+import { dateUtil } from 'zhoukai_utils'
 import http from '@/utils/request'
 import log from '@/utils/log'
 import type { ILogLogin } from '@/types/log'
@@ -19,19 +20,19 @@ export default defineComponent({
         dataIndex: 'id',
       },
       {
-        title: '昵称',
-        dataIndex: 'account',
+        title: '账号',
+        dataIndex: ['user', 'account'],
       },
       {
         title: 'ip地址',
-        dataIndex: 'address',
+        dataIndex: 'ip',
       },
       {
         title: '登录设备',
         dataIndex: 'equipment',
       }, {
         title: '创建时间',
-        dataIndex: 'createTime',
+        dataIndex: 'createdAt',
       }])
 
     function getList() {
@@ -54,15 +55,21 @@ export default defineComponent({
       getList()
     })
 
-    function change(page, pageSize) {
-      log.i(page, 'page')
+    function change(pageNum, pageSize) {
+      log.i(pageNum, 'page')
       log.i(pageSize, 'pageSize')
+      page.value.pageNum = pageNum.current
+      getList()
+    }
+    function formatTime(val) {
+      return dateUtil.formatTime(val, 'YYYY-MM-DD HH:mm:ss')
     }
     return {
       dataSource,
       columns,
       change,
       page,
+      formatTime,
     }
   },
 })
@@ -70,9 +77,17 @@ export default defineComponent({
 
 <template>
   <a-table
-    :data-source="dataSource" :columns="columns" :pagination="{
-      change,
+    :data-source="dataSource"
+    :columns="columns"
+    :pagination="{
       total: page.total,
     }"
-  />
+    @change="change"
+  >
+    <template #bodyCell="{ column, record }">
+      <template v-if="column.dataIndex === 'createdAt'">
+        {{ formatTime(record.createdAt) }}
+      </template>
+    </template>
+  </a-table>
 </template>
