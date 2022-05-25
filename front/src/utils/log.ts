@@ -1,9 +1,9 @@
-import { LogUtil } from 'zhoukai_utils';
+import { LogUtil } from 'zhoukai_utils'
 
 /** *
  * 日志
  */
 
-const log = new LogUtil();
+const log = new LogUtil()
 
-export default log;
+export default log

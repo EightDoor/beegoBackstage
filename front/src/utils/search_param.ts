@@ -1,5 +1,3 @@
-import { RequestQueryBuilder } from '@nestjsx/crud-request'
-import type { CreateQueryParams } from '@nestjsx/crud-request/lib/interfaces'
 import log from '@/utils/log'
 
 interface ParamsType {

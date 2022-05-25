@@ -210,8 +210,6 @@ const SysUser = defineComponent({
           method = 'PUT'
           data.id = editId.id
         }
-        // @ts-expect-error
-        data.deptId = String(data.deptId)
         if (data.avatar)
           data.avatar = BusinessUtils.formatUploadImg(data.avatar)
 
@@ -278,7 +276,7 @@ const SysUser = defineComponent({
         formData.email = record.email
         formData.status = record.status
         formData.avatar = BusinessUtils.formatUploadShow(record.avatar)
-        formData.deptId = String(record.deptId)
+        formData.deptId = record.deptId
         formData.phoneNum = record.phoneNum
       }
     }
@@ -362,7 +360,6 @@ const SysUser = defineComponent({
     function updatePassword(row) {
       updatePasswdVis.value = true
       updateData.value = row
-      console.log(row, 'row')
     }
     return {
       // data

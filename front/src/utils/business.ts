@@ -1,4 +1,4 @@
-import { FileItem } from '@/types';
+import type { FileItem } from '@/types'
 
 const BusinessUtils = {
   /**
@@ -6,14 +6,14 @@ const BusinessUtils = {
    * @param data
    */
   formatUploadImg(data: FileItem[]) {
-    const images:string[] = [];
+    const images: string[] = []
     data.forEach((item) => {
-      images.push(item.url);
-    });
-    if (images.length > 0) {
-      return images.join(',');
-    }
-    return '';
+      images.push(item.url)
+    })
+    if (images.length > 0)
+      return images.join(',')
+
+    return ''
   },
   /**
    * ImageUpload 图片回显列表
@@ -25,10 +25,10 @@ const BusinessUtils = {
         thumbUrl: img,
         url: img,
         uid: String(Date.now()),
-      }];
+      }]
     }
-    return [];
+    return []
   },
-};
+}
 
-export default BusinessUtils;
+export default BusinessUtils

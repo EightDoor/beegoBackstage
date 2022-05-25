@@ -1,7 +1,7 @@
 import * as api from './api'
 import { crudSearchParam } from '@/utils/search_param'
 // 构建crudOptions的方法
-export default function ({ expose }) {
+export default function () {
   const pageRequest = (query) => {
     const params = crudSearchParam(query)
     return api.GetList(params)

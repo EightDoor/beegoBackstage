@@ -1,18 +1,18 @@
 export interface MenuItem {
-  key: number;
-  title: string;
-  icon?: string;
-  path?: string;
-  children?: MenuItem[];
-  id: number;
-  parentId: number;
-  crumbs?: string;
-  closable?: boolean;
+  key: number
+  title: string
+  icon?: string
+  path?: string
+  children?: MenuItem[]
+  id: number
+  parentId: number
+  crumbs?: string
+  closable?: boolean
   isHome?: number
-  name?: string;
+  name?: string
 }
 export interface MenusInfo {
-  selectedKeys: string[];
-  list: MenuItem[];
-  openKeys: number[];
+  selectedKeys: string[]
+  list: MenuItem[]
+  openKeys: number[]
 }

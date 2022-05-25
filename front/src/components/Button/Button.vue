@@ -1,17 +1,9 @@
-<template>
-  <a-button :type="type" @click="CommonClick()">
-    <template v-if="iconName" #icon>
-      <PlusOutlined v-if="iconName === 'add'" />
-    </template>
-    {{ title }}
-  </a-button>
-</template>
 <script lang="ts">
+import type { PropType } from 'vue'
+import { defineComponent } from 'vue'
+import { PlusOutlined } from '@ant-design/icons-vue'
 
-import { defineComponent, PropType } from 'vue';
-import { PlusOutlined } from '@ant-design/icons-vue';
-
-type buttonType = 'default' | 'primary' | 'ghost' | 'dashed' | 'link' | 'text';
+type buttonType = 'default' | 'primary' | 'ghost' | 'dashed' | 'link' | 'text'
 
 const CommonButton = defineComponent({
   name: 'CommonButton',
@@ -35,13 +27,22 @@ const CommonButton = defineComponent({
   emits: ['change'],
   setup(props, { emit }) {
     function CommonClick() {
-      emit('change');
+      emit('change')
     }
     return {
       CommonClick,
-    };
+    }
   },
-});
+})
 
-export default CommonButton;
+export default CommonButton
 </script>
+
+<template>
+  <a-button :type="type" @click="CommonClick()">
+    <template v-if="iconName" #icon>
+      <PlusOutlined v-if="iconName === 'add'" />
+    </template>
+    {{ title }}
+  </a-button>
+</template>

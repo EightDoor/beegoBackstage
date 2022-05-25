@@ -1,13 +1,5 @@
 import type { CommonTableList, CommonTreeSelect } from '@/types/type'
 
-interface SysUserRoleType {
-  id: number
-  createdAt?: any
-  updatedAt?: any
-  deletedAt?: any
-  userId: number
-  roleId: string
-}
 export interface MenuType extends CommonTableList {
   crumbs?: string
   key?: number

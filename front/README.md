@@ -38,8 +38,11 @@
 ## 按钮权限使用
 - ```vue
   // 使用的是按钮权限的名字
-  <a-button type="danger" v-bt-auth:del></a-button>
+  <a-button type="danger" v-bt-auth:del></a-but
+ton>
   // 或者
   // 使用的是自定义的名称  '删除 - 1'
-  <a-button type="danger" v-bt-auth:del="{title:true}">删除 - 1</a-button>
+  <a-button type="danger" v-bt-auth:del="{tit
+le:tru
+e}">删除 - 1</a-button>
   ```

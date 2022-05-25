@@ -1,41 +1,24 @@
-<template>
-  <div>
-    <a-upload
-      :action="Config.qiniuUploadUrl"
-      :multiple="true"
-      v-model:file-list="fileList"
-      :data="extendedParam"
-      list-type="picture"
-      @change="handleChange"
-    >
-      <a-button>
-        <upload-outlined></upload-outlined>
-        上传
-      </a-button>
-    </a-upload>
-  </div>
-</template>
 <script lang="ts">
-import { UploadOutlined } from '@ant-design/icons-vue';
+import { UploadOutlined } from '@ant-design/icons-vue'
+import type { PropType } from 'vue'
 import {
   defineComponent,
-  ref,
-  onMounted,
-  PropType,
-  reactive,
   markRaw,
+  onMounted,
+  reactive,
+  ref,
   watch,
-} from 'vue';
-import { message } from 'ant-design-vue';
-import Config from '@/config';
-import log from '@/utils/log';
-import http from '@/utils/request';
-import { FileItem } from '@/types';
+} from 'vue'
+import { message } from 'ant-design-vue'
+import Config from '@/config'
+import log from '@/utils/log'
+import http from '@/utils/request'
+import type { FileItem } from '@/types'
 
 interface FileInfo {
-  file: FileItem;
-  fileList: FileItem[];
-  event: any;
+  file: FileItem
+  fileList: FileItem[]
+  event: any
 }
 
 export default defineComponent({
@@ -54,11 +37,11 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const fileList = ref<FileItem[]>([]);
-    const isFirst = ref(false);
+    const fileList = ref<FileItem[]>([])
+    const isFirst = ref(false)
     const extendedParam = reactive({
       token: '',
-    });
+    })
 
     function delFile(key: string) {
       http({
@@ -66,69 +49,67 @@ export default defineComponent({
         method: 'POST',
         body: key,
       }).then((res) => {
-        log.d(res, '删除文件结果');
-        if (!res.data) {
-          message.success('删除成功');
-        } else {
-          message.error(JSON.stringify(res.data));
-        }
-      });
+        log.d(res, '删除文件结果')
+        if (!res.data)
+          message.success('删除成功')
+        else
+          message.error(JSON.stringify(res.data))
+      })
     }
 
     const handleChange = (info: FileInfo) => {
-      log.d(info, '图片文件改变');
-      let resFileList = [...info.fileList];
+      log.d(info, '图片文件改变')
+      let resFileList = [...info.fileList]
 
       resFileList = resFileList.map((file) => {
         if (file.status === 'done') {
-          if (file.response) {
-            file.url = `${Config.qiniuShowUrl}/${file.response.key}`;
-          }
+          if (file.response)
+            file.url = `${Config.qiniuShowUrl}/${file.response.key}`
         }
-        return file;
-      });
+        return file
+      })
 
-      const { file } = info;
+      const { file } = info
       if (file.status === 'removed') {
         if (file.url) {
-          const { url } = file;
-          file.url = '';
+          const { url } = file
+          file.url = ''
           // 读取文件key 删除
-          const key = url.substring(url.lastIndexOf('/') + 1);
-          delFile(key);
+          const key = url.substring(url.lastIndexOf('/') + 1)
+          delFile(key)
         }
       }
 
-      fileList.value = markRaw(resFileList);
-      const result = resFileList.filter((item) => item.url);
-      emit('update:list', result);
-    };
+      fileList.value = markRaw(resFileList)
+      const result = resFileList.filter(item => item.url)
+      emit('update:list', result)
+    }
 
     function getFileToken() {
       http({
         url: 'upload/zk',
         method: 'GET',
       }).then((res) => {
-        extendedParam.token = res.data;
-      });
+        extendedParam.token = res.data
+      })
     }
     onMounted(() => {
-      getFileToken();
-    });
+      getFileToken()
+    })
 
     watch(
       () => props.list,
       (newVal) => {
         if (newVal && !isFirst.value) {
-          fileList.value = markRaw(newVal);
-          isFirst.value = true;
+          fileList.value = markRaw(newVal)
+          isFirst.value = true
         }
       },
       {
         deep: true,
         immediate: true,
       },
-    );
+    )
 
     return {
       handleChange,
@@ -136,8 +117,27 @@ export default defineComponent({
       Config,
       extendedParam,
       fileList,
-    };
+    }
   },
-});
+})
 </script>
+
+<template>
+  <div>
+    <a-upload
+      v-model:file-list="fileList"
+      :action="Config.qiniuUploadUrl"
+      :multiple="true"
+      :data="extendedParam"
+      list-type="picture"
+      @change="handleChange"
+    >
+      <a-button>
+        <UploadOutlined />
+        上传
+      </a-button>
+    </a-upload>
+  </div>
+</template>
+
 <style scoped lang="less"></style>

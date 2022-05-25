@@ -1,10 +1,11 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import nprogress from 'nprogress';
-import { canUserAccess } from '@/authority';
-import 'nprogress/nprogress.css'; // progress bar style
+import type { RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
+import nprogress from 'nprogress'
+import { canUserAccess } from '@/authority'
+import 'nprogress/nprogress.css' // progress bar style
 
-import Login from '@/views/login/login.vue';
-import NotFound from '@/views/other/not-found.vue';
+import Login from '@/views/login/login.vue'
+import NotFound from '@/views/other/not-found.vue'
 
 const staticRoutes: RouteRecordRaw[] = [
   {
@@ -17,20 +18,20 @@ const staticRoutes: RouteRecordRaw[] = [
     name: 'NotFound',
     component: NotFound,
   },
-];
+]
 const app = createRouter({
   history: createWebHashHistory(),
   routes: staticRoutes,
-});
+})
 
 // 全局路由前置钩子
 app.beforeEach(async (to, from) => {
-  nprogress.start();
-  await canUserAccess(to, from, app);
-});
+  nprogress.start()
+  await canUserAccess(to, from, app)
+})
 
 app.afterEach(() => {
-  nprogress.done();
-});
+  nprogress.done()
+})
 
-export default app;
+export default app

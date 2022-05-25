@@ -1,8 +1,8 @@
-import { markRaw } from 'vue';
-import { PanesType } from '@/store/sys/sys-crumbs';
-import store from '@/store/index';
-import { MENUTABS } from '@/store/mutation-types';
-import { MenuItem } from '@/types/layout/menu';
+import { markRaw } from 'vue'
+import type { PanesType } from '@/store/sys/sys-crumbs'
+import store from '@/store/index'
+import { MENUTABS } from '@/store/mutation-types'
+import type { MenuItem } from '@/types/layout/menu'
 
 const MenuFormatBrumb = (val: MenuItem): void => {
   const data: PanesType = {
@@ -10,8 +10,8 @@ const MenuFormatBrumb = (val: MenuItem): void => {
     title: val.title,
     parentId: val.parentId || 0,
     path: val.path || '',
-  };
-  store.commit(MENUTABS, markRaw(data));
-};
+  }
+  store.commit(MENUTABS, markRaw(data))
+}
 
-export { MenuFormatBrumb };
+export { MenuFormatBrumb }
