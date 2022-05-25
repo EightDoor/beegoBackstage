@@ -37,7 +37,7 @@ export default defineComponent({
 
     function getList() {
       http<ILogLogin>({
-        url: 'loginLog',
+        url: 'logLog',
         method: 'GET',
         params: {
           pageNum: page.value.pageNum,
