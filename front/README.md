@@ -1,5 +1,5 @@
 # 技术栈
-- typescript + vue3 + composition-api + ant-design-vue2.x + vue-router@4.x + vuex@4.x
+- typescript + vue3 + composition-api + ant-design-vue3.x + vue-router@4.x + vuex@4.x
 
 # 完成功能
 
