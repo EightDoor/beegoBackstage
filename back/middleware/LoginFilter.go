@@ -2,7 +2,10 @@ package middleware
 
 import (
 	"beegoBackstage/models"
+	"beegoBackstage/models/JournalModels"
+	"beegoBackstage/models/SysModels"
 	"beegoBackstage/utils"
+	"encoding/json"
 	"github.com/beego/beego/v2/core/logs"
 	"github.com/beego/beego/v2/server/web"
 	"github.com/beego/beego/v2/server/web/context"
@@ -22,7 +25,7 @@ var FilterUser = func(ctx *context.Context) {
 	token := ctx.Input.Header("Authorization")
 	r.Code = models.NO_AUTHORIZATION
 	// 验证token
-	_, err := utils.ValidateToken(token)
+	userId, err := utils.ValidateToken(token)
 	if err != nil {
 		r.Msg = err.Error()
 		ctx.JSONResp(r)
@@ -38,5 +41,33 @@ var FilterUser = func(ctx *context.Context) {
 			r.Code = models.DEMO_ENV
 			ctx.JSONResp(r)
 		}
+	}
+
+	logs.Info(ctx.Request.Body, "Body")
+	logs.Info(ctx.Request.MultipartForm, "ParamsForm")
+	userLog, _ := web.AppConfig.Bool("userLog")
+	if userLog {
+		var logRequest JournalModels.LogRequest
+		var sysUser SysModels.SysUser
+		sysUser.Id = userId
+		logRequest.Ip = ctx.Input.Header("customIp")
+		logRequest.User = &sysUser
+		logRequest.RequestAddress = ctx.Request.RequestURI
+		logRequest.Method = ctx.Request.Method
+		// 解析body
+		var m map[string]interface{}
+		json.NewDecoder(ctx.Request.Body).Decode(&m)
+		resultM, _ := json.Marshal(m)
+		resultMData := string(resultM)
+		logs.Info(resultM, "body - resultM")
+		if logRequest.Method != "POST" {
+			ctx.Request.ParseForm()
+			values := ctx.Request.Form
+			valuesData, _ := json.Marshal(values)
+			logRequest.Params = string(valuesData)
+		} else {
+			logRequest.Params = resultMData
+		}
+		JournalModels.LogRequestCreate(logRequest)
 	}
 }

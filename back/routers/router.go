@@ -31,6 +31,7 @@ func init() {
 
 			// user log
 			beego.NSInclude(&JournalControllers.LoginLogController{}),
+			beego.NSInclude(&JournalControllers.LogRequestController{}),
 
 			// other
 			beego.NSInclude(&DemoCrud2.DemoCrudController{}),

@@ -52,10 +52,19 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["beegoBackstage/controllers/JournalControllers:LogRequestController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/JournalControllers:LogRequestController"],
+        beego.ControllerComments{
+            Method: "Get",
+            Router: `/logRequest`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["beegoBackstage/controllers/JournalControllers:LoginLogController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/JournalControllers:LoginLogController"],
         beego.ControllerComments{
             Method: "Get",
-            Router: `/loginLog`,
+            Router: `/logLog`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,

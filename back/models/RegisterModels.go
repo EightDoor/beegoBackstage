@@ -22,6 +22,7 @@ func RegisterModels() {
 		new(SysModels.SysRoleMenu),
 		// user log
 		new(JournalModels.LogLogin),
+		new(JournalModels.LogRequest),
 
 		// other
 		new(DemoCrud.DemoCrud),

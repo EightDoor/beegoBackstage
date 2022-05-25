@@ -12,7 +12,7 @@ type LoginLogController struct {
 }
 
 // Get 查询列表
-// @router /loginLog [get]
+// @router /logLog [get]
 func (c *LoginLogController) Get() {
 	var model []JournalModels.LogLogin
 	o := orm.NewOrm()

@@ -20,7 +20,7 @@ export default defineComponent({
       },
       {
         title: '昵称',
-        dataIndex: 'account',
+        dataIndex: ['user', 'account'],
       },
       {
         title: '请求地址',
@@ -36,7 +36,7 @@ export default defineComponent({
       },
       {
         title: '创建时间',
-        dataIndex: 'createTime',
+        dataIndex: 'createAt',
       }])
 
     function change(pageNum, pageSize) {
@@ -48,7 +48,7 @@ export default defineComponent({
 
     function getList() {
       http<ILogLogin>({
-        url: 'loginLog',
+        url: 'logRequest',
         method: 'GET',
         params: {
           pageNum: page.value.pageNum,
