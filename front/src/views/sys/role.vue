@@ -2,7 +2,7 @@
 import {
   defineComponent, onMounted, reactive, ref, toRaw,
 } from 'vue'
-import { message } from 'ant-design-vue'
+import { Form, message } from 'ant-design-vue'
 import type { Method } from 'axios'
 import type { UnwrapRef } from 'vue'
 import type {
@@ -34,6 +34,7 @@ const SysRole = defineComponent({
     CommonTree,
   },
   setup() {
+    const useForm = Form.useForm
     const formData: UnwrapRef<RoleType> = reactive({
       remark: '',
       roleName: '',
@@ -51,14 +52,16 @@ const SysRole = defineComponent({
       data: [],
       allocateId: '',
     })
-    const rules = {
+    const rules = reactive({
       roleName: [
         {
           required: true,
           message: '请输入角色名称',
         },
       ],
-    }
+    })
+    const { resetFields, validate, validateInfos } = useForm(formData, rules)
+
     const tableData = reactive<TableDataType<RoleType>>({
       data: [],
       pageNum: 1,
@@ -93,8 +96,8 @@ const SysRole = defineComponent({
         method: 'GET',
       }).then((res) => {
         tableData.loading = false
-        tableData.pageNum = res.list?.pageNum
-        tableData.total = res.list?.total
+        tableData.pageNum = res.list?.pageNum ?? 1
+        tableData.total = res.list?.total ?? 0
         tableData.data = res.list?.list || []
         console.log(tableData, 'data')
       })
@@ -104,7 +107,7 @@ const SysRole = defineComponent({
     })
 
     function Submit() {
-      formRef.value.validate().then(() => {
+      validate().then(() => {
         const url = 'role'
         let method: Method = 'POST'
         const body = toRaw(formData)
@@ -124,11 +127,6 @@ const SysRole = defineComponent({
           getList()
         })
       })
-    }
-
-    function resetFields() {
-      if (formRef.value)
-        formRef.value.resetFields()
     }
 
     function ChangAdd() {
@@ -223,6 +221,7 @@ const SysRole = defineComponent({
       formData,
       formRef,
       rules,
+      validateInfos,
     }
   },
 })
@@ -270,11 +269,11 @@ export default SysRole
       @on-ok="Submit()"
       @on-close="commonDrawerData.visible = false"
     >
-      <a-form ref="formRef" :model="formData" :rules="rules" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
-        <a-form-item label="角色名称" name="roleName">
+      <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+        <a-form-item label="角色名称" v-bind="validateInfos.roleName">
           <a-input v-model:value="formData.roleName" />
         </a-form-item>
-        <a-form-item label="描述">
+        <a-form-item label="描述" v-bind="validateInfos.remark">
           <a-input v-model:value="formData.remark" />
         </a-form-item>
       </a-form>

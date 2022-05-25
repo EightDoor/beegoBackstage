@@ -1,12 +1,13 @@
 <script lang="ts">
 import {
-  defineComponent, onMounted, reactive, ref, toRaw,
+  defineComponent, nextTick, onMounted, reactive, ref, toRaw, unref,
 } from 'vue'
-import type { UnwrapRef } from 'vue'
 
+import type { FormInstance } from 'ant-design-vue'
 import { message } from 'ant-design-vue'
 import type { Method } from 'axios'
 import { cloneDeep } from 'lodash-es'
+import type { Rule } from 'ant-design-vue/lib/form'
 import CommonButton from '@/components/Button/Button.vue'
 import type { DrawerProps } from '@/components/Drawer/Drawer.vue'
 import CommonDrawer from '@/components/Drawer/Drawer.vue'
@@ -102,8 +103,7 @@ const SysMenu = defineComponent({
       visible: false,
       loading: false,
     })
-    const formRef = ref()
-    let validateInfos = reactive<MenuType>({
+    const defaultInfo = {
       parentId: 0,
       path: '',
       component: '',
@@ -117,8 +117,10 @@ const SysMenu = defineComponent({
       id: 0,
       hidden: 0,
       isHome: 0,
-    })
-    const rules = {
+    }
+    const formRef = ref<FormInstance>()
+    let validateInfos = reactive<MenuType>(cloneDeep(defaultInfo))
+    const rules: Record<string, Rule[]> = {
       parentId: [
         {
           required: true,
@@ -156,7 +158,7 @@ const SysMenu = defineComponent({
         const list = cloneDeep(res.list?.list.sort(ListObjCompare('order_num'))) || []
         tableCont.loading = false
         tableCont.data = ListToTree(list)
-        tableCont.total = res.list?.total
+        tableCont.total = res.list?.total ?? 0
         const treeMenus = cloneDeep(res.list?.list || [])
         treeMenus.forEach((item) => {
           item.value = String(item.id)
@@ -169,7 +171,7 @@ const SysMenu = defineComponent({
       getList()
     })
     const onSubmit = () => {
-      formRef.value.validate()
+      formRef.value!.validate()
         .then(() => {
           drawerData.loading = true
           const data = cloneDeep(toRaw(validateInfos))
@@ -182,7 +184,6 @@ const SysMenu = defineComponent({
             data.id = validateInfos.id
           }
           data.parentId = Number(data.parentId)
-          data.isHome = data.isHome ? 1 : 0
           http<MenuType>({
             url: 'menu',
             method,
@@ -199,21 +200,23 @@ const SysMenu = defineComponent({
         })
     }
 
-    function resetFields() {
-      if (formRef.value)
-        formRef.value.resetFields()
+    function reset() {
+      formRef.value!.resetFields()
     }
 
     function ChangeClick() {
       drawerData.title = '添加'
       drawerData.visible = true
-      resetFields()
-      //      validateInfos.parentId = 0;
+      validateInfos = cloneDeep(defaultInfo)
+      nextTick(() => {
+        reset()
+      })
     }
 
     function Editor(record: MenuType) {
       drawerData.title = '修改'
       drawerData.visible = true
+      log.i(record, '修改值')
       validateInfos = Object.assign(validateInfos, record)
     }
     function Del(record: MenuType) {
@@ -227,6 +230,9 @@ const SysMenu = defineComponent({
     function Change(pagination: TablePaginType) {
       tableCont.pageNum = pagination.current
       getList()
+    }
+    function onClose() {
+      drawerData.visible = false
     }
 
     return {
@@ -246,7 +252,7 @@ const SysMenu = defineComponent({
       formRef,
       rules,
       onSubmit,
-      resetFields,
+      onClose,
     }
   },
 })
@@ -290,7 +296,7 @@ export default SysMenu
     cancel-text="取消"
     ok-text="确定"
     :loading="drawerData.loading"
-    @onClose="drawerData.visible = false"
+    @onClose="onClose"
     @onOk="onSubmit"
   >
     <a-form
@@ -327,16 +333,16 @@ export default SysMenu
       <a-form-item v-if="validateInfos.type === 3" label="权限标识" name="perms">
         <a-input v-model:value="validateInfos.perms" />
       </a-form-item>
-      <div v-if="validateInfos.type !== 3">
+      <template v-else>
         <a-form-item label="菜单name" name="name">
           <a-input v-model:value="validateInfos.name" />
         </a-form-item>
         <a-form-item label="是否首页" name="isHome">
           <a-radio-group v-model:value="validateInfos.isHome">
-            <a-radio :value="true">
+            <a-radio :value="1">
               是
             </a-radio>
-            <a-radio :value="false">
+            <a-radio :value="0">
               否
             </a-radio>
           </a-radio-group>
@@ -357,7 +363,7 @@ export default SysMenu
             </a-radio>
           </a-radio-group>
         </a-form-item>
-      </div>
+      </template>
       <a-form-item label="排序" name="orderNum">
         <a-input-number v-model:value="validateInfos.orderNum" />
       </a-form-item>

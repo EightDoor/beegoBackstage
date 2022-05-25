@@ -294,7 +294,7 @@ CREATE TABLE `sys_user` (
 --
 
 /*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
-INSERT INTO `sys_user` VALUES ('test','5555',NULL,'1',NULL,1,NULL,10,'e10adc3949ba59abbe56e057f20f883e',NULL,'2021-12-20 22:55:26',NULL),('admin','超级管理员',NULL,'1',NULL,1,NULL,11,'e10adc3949ba59abbe56e057f20f883e',NULL,NULL,NULL),('5555555555','123123123','851708184@qq.com','1','18548018492',1,'',15,'e10adc3949ba59abbe56e057f20f883e','2022-05-24 16:24:00',NULL,NULL);
+INSERT INTO `sys_user` VALUES ('test','5555',NULL,'1',NULL,1,NULL,10,'e10adc3949ba59abbe56e057f20f883e',NULL,'2021-12-20 22:55:26',NULL),('admin','超级管理员',NULL,'1',NULL,1,NULL,11,'e10adc3949ba59abbe56e057f20f883e',NULL,NULL,NULL),('5555555555','123123123','851708184@qq.com','1','',1,'',15,'e10adc3949ba59abbe56e057f20f883e','2022-05-24 16:24:00',NULL,NULL);
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 
 --
@@ -304,7 +304,7 @@ INSERT INTO `sys_user` VALUES ('test','5555',NULL,'1',NULL,1,NULL,10,'e10adc3949
 DROP TABLE IF EXISTS `sys_user_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_user_role` (
+CREATE TABLE `sys_user_role`
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` int(11) NOT NULL COMMENT '角色id',
   `role_id` varchar(255) NOT NULL COMMENT '角色id',

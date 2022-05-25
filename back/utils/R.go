@@ -105,7 +105,7 @@ func (c *BaseController) RPaging(rPage RPage) {
 	result.Code = 0
 	result.Msg = "success"
 
-	rPage.OrmResult.Limit(size).Offset((page - 1) * size).All(rPage.Data)
+	rPage.OrmResult.Limit(size).Offset((page - 1) * size).OrderBy("-createdAt").All(rPage.Data)
 	callCount, callCountError := rPage.OrmResult.Count()
 	if callCountError == nil {
 		count = int(callCount)

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
+import { dateUtil } from 'zhoukai_utils'
 import log from '@/utils/log'
 import http from '@/utils/request'
 import type { ILogLogin } from '@/types/log'
@@ -16,7 +17,7 @@ export default defineComponent({
     const columns = ref([
       {
         title: '用户ID',
-        dataIndex: 'id',
+        dataIndex: ['user', 'id'],
       },
       {
         title: '昵称',
@@ -36,7 +37,7 @@ export default defineComponent({
       },
       {
         title: '创建时间',
-        dataIndex: 'createAt',
+        dataIndex: 'createdAt',
       }])
 
     function change(pageNum, pageSize) {
@@ -65,11 +66,15 @@ export default defineComponent({
     onMounted(() => {
       getList()
     })
+    function formatTime(val) {
+      return dateUtil.formatTime(val)
+    }
     return {
       dataSource,
       columns,
       change,
       page,
+      formatTime,
     }
   },
 })
@@ -81,5 +86,11 @@ export default defineComponent({
     :columns="columns" :pagination="{
       total: page.total,
     }" @change="change"
-  />
+  >
+    <template #bodyCell="{ column, text }">
+      <template v-if="column.dataIndex === 'createdAt'">
+        {{ formatTime(text) }}
+      </template>
+    </template>
+  </a-table>
 </template>

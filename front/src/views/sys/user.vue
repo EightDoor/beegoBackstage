@@ -2,7 +2,7 @@
 import {
   defineComponent, onMounted, reactive, ref, toRaw,
 } from 'vue'
-import { message } from 'ant-design-vue'
+import { Form, message } from 'ant-design-vue'
 import type { Method } from 'axios'
 import type { TableDataType, TablePaginType } from '@/types/type'
 import type { DepartType, RoleType, UserType } from '@/types/sys'
@@ -36,6 +36,7 @@ const SysUser = defineComponent({
     ImageUpload,
   },
   setup() {
+    const useForm = Form.useForm
     const selectkeys = ref<number[]>([])
     const roleList = ref<RoleType[]>([])
     const allocationTree = reactive<AllocateType>({
@@ -66,7 +67,7 @@ const SysUser = defineComponent({
       imageUrl: '',
       action: 'test',
     })
-    const rules = {
+    const rules = ref({
       account: [
         {
           required: true,
@@ -85,7 +86,7 @@ const SysUser = defineComponent({
           message: '请选择部门',
         },
       ],
-    }
+    })
     const tableData = reactive<TableDataType<UserType>>({
       data: [],
       pageNum: 1,

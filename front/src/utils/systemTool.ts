@@ -1,4 +1,6 @@
 // get brower
+import log from '@/utils/log'
+
 export function GetCurrentBrowser() {
   const ua = navigator.userAgent.toLocaleLowerCase()
   let browserType = ''
@@ -53,9 +55,10 @@ function _mime(option, value) {
 
 // get os
 export function GetOs() {
+  console.log(navigator.platform, 'platform')
   const sUserAgent = navigator.userAgent.toLocaleLowerCase()
-  const isWin = (navigator.platform === 'win32') || (navigator.platform === 'windows')
-  const isMac = (navigator.platform === 'mac68k') || (navigator.platform === 'macppc') || (navigator.platform === 'macintosh') || (navigator.platform === 'macintel') || (navigator.platform === 'MacIntel')
+  const isWin = (navigator.platform === 'Win32') || (navigator.platform === 'Windows')
+  const isMac = (navigator.platform === 'Mac68K') || (navigator.platform === 'MacPPC') || (navigator.platform === 'Macintosh') || (navigator.platform === 'MacIntel')
   if (isMac)
     return 'Mac'
   const isUnix = (navigator.platform === 'x11') && !isWin && !isMac
@@ -80,6 +83,7 @@ export function GetOs() {
     const isWin7 = sUserAgent.includes('windows nt 6.1') || sUserAgent.includes('windows 7')
     if (isWin7)
       return 'Win7'
+    return 'Windows'
   }
   if (sUserAgent.includes('android'))
     return 'Android'

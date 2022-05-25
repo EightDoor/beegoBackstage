@@ -82,36 +82,18 @@ export default CommonDrawer
 </script>
 
 <template>
-  <a-drawer
+  <a-modal
     v-model:visible="commdrawerData.visible"
     :title="title"
-    :placement="placement"
     :width="width"
-    destroy-on-close
-    @close="onClose"
+    :confirm-loading="commdrawerData.loading"
+    @cancel="onCancel"
+    @ok="onOk"
   >
     <div class="drawerContainer">
       <slot />
     </div>
-    <div v-if="okText || cancelText" class="drawerBottom">
-      <a-button
-        v-if="cancelText"
-        :loading="commdrawerData.loading"
-        style="margin-right: 20px"
-        @click="onCancel"
-      >
-        {{ cancelText }}
-      </a-button>
-      <a-button
-        v-if="okText"
-        :loading="commdrawerData.loading"
-        type="primary"
-        @click="onOk"
-      >
-        {{ okText }}
-      </a-button>
-    </div>
-  </a-drawer>
+  </a-modal>
 </template>
 
 <style lang="less" scoped>

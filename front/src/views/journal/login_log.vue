@@ -17,7 +17,7 @@ export default defineComponent({
     const columns = ref([
       {
         title: '用户ID',
-        dataIndex: 'id',
+        dataIndex: ['user', 'id'],
       },
       {
         title: '账号',
