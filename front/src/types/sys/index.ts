@@ -1,6 +1,6 @@
 import type { CommonTableList, CommonTreeSelect } from '@/types/type'
 
-export interface MenuType extends CommonTableList {
+export interface MenuType extends CommonTableList, ITabs {
   crumbs?: string
   key?: number
   id: number
@@ -56,12 +56,7 @@ export interface LoginType {
   account: string
   pass_word: string
 }
-export interface UserInfoType {
-  menu: MenuType[]
-  user_info: UserType
-}
 
-// 新定义的获取用户信息
 interface Role {
   id: number
   createdAt?: any
@@ -75,4 +70,8 @@ export interface UserInformation {
   userInfo: UserType
   menus: MenuType[]
   roles: Role[]
+}
+
+export interface ITabs {
+  closable?: boolean
 }

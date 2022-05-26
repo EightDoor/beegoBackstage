@@ -2,7 +2,6 @@
 export const RequestAuthorizedFailed = -101
 export const TOKEN = 'TOKEN'
 // 选中的面包屑列表
-export const STORELETMENUPATH = 'STORELETMENUPATH'
 export const PERMISSIONBUTTONS = 'PERMISSIONBUTTONS'
 
 // 当前选择的菜单项

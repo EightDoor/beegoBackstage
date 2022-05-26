@@ -57,7 +57,6 @@ const Login = defineComponent({
             .then(() => {
               submitData.loading = false
               message.success('登录成功!')
-              store.commit(`${LOGINRESET}`)
               router.push('/')
             })
             .catch(() => {

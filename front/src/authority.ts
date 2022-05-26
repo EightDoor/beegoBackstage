@@ -19,7 +19,7 @@ export const canUserAccess = async (
         return true
       try {
         // 判断vuex是否存在值
-        const { menus } = await store.dispatch(`${SET_SYS}`)
+        const { menus } = await store.dispatch(SET_SYS)
         log.i(menus, 'menus')
         menus.forEach((item: RouteRecordRaw) => {
           router.addRoute(item)

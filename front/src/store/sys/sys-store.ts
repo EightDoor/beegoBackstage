@@ -4,12 +4,9 @@ import type { Key } from 'ant-design-vue/es/_util/type'
 import { message } from 'ant-design-vue'
 import { cloneDeep } from 'lodash-es'
 
-import store from '../index'
 import {
   COLLAPSED,
   LOGIN,
-  LOGINRESET,
-  RESET,
   SETUSERINFO,
   SET_MENUS_MUTATION,
   SET_SYS,
@@ -127,7 +124,6 @@ const formatMenuTree = async (
   const modules = await import.meta.globEager('../../views/**/*.vue')
   const childModules = await import.meta.globEager('../../views/**.vue')
 
-  // TODO 待验证是否必须要,     if (!file.isRouter) return;
   menuData.forEach((menuItem) => {
     const fileKey = Object.keys(modules).find(
       key =>
@@ -206,26 +202,23 @@ export default {
       state.collapsed = !state.collapsed
     },
     [SET_MENUS_MUTATION](state: SysStoreType, payload: UserInformation): void {
+      // TODO 刷新设置菜单
       const menus = formatMenus(payload.menus)
-      let result: MenuItem[] = []
-      const list = cloneDeep(menus.sort(ListObjCompare('orderNum')))
+      let result: MenuType[] = []
+      const list = menus.sort(ListObjCompare('orderNum'))
       list.forEach((item) => {
         if (!item.hidden) {
           result.push({
+            ...item,
             key: item.id || 0,
             title: item.title,
             path: `/${String(item.name)}`,
-            icon: item.icon,
-            id: item.id,
-            parentId: item.parentId,
-            crumbs: `${item.title}`,
             closable: item.isHome !== 1,
           })
         }
       })
       result = ListToTreeMenus(result)
       state.menus = result
-      store.dispatch(RESET, payload.menus)
     },
     [SETUSERINFO](state: SysStoreType, payload: UserInformation): void {
       state.userInfo = payload.userInfo
@@ -243,17 +236,6 @@ export default {
       })
       state.permissionButtons = data
     },
-    [LOGINRESET](state: SysStoreType): void {
-      state.permissionButtons = []
-      state.userInfoMenus = []
-      state.menus = []
-      state.userInfo = {
-        nickName: '',
-        status: 0,
-        account: '',
-        deptId: -1,
-      }
-    },
   },
   actions: {
     [SET_SYS]({
@@ -262,7 +244,6 @@ export default {
       commit: Commit
     }): Promise<{ userInfo: UserType | null; menus: RouteRecordRaw[] }> {
       return new Promise((resolve, reject) => {
-        // 获取数据然后直接存储
         getUserInfo()
           .then(async (res) => {
             if (res) {
