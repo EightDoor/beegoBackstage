@@ -6,6 +6,8 @@ import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { LOGIN } from '@/store/mutation-types'
+import storeInstant from '@/utils/store'
+import { CURRENT_MENU } from '@/utils/constant'
 
 interface LoginType {
   name: string
@@ -56,6 +58,7 @@ const Login = defineComponent({
             })
             .then(() => {
               submitData.loading = false
+              clearReset()
               message.success('登录成功!')
               router.push('/')
             })
@@ -66,6 +69,11 @@ const Login = defineComponent({
         .catch((err) => {
           console.log('error', err)
         })
+    }
+
+    // 初始化值
+    function clearReset() {
+      storeInstant.removeItem(CURRENT_MENU)
     }
     return {
       formState,

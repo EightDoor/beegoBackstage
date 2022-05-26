@@ -1,3 +1,7 @@
+import { BREAD_CRUMBS, OPEN_LEFT_MENU } from '@/store/mutation-types'
+import log from '@/utils/log'
+import type { MenuType } from '@/types/sys'
+
 export interface PanesType {
   id: number
   title: string
@@ -12,7 +16,7 @@ export interface CrumbsStoreType {
   // 面包屑
   list: string[]
   // 菜单列表展开 keys
-  menuOpenKeys: number[]
+  menuOpenKeys: string[]
 }
 
 export default {
@@ -22,4 +26,13 @@ export default {
     list: [],
     menuOpenKeys: [],
   } as CrumbsStoreType,
+  mutations: {
+    [BREAD_CRUMBS](state: CrumbsStoreType, payload: string[]) {
+      state.list = payload
+    },
+    [OPEN_LEFT_MENU](state: CrumbsStoreType, payload: MenuType) {
+      if (payload.menuOpenKeys)
+        state.menuOpenKeys = payload.menuOpenKeys.split(',')
+    },
+  },
 }

@@ -4,22 +4,23 @@ import type { Key } from 'ant-design-vue/es/_util/type'
 import { message } from 'ant-design-vue'
 import { cloneDeep } from 'lodash-es'
 
+import store from '../index'
 import {
+  BREAD_CRUMBS,
   COLLAPSED,
   LOGIN,
+  OPEN_LEFT_MENU,
   SETUSERINFO,
-  SET_MENUS_MUTATION,
-  SET_SYS,
-  USERINFOMENUS,
+  SET_MENUS_MUTATION, SET_SYS, USERINFOMENUS,
 } from '@/store/mutation-types'
 import type { LoginType, MenuType, UserInformation, UserType } from '@/types/sys'
 import http from '@/utils/request'
 import {
+  CURRENT_MENU,
   LIST_OF_ALL_STORED_MENU_ITEMS,
   PERMISSIONBUTTONS,
   TOKEN,
 } from '@/utils/constant'
-import type { MenuItem } from '@/types/layout/menu'
 
 import { ListObjCompare, ListToTree } from '@/utils'
 import log from '@/utils/log'
@@ -99,20 +100,20 @@ async function baseLayout(item: CustomMenus[]): Promise<RouteRecordRaw[]> {
 }
 
 // 查询是否存在上级
-function queryWhetherParent(parentId: number, menus: MenuType[]) {
-  let rPath = ''
+function queryWhetherParent(parentId: number, menus: MenuType[]): string[] {
+  let rPath: string[] = []
   const data = menus.find(v => v.id === parentId)
   if (data) {
     if (data.parentId !== 0) {
-      rPath += `/${data.name}`
-      rPath += queryWhetherParent(data.parentId, menus)
-      log.i(rPath, 'rPath--parentID')
+      rPath.push(data.name as string)
+      const result = queryWhetherParent(data.parentId, menus)
+      rPath = result.concat(rPath)
       return rPath
     }
-    rPath += `/${data.name}`
+    rPath.push(data.name as string)
     return rPath
   }
-  return ''
+  return []
 }
 
 const formatMenuTree = async (
@@ -141,7 +142,7 @@ const formatMenuTree = async (
       const allPath = queryWhetherParent(menuItem.parentId, menuData)
       const file = modules[fileKey].default
       const obj: any = { ...menuItem }
-      obj.path = `${allPath}/${file.name}`
+      obj.path = `${allPath.join('/')}/${file.name}`
       obj.name = String(menuItem.name)
       obj.component = file
       if (menuItem.name === file.name) {
@@ -165,33 +166,32 @@ const formatMenuTree = async (
 
   return [layout]
 }
-function ListToTreeMenus(jsonData, id = 'id', pid = 'parentId'): MenuItem[] {
-  const result: MenuItem[] = []
-  const temp = {}
-  for (let i = 0; i < jsonData.length; i += 1)
-    temp[jsonData[i][id]] = jsonData[i] // 以id作为索引存储元素，可以无需遍历直接定位元素
-
-  for (let j = 0; j < jsonData.length; j += 1) {
-    const currentElement = jsonData[j]
-    const tempCurrentElementParent = temp[currentElement[pid]] // 临时变量里面的当前元素的父元素
-    if (tempCurrentElementParent) {
-      // 如果存在父元素
-      if (!tempCurrentElementParent.children) {
-        // 如果父元素没有chindren键
-        tempCurrentElementParent.children = [] // 设上父元素的children键
-      }
+function listToTreeMenus(jsonData: MenuType[], parentIdItem = { id: 0, path: '', title: '' } as MenuType): MenuType[] {
+  const tree: MenuType[] = []
+  jsonData.forEach((item) => {
+    // 每条数据的parentId 和传入的相同
+    if (item.parentId === parentIdItem.id) {
+      // 就去找这个元素的子集， 找到元素中parentId === item.id 递归
       // 组合路由跳转地址
-      currentElement.path = `${tempCurrentElementParent.path}${currentElement.path}`
-      // 组合面包屑
-      currentElement.crumbs = `${tempCurrentElementParent.title},${currentElement.title}`
-      tempCurrentElementParent.children.push(currentElement) // 给父元素加上当前元素作为子元素
+      item.path = `${parentIdItem.path}${item.path}`
+      if (parentIdItem.title) {
+        // 组合面包屑
+        item.crumb = `${parentIdItem.title},${item.title}`
+      }
+      else {
+        item.crumb = item.title
+      }
+      if (parentIdItem.id)
+        item.menuOpenKeys = `${parentIdItem.id},${item.id}`
+      else
+        item.menuOpenKeys = `${item.id}`
+      const result = listToTreeMenus(jsonData, item)
+      if (result && result.length > 0)
+        item.children = result
+      tree.push(item)
     }
-    else {
-      // 不存在父元素，意味着当前元素是一级元素
-      result.push(currentElement)
-    }
-  }
-  return result
+  })
+  return tree
 }
 function formatMenus(menus: MenuType[], status = false) {
   return menus.filter(item => (status ? item.type === 3 : item.type !== 3))
@@ -223,7 +223,8 @@ export default {
           })
         }
       })
-      result = ListToTreeMenus(result)
+      result = listToTreeMenus(result)
+      log.w(result, 'result')
       state.menus = result
     },
     [SETUSERINFO](state: SysStoreType, payload: UserInformation): void {
@@ -253,6 +254,16 @@ export default {
         getUserInfo()
           .then(async (res) => {
             if (res) {
+              // 存在选择的路由，左侧菜单对应展开
+              const currentData = await storeInstant.get(CURRENT_MENU)
+              if (currentData) {
+                store.commit(OPEN_LEFT_MENU, currentData)
+                // 面包屑默认选中
+                if (currentData.crumb) {
+                  log.i(currentData.crumb, 'currentData.crumb')
+                  store.commit(BREAD_CRUMBS, currentData.crumb.split(','))
+                }
+              }
               commit(PERMISSIONBUTTONS, res)
               commit(USERINFOMENUS, res)
               commit(SETUSERINFO, res)
@@ -262,6 +273,7 @@ export default {
                 res.menus,
               )
               const menus = await formatMenuTree(formatMenus(res.menus))
+
               resolve({
                 userInfo: res.userInfo,
                 menus,

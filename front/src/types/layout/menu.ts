@@ -6,13 +6,13 @@ export interface MenuItem {
   children?: MenuItem[]
   id: number
   parentId: number
-  crumbs?: string
+  crumb?: string
   closable?: boolean
   isHome?: number
   name?: string
 }
 export interface MenusInfo {
-  selectedKeys: string[]
+  selectedKeys: number[]
   list: MenuItem[]
   openKeys: number[]
 }

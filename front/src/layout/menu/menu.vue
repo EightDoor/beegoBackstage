@@ -4,14 +4,15 @@ import {
   defineComponent,
   onMounted,
   reactive,
-  toRaw,
+  watch,
 } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import SubMenu from './menu-item.vue'
 import { commSetData } from './menu-comm'
 import type { MenuItem, MenusInfo } from '@/types/layout/menu'
-import type { MenuType } from '@/types/sys'
+
+import log from '@/utils/log'
 
 export default defineComponent({
   name: 'CommonMenu',
@@ -26,16 +27,7 @@ export default defineComponent({
       list: [],
       openKeys: [],
     })
-    const getUserInfoMenus = computed(() => store.state.sys.userInfoMenus)
-
-    const FormatSelectKey = (res) => {
-      menusInfo.selectedKeys = [res.key || res.id || '']
-      const { parentId } = res
-      const data: MenuType[] = toRaw(getUserInfoMenus.value)
-      const r = data.find(item => item.id === parentId)
-      if (r)
-        menusInfo.openKeys = [r.id]
-    }
+    const openMenus = computed(() => store.state.crumbs.menuOpenKeys)
 
     onMounted(() => {
       menusInfo.list = []
@@ -49,6 +41,18 @@ export default defineComponent({
         })
       }
     }
+
+    watch(openMenus, (newVal) => {
+      log.i(newVal, 'newVal')
+      if (newVal) {
+        const result = newVal.map(item => Number(item))
+        menusInfo.selectedKeys = result
+        menusInfo.openKeys = result
+      }
+    }, {
+      deep: true,
+      immediate: true,
+    })
     return {
       menusInfo,
       getMenus: computed(() => store.state.sys.menus),

@@ -22,6 +22,8 @@ export interface MenuType extends CommonTableList, ITabs {
   value?: string
   hidden?: number
   menuId?: string
+  crumb?: string
+  menuOpenKeys?: string
 }
 
 export interface DepartType extends CommonTreeSelect {

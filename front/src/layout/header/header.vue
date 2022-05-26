@@ -70,15 +70,7 @@ export default defineComponent({
     function ToggleCollapsed() {
       store.commit(COLLAPSED)
     }
-    const crumbs = computed({
-      get() {
-        if (store.state.crumbs.list && store.state.crumbs.list.length > 0)
-          return store.state.crumbs.list.split(',')
-        else
-          return []
-      },
-      set() {},
-    })
+    const crumbs = computed(() => store.state.crumbs.list)
     return {
       // data
       data,
