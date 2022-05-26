@@ -4,7 +4,7 @@ import {
 } from 'vue'
 
 import type { FormInstance } from 'ant-design-vue'
-import { message } from 'ant-design-vue'
+import { Form, message } from 'ant-design-vue'
 import type { Method } from 'axios'
 import { cloneDeep } from 'lodash-es'
 import type { Rule } from 'ant-design-vue/lib/form'
@@ -26,6 +26,7 @@ const SysMenu = defineComponent({
     CommonDrawer,
   },
   setup() {
+    const useForm = Form.useForm
     const optionsType = ref([
       {
         value: 1,
@@ -103,7 +104,8 @@ const SysMenu = defineComponent({
       visible: false,
       loading: false,
     })
-    const defaultInfo = {
+    const formRef = ref<FormInstance>()
+    let formData = reactive<MenuType>({
       parentId: 0,
       path: '',
       component: '',
@@ -117,10 +119,8 @@ const SysMenu = defineComponent({
       id: 0,
       hidden: 0,
       isHome: 0,
-    }
-    const formRef = ref<FormInstance>()
-    let validateInfos = reactive<MenuType>(cloneDeep(defaultInfo))
-    const rules: Record<string, Rule[]> = {
+    })
+    const rules = ref<Record<string, Rule[]>>({
       parentId: [
         {
           required: true,
@@ -145,7 +145,8 @@ const SysMenu = defineComponent({
           message: '请输入排序',
         },
       ],
-    }
+    })
+    const { validate, resetFields, validateInfos } = useForm(formData, rules)
     function getList() {
       tableCont.loading = true
       http<MenuType>({
@@ -155,7 +156,7 @@ const SysMenu = defineComponent({
         })}`,
         method: 'GET',
       }).then((res) => {
-        const list = cloneDeep(res.list?.list.sort(ListObjCompare('order_num'))) || []
+        const list = cloneDeep(res.list?.list.sort(ListObjCompare('orderNum'))) || []
         tableCont.loading = false
         tableCont.data = ListToTree(list)
         tableCont.total = res.list?.total ?? 0
@@ -171,17 +172,17 @@ const SysMenu = defineComponent({
       getList()
     })
     const onSubmit = () => {
-      formRef.value!.validate()
+      validate()
         .then(() => {
           drawerData.loading = true
-          const data = cloneDeep(toRaw(validateInfos))
+          const data = cloneDeep(toRaw(formData))
           if (!data.name)
             data.name = data.perms
           delete data.id
           let method: Method = 'POST'
-          if (validateInfos.id) {
+          if (formData.id) {
             method = 'PUT'
-            data.id = validateInfos.id
+            data.id = formData.id
           }
           data.parentId = Number(data.parentId)
           http<MenuType>({
@@ -200,16 +201,11 @@ const SysMenu = defineComponent({
         })
     }
 
-    function reset() {
-      formRef.value!.resetFields()
-    }
-
     function ChangeClick() {
       drawerData.title = '添加'
       drawerData.visible = true
-      validateInfos = cloneDeep(defaultInfo)
       nextTick(() => {
-        reset()
+        resetFields()
       })
     }
 
@@ -217,7 +213,7 @@ const SysMenu = defineComponent({
       drawerData.title = '修改'
       drawerData.visible = true
       log.i(record, '修改值')
-      validateInfos = Object.assign(validateInfos, record)
+      formData = Object.assign(formData, record)
     }
     function Del(record: MenuType) {
       const data = toRaw(record)
@@ -248,11 +244,12 @@ const SysMenu = defineComponent({
       Del,
 
       // form
-      validateInfos,
+      formData,
       formRef,
       rules,
       onSubmit,
       onClose,
+      validateInfos,
     }
   },
 })
@@ -301,14 +298,12 @@ export default SysMenu
   >
     <a-form
       ref="formRef"
-      :rules="rules"
-      :model="validateInfos"
       :label-col="{ span: 4 }"
       :wrapper-col="{ span: 20 }"
     >
-      <a-form-item label="父级id" name="parentId">
+      <a-form-item label="父级id" v-bind="validateInfos.parentId">
         <a-tree-select
-          v-model:value="validateInfos.parentId"
+          v-model:value="formData.parentId"
           style="width: 100%"
           :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
           :tree-data="treeOptions.options"
@@ -316,11 +311,11 @@ export default SysMenu
           tree-default-expand-all
         />
       </a-form-item>
-      <a-form-item label="名称" name="title">
-        <a-input v-model:value="validateInfos.title" />
+      <a-form-item label="名称" v-bind="validateInfos.title">
+        <a-input v-model:value="formData.title" />
       </a-form-item>
-      <a-form-item label="菜单类型" name="type">
-        <a-select v-model:value="validateInfos.type">
+      <a-form-item label="菜单类型" v-bind="validateInfos.type">
+        <a-select v-model:value="formData.type">
           <a-select-option
             v-for="(item, index) in optionsType"
             :key="index"
@@ -330,15 +325,15 @@ export default SysMenu
           </a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item v-if="validateInfos.type === 3" label="权限标识" name="perms">
-        <a-input v-model:value="validateInfos.perms" />
+      <a-form-item v-if="formData.type === 3" label="权限标识" v-bind="validateInfos.perms">
+        <a-input v-model:value="formData.perms" />
       </a-form-item>
       <template v-else>
-        <a-form-item label="菜单name" name="name">
-          <a-input v-model:value="validateInfos.name" />
+        <a-form-item label="菜单name" v-bind="validateInfos.name">
+          <a-input v-model:value="formData.name" />
         </a-form-item>
-        <a-form-item label="是否首页" name="isHome">
-          <a-radio-group v-model:value="validateInfos.isHome">
+        <a-form-item label="是否首页" v-bind="validateInfos.isHome">
+          <a-radio-group v-model:value="formData.isHome">
             <a-radio :value="1">
               是
             </a-radio>
@@ -347,14 +342,14 @@ export default SysMenu
             </a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="图标" name="icon">
-          <a-input v-model:value="validateInfos.icon" />
+        <a-form-item label="图标" v-bind="validateInfos.icon">
+          <a-input v-model:value="formData.icon" />
         </a-form-item>
-        <a-form-item label="重定向地址" name="redirect">
-          <a-input v-model:value="validateInfos.redirect" />
+        <a-form-item label="重定向地址" v-bind="validateInfos.redirect">
+          <a-input v-model:value="formData.redirect" />
         </a-form-item>
-        <a-form-item label="是否隐藏" name="hidden">
-          <a-radio-group v-model:value="validateInfos.hidden" name="radioGroup">
+        <a-form-item label="是否隐藏" v-bind="validateInfos.hidden">
+          <a-radio-group v-model:value="formData.hidden" name="radioGroup">
             <a-radio :value="0">
               否
             </a-radio>
@@ -364,8 +359,8 @@ export default SysMenu
           </a-radio-group>
         </a-form-item>
       </template>
-      <a-form-item label="排序" name="orderNum">
-        <a-input-number v-model:value="validateInfos.orderNum" />
+      <a-form-item label="排序" v-bind="validateInfos.orderNum">
+        <a-input-number v-model:value="formData.orderNum" />
       </a-form-item>
     </a-form>
   </CommonDrawer>

@@ -1,6 +1,6 @@
 <script lang="ts">
 import {
-  defineComponent, onMounted, reactive, ref, toRaw,
+  defineComponent, nextTick, onMounted, reactive, ref, toRaw,
 } from 'vue'
 import { Form, message } from 'ant-design-vue'
 import type { Method } from 'axios'
@@ -53,6 +53,7 @@ const SysUser = defineComponent({
       avatar: [],
       deptId: 0,
       phoneNum: '',
+      password: '',
     })
     const treeOptions = reactive<{ options: DepartType[] }>({ options: [] })
     const editId = reactive<{ id: number | undefined }>({ id: 0 })
@@ -131,7 +132,7 @@ const SysUser = defineComponent({
         },
       ],
     })
-
+    const { validate, resetFields, validateInfos } = useForm(formData, rules)
     function getList() {
       tableData.loading = true
       http<UserType>({
@@ -143,9 +144,9 @@ const SysUser = defineComponent({
       }).then((res) => {
         log.i(res, 'user-res')
         tableData.loading = false
-        tableData.pageNum = res.list?.pageNum
-        tableData.pageSize = res.list?.pageSize
-        tableData.total = res.list?.total
+        tableData.pageNum = res.list?.pageNum ?? 1
+        tableData.pageSize = res.list?.pageSize ?? 10
+        tableData.total = res.list?.total ?? 0
         tableData.data = res.list?.list || []
         log.i(tableData, 'table')
       })
@@ -202,7 +203,7 @@ const SysUser = defineComponent({
     }
 
     function Submit() {
-      formRef.value.validate().then(() => {
+      validate().then(() => {
         const url = 'user'
         let method: Method = 'POST'
         const data = toRaw(formData)
@@ -213,7 +214,6 @@ const SysUser = defineComponent({
         }
         if (data.avatar)
           data.avatar = BusinessUtils.formatUploadImg(data.avatar)
-
         http({
           url,
           method,
@@ -227,11 +227,11 @@ const SysUser = defineComponent({
       })
     }
     function ChangAdd() {
-      if (formRef.value)
-        formRef.value.resetFields()
-
       commonDrawerData.visible = true
       editId.id = 0
+      nextTick(() => {
+        resetFields()
+      })
     }
 
     function getBase64(img, callback) {
@@ -393,6 +393,7 @@ const SysUser = defineComponent({
       // form
       rules,
       formData,
+      validateInfos,
     }
   },
 })
@@ -455,8 +456,6 @@ export default SysUser
   >
     <a-form
       ref="formRef"
-      :model="formData"
-      :rules="rules"
       :label-col="{ span: 4 }"
       :wrapper-col="{ span: 20 }"
       name="avatar"
@@ -464,13 +463,13 @@ export default SysUser
       <a-form-item label="头像">
         <ImageUpload v-model:list="formData.avatar" />
       </a-form-item>
-      <a-form-item label="账号" name="modelRef">
+      <a-form-item label="账号" v-bind="validateInfos.account">
         <a-input v-model:value="formData.account" />
       </a-form-item>
-      <a-form-item label="昵称" name="nickName">
+      <a-form-item label="昵称" v-bind="validateInfos.nickName">
         <a-input v-model:value="formData.nickName" />
       </a-form-item>
-      <a-form-item label="部门" name="deptId">
+      <a-form-item label="部门" v-bind="validateInfos.deptId">
         <a-tree-select
           v-model:value="formData.deptId"
           style="width: 100%"
@@ -480,7 +479,7 @@ export default SysUser
           tree-default-expand-all
         />
       </a-form-item>
-      <a-form-item label="状态" name="status">
+      <a-form-item label="状态" v-bind="validateInfos.status">
         <a-radio-group v-model:value="formData.status" name="radioGroup">
           <a-radio :value="0">
             失效
@@ -490,14 +489,14 @@ export default SysUser
           </a-radio>
         </a-radio-group>
       </a-form-item>
-      <a-form-item label="邮箱" name="email">
+      <a-form-item label="邮箱" v-bind="validateInfos.email">
         <a-input v-model:value="formData.email" />
       </a-form-item>
-      <a-form-item label="手机号码" name="phoneNum">
+      <a-form-item label="手机号码" v-bind="validateInfos.phoneNum">
         <a-input v-model:value="formData.phoneNum" />
       </a-form-item>
-      <a-form-item v-if="!editId.id" label="密码" name="passWord">
-        <a-input v-model:value="formData.passWord" />
+      <a-form-item v-if="!editId.id" v-bind="validateInfos.password">
+        <a-input v-model:value="formData.password" />
       </a-form-item>
     </a-form>
   </CommonDrawer>

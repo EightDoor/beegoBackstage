@@ -1,9 +1,8 @@
 <script lang="ts">
 import {
-  defineComponent, onMounted, reactive, ref, toRaw,
+  defineComponent, nextTick, onMounted, reactive, ref, toRaw,
 } from 'vue'
-import { useForm } from '@ant-design-vue/use'
-import { message } from 'ant-design-vue'
+import { Form, message } from 'ant-design-vue'
 import type { Method } from 'axios'
 import { cloneDeep } from 'lodash-es'
 import CommonButton from '@/components/Button/Button.vue'
@@ -20,6 +19,7 @@ const SysDepart = defineComponent({
   isRouter: true,
   components: { CommonButton, CommonDrawer },
   setup() {
+    const useForm = Form.useForm
     const tableCont = reactive<TableDataType<DepartType>>({
       pageNum: 1,
       pageSize: 10,
@@ -53,12 +53,12 @@ const SysDepart = defineComponent({
     })
     const formRef = ref()
     const formData = reactive<DepartType>({
-      parentId: '',
+      parentId: '0',
       name: '',
       orderNum: 0,
       id: '',
     })
-    const rules = {
+    const rules = ref({
       parent_id: [
         {
           required: true,
@@ -77,7 +77,8 @@ const SysDepart = defineComponent({
           message: '请输入排序',
         },
       ],
-    }
+    })
+    const { validate, resetFields, validateInfos } = useForm(formData, rules)
     function getList() {
       tableCont.loading = true
       http<DepartType>({
@@ -87,13 +88,14 @@ const SysDepart = defineComponent({
         })}`,
         method: 'GET',
       }).then((res) => {
-        const list = res.list?.list.sort(ListObjCompare('order_num')) || []
+        let list = res.list?.list.sort(ListObjCompare('order_num')) || []
         tableCont.loading = false
         tableCont.data = ListToTree(list)
-        tableCont.total = res.list?.total
-        list.forEach((item) => {
+        tableCont.total = res.list?.total ?? 0
+        list = list.map((item) => {
           item.title = item.name
           item.value = item.id
+          return item
         })
         treeOptions.options = ListToTree(list)
       })
@@ -102,7 +104,7 @@ const SysDepart = defineComponent({
       getList()
     })
     const onSubmit = () => {
-      formRef.value.validate()
+      validate()
         .then(() => {
           drawerData.loading = true
           const data = cloneDeep(toRaw(formData))
@@ -129,16 +131,12 @@ const SysDepart = defineComponent({
         })
     }
 
-    function resetFields() {
-      if (formRef.value)
-        formRef.value.resetFields()
-    }
-
     function ChangeClick() {
       drawerData.title = '添加'
       drawerData.visible = true
-      resetFields()
-      formData.parentId = '-1'
+      nextTick(() => {
+        resetFields()
+      })
     }
 
     function Editor(record: DepartType) {
@@ -179,6 +177,7 @@ const SysDepart = defineComponent({
       formData,
       formRef,
       onSubmit,
+      validateInfos,
     }
   },
 })
@@ -222,8 +221,8 @@ export default SysDepart
     @onClose="drawerData.visible = false"
     @onOk="onSubmit"
   >
-    <a-form ref="formRef" :model="formData" :rules="rules" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
-      <a-form-item label="父级id" name="parentId">
+    <a-form ref="formRef" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+      <a-form-item label="父级id" v-bind="validateInfos.parentId">
         <a-tree-select
           v-model:value="formData.parentId"
           style="width: 100%"
@@ -233,10 +232,10 @@ export default SysDepart
           tree-default-expand-all
         />
       </a-form-item>
-      <a-form-item label="名称" name="name">
+      <a-form-item label="名称" v-bind="validateInfos.name">
         <a-input v-model:value="formData.name" />
       </a-form-item>
-      <a-form-item label="排序" name="orderNum">
+      <a-form-item label="排序" v-bind="validateInfos.orderNum">
         <a-input-number v-model:value="formData.orderNum" />
       </a-form-item>
     </a-form>

@@ -41,7 +41,7 @@ export interface UserType extends CommonTableList {
   avatar?: any
   deptId: number
   phoneNum?: any
-  passWord?: string
+  password?: string
 }
 
 export interface RoleType extends CommonTableList {

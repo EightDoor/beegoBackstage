@@ -1,8 +1,8 @@
 <script lang="ts">
 import {
-  defineComponent, onMounted, reactive, ref, toRaw,
+  defineComponent, nextTick, onMounted, reactive, ref, toRaw,
 } from 'vue'
-import { message } from 'ant-design-vue'
+import { Form, message } from 'ant-design-vue'
 import type { Method } from 'axios'
 import DictDrawer from './dict-drawer.vue'
 import type { TableDataType, TablePaginType } from '@/types/type'
@@ -23,6 +23,7 @@ const SysDictView = defineComponent({
     DictDrawer,
   },
   setup() {
+    const useForm = Form.useForm
     const formRef = ref()
     const formData = reactive<SysDict>({
       name: '',
@@ -36,14 +37,16 @@ const SysDictView = defineComponent({
       loading: false,
       visible: false,
     })
-    const rules = {
+    const rules = ref({
       name: [
         {
           required: true,
           message: '请输入名称',
         },
       ],
-    }
+    })
+
+    const { validate, resetFields, validateInfos } = useForm(formData, rules)
     const tableData = reactive<TableDataType<SysDict>>({
       data: [],
       pageNum: 1,
@@ -83,9 +86,9 @@ const SysDictView = defineComponent({
         method: 'GET',
       }).then((res) => {
         tableData.loading = false
-        tableData.pageNum = res.list?.pageNum
-        tableData.pageSize = res.list?.pageSize
-        tableData.total = res.list?.total
+        tableData.pageNum = res.list?.pageNum ?? 1
+        tableData.pageSize = res.list?.pageSize ?? 10
+        tableData.total = res.list?.total ?? 0
         tableData.data = res.list?.list || []
         log.i(res.list?.list, 'res.list?.list')
       })
@@ -95,7 +98,7 @@ const SysDictView = defineComponent({
     })
 
     function Submit() {
-      formRef.value.validate().then(() => {
+      validate().then(() => {
         const url = 'dict'
         let method: Method = 'POST'
         const body = toRaw(formData)
@@ -117,15 +120,12 @@ const SysDictView = defineComponent({
       })
     }
 
-    function resetFields() {
-      if (formRef.value)
-        formRef.value.resetFields()
-    }
-
     function ChangAdd() {
-      resetFields()
       commonDrawerData.visible = true
       editId.id = 0
+      nextTick(() => {
+        resetFields()
+      })
     }
 
     function Editor(record: SysDict) {
@@ -180,6 +180,7 @@ const SysDictView = defineComponent({
       formData,
       formRef,
       rules,
+      validateInfos,
     }
   },
 })
@@ -235,14 +236,14 @@ export default SysDictView
     @on-ok="Submit()"
     @on-close="commonDrawerData.visible = false"
   >
-    <a-form ref="formRef" :model="formData" :rules="rules" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
-      <a-form-item label="字典名称" name="name">
+    <a-form ref="formRef" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+      <a-form-item v-bind="validateInfos.name" label="字典名称">
         <a-input v-model:value="formData.name" />
       </a-form-item>
-      <a-form-item label="字典编号" name="serialNumber">
+      <a-form-item v-bind="validateInfos.serialNumber" label="字典编号">
         <a-input v-model:value="formData.serialNumber" />
       </a-form-item>
-      <a-form-item label="描述" name="describe">
+      <a-form-item v-bind="validateInfos.describe" label="描述">
         <a-input v-model:value="formData.describe" />
       </a-form-item>
     </a-form>
