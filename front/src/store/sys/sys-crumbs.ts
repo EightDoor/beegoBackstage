@@ -1,4 +1,5 @@
 import type { Commit } from 'vuex'
+import { toRaw } from 'vue'
 import {
   CLEAR_CRUMBS,
   DELETETABS,
@@ -94,11 +95,17 @@ export default {
   },
   actions: {
     [DELETETABSACTION](
-      { commit }: { commit: Commit },
+      { commit, state }: { commit: Commit; state: CrumbsStoreType },
       payload: SysTabDel,
     ): void {
+      log.i(state, 'state - 设置菜单选中项')
       // 设置菜单选中项
-      localStore.set(STORELETMENUPATH, payload.selectData).then(() => {
+      // 排除当前选中的选项
+      let result = state.panes.filter(item => item.id !== payload.delData.id)
+      result = result.map((item) => {
+        return toRaw(item)
+      })
+      localStore.set(STORELETMENUPATH, toRaw(result)).then(() => {
         commit(DELETETABS, payload)
       })
     },
@@ -116,7 +123,6 @@ export default {
           parent_id: r.parentId || '',
           closable: false,
         }
-
         // 读取面包屑所有值
         const allCrumbs = await localStorefrom.get(STORELETMENUPATH)
         if (allCrumbs) {

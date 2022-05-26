@@ -5,10 +5,8 @@ import {
 } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import _ from 'lodash-es'
-import type { PanesType } from '@/store/sys/sys-crumbs'
 import localStore from '@/utils/store'
-import { CURRENT_MENU, STORELETMENUPATH } from '@/utils/constant'
+import { CURRENT_MENU } from '@/utils/constant'
 import type { SysTab, SysTabDel } from '@/types/sys/tab'
 import { DELETETABS, DELETETABSACTION } from '@/store/mutation-types'
 import log from '@/utils/log'
@@ -39,6 +37,8 @@ export default defineComponent({
               // 设置当前被选择项
               if (result !== -1)
                 activeKey.value = result
+              else
+                activeKey.value = newVal.length - 1
             }
             panes.value = newVal
           }
@@ -50,34 +50,27 @@ export default defineComponent({
       },
     )
 
-    const FormatData = () => {
-      const data = toRaw(store.state.crumbs.panes)
-      log.i(data, 'FormatData - data')
-      const list: PanesType[] = []
-      data.forEach((item: PanesType) => {
-        list.push(toRaw(item))
-      })
-      return list
-    }
+    const FormatData = computed(() => store.state.crumbs.panes)
     const OnChange = (val: number) => {
-      const result = FormatData()[val]
+      const result = FormatData.value[val]
       activeKey.value = val
       router.push(result.path)
       store.commit(DELETETABS, { selectData: toRaw(result) })
     }
 
     const OnEdit = (val: number) => {
-      const value = _.cloneDeep(toRaw(activeKey.value))
+      log.i(val, 'val')
+      const value = activeKey.value
       const result: SysTabDel = {
-        delData: FormatData()[val],
+        delData: FormatData.value[val],
         selectData: '',
       }
-      if (FormatData().length > 1) {
+      const len = FormatData.value.length
+      if (len > 0) {
         const index = value >= val ? value - 1 : value
-
-        result.selectData = FormatData()[index]
+        result.selectData = FormatData.value[index]
       }
-      store.dispatch(DELETETABSACTION, toRaw(result))
+      store.dispatch(DELETETABSACTION, result)
     }
     return {
       activeKey,

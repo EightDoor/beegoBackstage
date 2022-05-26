@@ -1,3 +1,5 @@
+import storeInstance from '@/utils/store'
+
 function ListToTree<T>(jsonData: T[], id = 'id', pid = 'parentId'): T[] {
   const result: T[] = []
   const temp = {}
@@ -47,7 +49,8 @@ function formatArr(arr: any[], key?: string) {
 }
 
 // 清空token
-const ClearInfo = (): void => {
+const ClearInfo = async () => {
   localStorage.clear()
+  await storeInstance.clear()
 }
 export { ListToTree, ListObjCompare, ClearInfo, formatArr }

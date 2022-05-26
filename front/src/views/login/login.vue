@@ -6,8 +6,6 @@ import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { LOGIN, LOGINRESET } from '@/store/mutation-types'
-import localStore from '@/utils/store'
-import { STORELETMENUPATH } from '@/utils/constant'
 
 interface LoginType {
   name: string

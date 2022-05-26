@@ -21,5 +21,4 @@ export const CLEAR_CRUMBS = 'CLEAR_CRUMBS'
 // tabs
 export const MENUTABS = 'MENUTABS'
 export const DELETETABS = 'DELETETABS'
-export const TABSELECTKEY = 'TABSELECTKEY'
 export const DELETETABSACTION = 'DELETETABSACTION'

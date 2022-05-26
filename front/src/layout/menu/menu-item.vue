@@ -5,10 +5,9 @@ import { useStore } from 'vuex'
 import { MenuFormatBrumb } from './menu-common'
 import type { MenuItem } from '@/types/layout/menu'
 import { CURRENT_MENU, STORELETMENUPATH } from '@/utils/constant'
-import localStorefrom from '@/utils/store'
+import localStoreInstant from '@/utils/store'
 import { SETCRUMBSLIST } from '@/store/mutation-types'
 import log from '@/utils/log'
-import localStore from '@/utils/store'
 import { formatArr } from '@/utils'
 
 export default defineComponent({
@@ -26,8 +25,8 @@ export default defineComponent({
     async function jumpTo(item: MenuItem) {
       if (item.path) {
         store.commit(SETCRUMBSLIST, toRaw(item.crumbs))
-        await localStorefrom.set(CURRENT_MENU, toRaw(item))
-        localStorefrom.get(STORELETMENUPATH).then((res) => {
+        await localStoreInstant.set(CURRENT_MENU, toRaw(item))
+        localStoreInstant.get(STORELETMENUPATH).then((res) => {
           log.i(res, '点击二级菜单-获取的存储值')
           let data: MenuItem[] = []
           if (res)
@@ -35,7 +34,7 @@ export default defineComponent({
           else
             data = [toRaw(item)]
 
-          localStore.set(STORELETMENUPATH, formatArr(data)).then(() => {
+          localStoreInstant.set(STORELETMENUPATH, formatArr(data)).then(() => {
             router.push({
               path: item.path || '',
             })

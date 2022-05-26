@@ -33,7 +33,7 @@ instance.interceptors.request.use(
 
 // 相应拦截器
 instance.interceptors.response.use(
-  (response) => {
+  async (response) => {
     const { data } = response
     log.i(data, 'data')
     if (response.status === 200 && data.code === 0) {
@@ -41,7 +41,7 @@ instance.interceptors.response.use(
     }
     else if (data.code === RequestAuthorizedFailed) {
       message.info('token失效, 请重新登录')
-      ClearInfo()
+      await ClearInfo()
     }
     else {
       log.d(data, 'response error data')
