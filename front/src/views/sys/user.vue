@@ -29,7 +29,6 @@ interface UserAndRole {
 
 const SysUser = defineComponent({
   name: 'SysUser',
-  isRouter: true,
   components: {
     CommonButton,
     CommonDrawer,

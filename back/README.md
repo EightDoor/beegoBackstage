@@ -9,8 +9,9 @@
 
 - 注解路由 controller 下创建文件`// @router / [get]` 前后不能存在别的内容,否则无法生成路由
 - controller 统一继承 `utils.BaseController`
+## 待做
+- [ ] 统一返回字段createdAt、updatedAt、deletedAt 统一格式化返回
 ## 使用
-
 - 表单校验
   - **注意**需要在格式化json之后执行
 

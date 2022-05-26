@@ -8,10 +8,10 @@ import { computed, defineComponent, reactive, ref, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { Form } from 'ant-design-vue'
-import { CLEAR_CRUMBS, COLLAPSED } from '@/store/mutation-types'
+import { COLLAPSED } from '@/store/mutation-types'
 import log from '@/utils/log'
 import CommonDrawer from '@/components/Drawer/Drawer.vue'
-import utilsLocal from '@/utils/store'
+import storeInstant from '@/utils/store'
 
 export default defineComponent({
   name: 'CommonHeader',
@@ -55,12 +55,10 @@ export default defineComponent({
     }
 
     function GoTo(val: string) {
-      log.i(val, '选择的值')
       switch (val) {
         case '退出':
           localStorage.clear()
-          utilsLocal.clear()
-          store.commit(CLEAR_CRUMBS)
+          storeInstant.clear()
           router.replace('/login')
           break
         case '个人中心':
@@ -73,21 +71,14 @@ export default defineComponent({
       store.commit(COLLAPSED)
     }
     const crumbs = computed({
-      get: () => {
-        let r = []
-        try {
-          r = store.state.crumbs.list.split(',')
-        }
-        catch (err) {
-          //          console.log('err: ', err);
-        }
-        return r
+      get() {
+        if (store.state.crumbs.list && store.state.crumbs.list.length > 0)
+          return store.state.crumbs.list.split(',')
+        else
+          return []
       },
-      set: () => {
-        // do
-      },
+      set() {},
     })
-
     return {
       // data
       data,

@@ -5,7 +5,7 @@ import {
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { LOGIN, LOGINRESET } from '@/store/mutation-types'
+import { LOGIN } from '@/store/mutation-types'
 
 interface LoginType {
   name: string

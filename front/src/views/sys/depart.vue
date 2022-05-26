@@ -16,7 +16,6 @@ import { searchParam } from '@/utils/search_param'
 
 const SysDepart = defineComponent({
   name: 'SysDepart',
-  isRouter: true,
   components: { CommonButton, CommonDrawer },
   setup() {
     const useForm = Form.useForm

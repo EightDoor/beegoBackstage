@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { commSetData } from './menu-comm'
 import type { MenuItem } from '@/types/layout/menu'
 
 export default defineComponent({
@@ -18,8 +19,9 @@ export default defineComponent({
     // methods
     async function jumpTo(item: MenuItem) {
       if (item.path) {
+        await commSetData(item)
         await router.push({
-          path: item.path || '',
+          path: item.path,
         })
       }
     }

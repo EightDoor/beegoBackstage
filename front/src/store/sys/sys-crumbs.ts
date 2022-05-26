@@ -7,12 +7,19 @@ export interface PanesType {
   timestamp?: number
 }
 export interface CrumbsStoreType {
+  // tabs
   panes: PanesType[]
+  // 面包屑
+  list: string[]
+  // 菜单列表展开 keys
+  menuOpenKeys: number[]
 }
 
 export default {
   namespace: true,
   state: {
     panes: [],
-  },
+    list: [],
+    menuOpenKeys: [],
+  } as CrumbsStoreType,
 }

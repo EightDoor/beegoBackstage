@@ -20,7 +20,6 @@ import log from '@/utils/log'
 
 const SysMenu = defineComponent({
   name: 'SysMenu',
-  isRouter: true,
   components: {
     CommonButton,
     CommonDrawer,

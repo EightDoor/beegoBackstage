@@ -23,7 +23,7 @@ import type { MenuItem } from '@/types/layout/menu'
 
 import { ListObjCompare, ListToTree } from '@/utils'
 import log from '@/utils/log'
-import utilLocalStore from '@/utils/store'
+import storeInstant from '@/utils/store'
 
 interface GetToken {
   token: string
@@ -73,8 +73,13 @@ async function baseLayout(item: CustomMenus[]): Promise<RouteRecordRaw[]> {
   if (result.length > 0) {
     const data = item.filter(v => v.isHome)
     let redirect = ''
-    if (data.length > 0)
+    if (data.length > 0) {
+      // 优先查找是否是否存在首页，不存在直接选取第一条的路径
       redirect = String(data[0].path)
+    }
+    else {
+      redirect = String(item[0].path)
+    }
 
     list.push({
       path: '/',
@@ -94,13 +99,16 @@ async function baseLayout(item: CustomMenus[]): Promise<RouteRecordRaw[]> {
 }
 
 // 查询是否存在上级
-function queryWhetherParent(parentId: number, item: MenuType[]) {
+function queryWhetherParent(parentId: number, menus: MenuType[]) {
   let rPath = ''
-  const data = item.find(v => v.id === parentId)
+  const data = menus.find(v => v.id === parentId)
   if (data) {
-    if (data.parentId !== 0)
-      queryWhetherParent(data.parentId, item)
-
+    if (data.parentId !== 0) {
+      rPath += `/${data.name}`
+      rPath += queryWhetherParent(data.parentId, menus)
+      log.i(rPath, 'rPath--parentID')
+      return rPath
+    }
     rPath += `/${data.name}`
     return rPath
   }
@@ -122,9 +130,9 @@ const formatMenuTree = async (
   // },
   const result: CustomMenus[] = []
   const modules = await import.meta.globEager('../../views/**/*.vue')
-  const childModules = await import.meta.globEager('../../views/**.vue')
-
+  const childModules = await import.meta.globEager('../../views/**/*.vue')
   menuData.forEach((menuItem) => {
+    // TODO 等待支持script setup
     const fileKey = Object.keys(modules).find(
       key =>
         modules[key].default && modules[key].default.name === menuItem.name,
@@ -144,7 +152,6 @@ const formatMenuTree = async (
         findModName(childModules).then((r) => {
           if (r && r.length > 0)
             [obj.component] = r
-
           result.push(obj)
         })
       }
@@ -202,7 +209,6 @@ export default {
       state.collapsed = !state.collapsed
     },
     [SET_MENUS_MUTATION](state: SysStoreType, payload: UserInformation): void {
-      // TODO 刷新设置菜单
       const menus = formatMenus(payload.menus)
       let result: MenuType[] = []
       const list = menus.sort(ListObjCompare('orderNum'))
@@ -251,12 +257,11 @@ export default {
               commit(USERINFOMENUS, res)
               commit(SETUSERINFO, res)
               commit(SET_MENUS_MUTATION, res)
-              await utilLocalStore.set(
+              await storeInstant.set(
                 LIST_OF_ALL_STORED_MENU_ITEMS,
                 res.menus,
               )
               const menus = await formatMenuTree(formatMenus(res.menus))
-              log.i(menus, 'menus -- tree')
               resolve({
                 userInfo: res.userInfo,
                 menus,

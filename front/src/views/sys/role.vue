@@ -27,7 +27,6 @@ export interface AllocateType {
 }
 const SysRole = defineComponent({
   name: 'SysRole',
-  isRouter: true,
   components: {
     CommonButton,
     CommonDrawer,

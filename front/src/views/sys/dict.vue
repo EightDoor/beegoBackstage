@@ -16,7 +16,6 @@ import log from '@/utils/log'
 
 const SysDictView = defineComponent({
   name: 'SysDict',
-  isRouter: true,
   components: {
     CommonButton,
     CommonDrawer,
