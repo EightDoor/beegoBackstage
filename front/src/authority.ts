@@ -17,7 +17,6 @@ export const canUserAccess = async (
     if (token) {
       if (store.state.sys.userInfo && store.state.sys.userInfo.account)
         return true
-
       try {
         // 判断vuex是否存在值
         const { menus } = await store.dispatch(`${SET_SYS}`)
