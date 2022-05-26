@@ -99,6 +99,11 @@ export default defineComponent({
       >
         <slot />
       </a-tab-pane>
+      <template #rightExtra>
+        <a-button style="padding-right: 15px" type="primary">
+          关闭全部
+        </a-button>
+      </template>
     </a-tabs>
   </div>
 </template>
