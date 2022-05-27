@@ -42,7 +42,7 @@ func (c *UploadController) Get() {
 // FileUpload 上传文件
 // @router /upload [post]
 func (c *UploadController) FileUpload() {
-	var file FileModels.File
+	file := new(FileModels.File)
 	f, h, err := c.GetFile("file")
 	if err == nil {
 		ext := path.Ext(h.Filename)
@@ -78,6 +78,12 @@ func (c *UploadController) FileUpload() {
 			file.Url = configPath + fPath
 		}
 		file.StoragePath = fPath
+		o := orm.NewOrm()
+		result, insertErr := o.Insert(file)
+		if insertErr != nil {
+			logs.Error(insertErr, "insertErr")
+			c.RError(utils.R{Msg: insertErr.Error(), Data: result})
+		}
 		c.RSuccess(utils.R{Msg: "上传成功", Data: file})
 	} else {
 		c.RError(utils.R{Msg: err.Error(), Data: "文件获取失败"})
@@ -100,6 +106,7 @@ func (c *UploadController) FileDel() {
 	result, dErr := o.QueryTable(FileModels.File{}).Filter("id", id).Delete()
 	// 删除文件
 	if dErr != nil {
+		logs.Error(dErr, "删除文件失败 - queryTable")
 		c.RError(utils.R{
 			Msg:  dErr.Error(),
 			Data: result,
@@ -108,8 +115,10 @@ func (c *UploadController) FileDel() {
 		// 处理，如果删除成功了
 		if result != 0 {
 			if file.Id != 0 {
+				logs.Info(file.StoragePath, "file.StoragePath 文件地址")
 				removeErr := os.Remove(file.StoragePath)
 				if removeErr != nil {
+					logs.Error(removeErr, "删除本地存储的文件")
 					c.RError(utils.R{
 						Msg:  removeErr.Error(),
 						Data: "os文件删除失败",
@@ -120,14 +129,14 @@ func (c *UploadController) FileDel() {
 					})
 				}
 			} else {
+				logs.Error("文件不存在")
 				c.RError(utils.R{
 					Msg: "文件不存在",
 				})
 			}
-
 		} else {
-			c.RSuccess(utils.R{
-				Data: result,
+			c.RError(utils.R{
+				Msg: "文件不存在",
 			})
 		}
 	}
