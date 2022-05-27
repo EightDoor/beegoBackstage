@@ -7,11 +7,11 @@ import { cloneDeep } from 'lodash-es'
 import store from '../index'
 import {
   BREAD_CRUMBS,
+  CLEAR_LOGIN_INFO,
   COLLAPSED,
+  JUMP_LOGIN,
   LOGIN,
-  OPEN_LEFT_MENU,
-  SETUSERINFO,
-  SET_MENUS_MUTATION, SET_SYS, USERINFOMENUS,
+  OPEN_LEFT_MENU, SETUSERINFO, SET_MENUS_MUTATION, SET_SYS, USERINFOMENUS,
 } from '@/store/mutation-types'
 import type { LoginType, MenuType, UserInformation, UserType } from '@/types/sys'
 import http from '@/utils/request'
@@ -214,6 +214,20 @@ export default {
     collapsed: false,
   },
   mutations: {
+    // 跳转登录页面
+    [JUMP_LOGIN]() {
+      localStorage.clear()
+      storeInstant.clear()
+      window.location.href = '/login'
+    },
+    // 清除登录信息
+    [CLEAR_LOGIN_INFO]() {
+      storeInstant.removeItem(CURRENT_MENU)
+      // 清空选中的左侧菜单openMenus
+      store.commit(OPEN_LEFT_MENU, '')
+      // 清空面包屑
+      store.commit(BREAD_CRUMBS, [])
+    },
     [COLLAPSED](state: SysStoreType): void {
       state.collapsed = !state.collapsed
     },

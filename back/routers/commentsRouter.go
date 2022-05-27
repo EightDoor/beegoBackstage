@@ -459,6 +459,15 @@ func init() {
 
     beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:UserController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:UserController"],
         beego.ControllerComments{
+            Method: "UpdateUserAvatar",
+            Router: `/userInfo/updateAvatar`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:UserController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:UserController"],
+        beego.ControllerComments{
             Method: "UserRoleList",
             Router: `/userRoleList/:id`,
             AllowHTTPMethods: []string{"get"},

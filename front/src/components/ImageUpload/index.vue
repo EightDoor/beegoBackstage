@@ -44,6 +44,7 @@ interface FileInfo {
 }
 
 export default defineComponent({
+  name: 'CommImageUpload',
   components: {
     UploadOutlined,
   },

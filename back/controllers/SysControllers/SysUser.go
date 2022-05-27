@@ -192,3 +192,26 @@ func (c *UserController) GetTokenUserInfo() {
 		})
 	}
 }
+
+// UpdateUserAvatar 修改用户头像
+// @router /userInfo/updateAvatar [post]
+func (c *UserController) UpdateUserAvatar() {
+	var sysUserUpdateAvatar SysModels.SysUserUpdateAvatar
+	c.GetBodyToJson(&sysUserUpdateAvatar)
+	c.CustomValid(&sysUserUpdateAvatar)
+
+	o := orm.NewOrm()
+	result, err := o.QueryTable(SysModels.SysUser{}).Filter("id", sysUserUpdateAvatar.Id).Update(orm.Params{
+		"file_id": sysUserUpdateAvatar.File.Id,
+	})
+	if err != nil {
+		c.RError(utils.R{
+			Msg: err.Error(),
+		})
+	} else {
+		c.RSuccess(utils.R{
+			Msg:  "修改成功",
+			Data: result,
+		})
+	}
+}

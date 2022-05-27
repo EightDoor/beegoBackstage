@@ -1,4 +1,6 @@
 import storeInstance from '@/utils/store'
+import store from '@/store'
+import { CLEAR_LOGIN_INFO, JUMP_LOGIN } from '@/store/mutation-types'
 
 function ListToTree<T>(jsonData: T[], id = 'id', pid = 'parentId'): T[] {
   const result: T[] = []
@@ -50,7 +52,7 @@ function formatArr(arr: any[], key?: string) {
 
 // 清空token
 const ClearInfo = async () => {
-  localStorage.clear()
-  await storeInstance.clear()
+  store.commit(CLEAR_LOGIN_INFO)
+  store.commit(JUMP_LOGIN)
 }
 export { ListToTree, ListObjCompare, ClearInfo, formatArr }

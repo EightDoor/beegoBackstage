@@ -22,3 +22,8 @@ type SysUserUpdatePassword struct {
 	Password    string `json:"password" valid:"Required" label:"旧密码"`
 	NewPassword string `json:"newPassword"`
 }
+
+type SysUserUpdateAvatar struct {
+	Id   int              `json:"id" valid:"Required" label:"用户主键"`
+	File *FileModels.File `json:"file" valid:"Required" label:"头像"`
+}

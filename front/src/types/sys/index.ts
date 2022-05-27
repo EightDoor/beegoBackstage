@@ -44,7 +44,7 @@ export interface UserType extends CommonTableList {
   deptId: number
   phoneNum?: any
   password?: string
-  file?: FileBusiness | null | number
+  file?: FileBusiness | null
 }
 
 export interface RoleType extends CommonTableList {
