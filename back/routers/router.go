@@ -11,6 +11,7 @@ import (
 	DemoCrud2 "beegoBackstage/controllers/DemoCrud"
 	"beegoBackstage/controllers/JournalControllers"
 	"beegoBackstage/controllers/SysControllers"
+	"beegoBackstage/controllers/UploadControllers"
 	"beegoBackstage/middleware"
 	beego "github.com/beego/beego/v2/server/web"
 )
@@ -32,6 +33,9 @@ func init() {
 			// user log
 			beego.NSInclude(&JournalControllers.LoginLogController{}),
 			beego.NSInclude(&JournalControllers.LogRequestController{}),
+
+			// upload
+			beego.NSInclude(&UploadControllers.UploadController{}),
 
 			// other
 			beego.NSInclude(&DemoCrud2.DemoCrudController{}),

@@ -2,6 +2,7 @@ package models
 
 import (
 	"beegoBackstage/models/DemoCrud"
+	"beegoBackstage/models/FileModels"
 	"beegoBackstage/models/JournalModels"
 	"beegoBackstage/models/SysModels"
 	"github.com/beego/beego/v2/client/orm"
@@ -23,6 +24,9 @@ func RegisterModels() {
 		// user log
 		new(JournalModels.LogLogin),
 		new(JournalModels.LogRequest),
+
+		// upload
+		new(FileModels.File),
 
 		// other
 		new(DemoCrud.DemoCrud),
