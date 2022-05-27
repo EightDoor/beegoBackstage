@@ -9,3 +9,7 @@ type File struct {
 	FileSize    int64  `json:"fileSize"`
 	StoragePath string `json:"storagePath"`
 }
+
+type FileBusiness struct {
+	File *File `json:"file" orm:"null;rel(fk)"`
+}

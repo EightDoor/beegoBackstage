@@ -12,6 +12,7 @@ import (
 
 // 数据库连接
 func mysqlInit() {
+	env, _ := beego.AppConfig.String("runmode")
 	user, _ := beego.AppConfig.String("msql_username")
 	passwd, _ := beego.AppConfig.String("msql_password")
 	host, _ := beego.AppConfig.String("mysql_host")
@@ -22,8 +23,11 @@ func mysqlInit() {
 	orm.RegisterDataBase("default", "mysql", dataSource)
 	// 注册model
 	models.RegisterModels()
-	// 开启查询调试模式
-	orm.Debug = true
+
+	if env == "dev" {
+		// 开启查询调试模式
+		orm.Debug = true
+	}
 }
 
 func init() {

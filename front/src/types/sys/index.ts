@@ -1,4 +1,5 @@
 import type { CommonTableList, CommonTreeSelect } from '@/types/type'
+import type { FileBusiness } from '@/types'
 
 export interface MenuType extends CommonTableList, ITabs {
   crumbs?: string
@@ -40,10 +41,10 @@ export interface UserType extends CommonTableList {
   nickName: string
   email?: any
   status: number
-  avatar?: any
   deptId: number
   phoneNum?: any
   password?: string
+  file?: FileBusiness | null | number
 }
 
 export interface RoleType extends CommonTableList {

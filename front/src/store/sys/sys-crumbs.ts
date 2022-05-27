@@ -32,6 +32,8 @@ export default {
     [OPEN_LEFT_MENU](state: CrumbsStoreType, payload: MenuType) {
       if (payload.menuOpenKeys)
         state.menuOpenKeys = payload.menuOpenKeys.split(',')
+      else
+        state.menuOpenKeys = []
     },
   },
 }

@@ -1,16 +1,19 @@
 package SysModels
 
-import CommModels "beegoBackstage/commModels"
+import (
+	CommModels "beegoBackstage/commModels"
+	"beegoBackstage/models/FileModels"
+)
 
 type SysUser struct {
 	CommModels.BaseModel
+	FileModels.FileBusiness
 	Account  string `json:"account" valid:"Required" label:"账户名称"`
 	NickName string `json:"nickName" valid:"Required" label:"姓名"`
 	Email    string `json:"email"`
 	DeptId   int    `json:"deptId" valid:"Required" label:"部门id"`
 	PhoneNum string `json:"phoneNum"`
 	Status   int8   `json:"status"`
-	Avatar   string `json:"avatar"`
 	Password string `json:"password"`
 }
 

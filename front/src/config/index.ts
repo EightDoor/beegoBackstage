@@ -1,8 +1,9 @@
+// 是否开发环境
+const isDev = import.meta.env.DEV
+
 const Config = {
-  // 七牛云上传图片地址
-  qiniuUploadUrl: 'https://upload-z1.qiniup.com',
-  // 七牛云显示图片地址
-  qiniuShowUrl: 'http://vue3.admin.qiniu.start6.cn',
+  // 图片上传
+  uploadUrl: isDev ? 'http://localhost:8081/api/upload/' : 'http://beegobackstage.start6.cn/upload/',
 }
 
 export default Config

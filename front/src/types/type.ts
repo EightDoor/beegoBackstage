@@ -49,6 +49,7 @@ export interface CommonTableList {
   id?: number
   createdAt?: string
   updatedAt?: string
+  deletedAt?: string
 }
 
 // 树形tree-select

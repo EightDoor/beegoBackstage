@@ -21,10 +21,10 @@
         {{ record.deptId }}
       </template>
       <template v-if="column.key === 'avatar'">
-        <a-tag v-if="!record.avatar" color="red">
+        <a-tag v-if="!record.file" color="red">
           暂无头像
         </a-tag>
-        <img v-else class="avatar" :src="record.avatar" :alt="record.nickName">
+        <img v-else class="avatar" :src="record?.file?.url" :alt="record.nickName">
       </template>
 
       <template v-if="column.key === 'action'">
@@ -58,7 +58,7 @@
       name="avatar"
     >
       <a-form-item label="头像">
-        <ImageUpload v-model:list="formData.avatar" />
+        <ImageUpload v-model:list="formData.file" :limit="1" />
       </a-form-item>
       <a-form-item label="账号" v-bind="validateInfos.account">
         <a-input v-model:value="formData.account" />
@@ -92,7 +92,7 @@
       <a-form-item label="手机号码" v-bind="validateInfos.phoneNum">
         <a-input v-model:value="formData.phoneNum" />
       </a-form-item>
-      <a-form-item v-if="!editId.id" v-bind="validateInfos.password">
+      <a-form-item v-if="!editId.id" label="密码" v-bind="validateInfos.password">
         <a-input v-model:value="formData.password" />
       </a-form-item>
     </a-form>
@@ -145,7 +145,6 @@ import type { AllocateType } from '@/views/sys/role.vue'
 import { searchParam } from '@/utils/search_param'
 import log from '@/utils/log'
 import ImageUpload from '@/components/ImageUpload/index.vue'
-import BusinessUtils from '@/utils/business'
 
 interface SysUserRole {
   userId: number
@@ -179,7 +178,7 @@ const SysUser = defineComponent({
       nickName: '',
       email: '',
       status: 1,
-      avatar: [],
+      file: null,
       deptId: 0,
       phoneNum: '',
       password: '',
@@ -341,8 +340,7 @@ const SysUser = defineComponent({
           method = 'PUT'
           data.id = editId.id
         }
-        if (data.avatar)
-          data.avatar = BusinessUtils.formatUploadImg(data.avatar)
+        log.i(data.file, 'data.file')
         http({
           url,
           method,
@@ -405,9 +403,9 @@ const SysUser = defineComponent({
         formData.nickName = record.nickName
         formData.email = record.email
         formData.status = record.status
-        formData.avatar = BusinessUtils.formatUploadShow(record.avatar)
         formData.deptId = record.deptId
         formData.phoneNum = record.phoneNum
+        formData.file = record.file
       }
     }
     function Del(record: UserType) {

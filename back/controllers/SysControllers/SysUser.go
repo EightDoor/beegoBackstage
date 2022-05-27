@@ -21,7 +21,7 @@ type UserController struct {
 func (c *UserController) Get() {
 	var user []*SysModels.SysUser
 	o := orm.NewOrm()
-	result := o.QueryTable(SysModels.SysUser{})
+	result := o.QueryTable(SysModels.SysUser{}).RelatedSel()
 	c.RPaging(utils.RPage{OrmResult: result, Data: &user})
 }
 
@@ -75,7 +75,7 @@ func (c *UserController) Update() {
 	if err != nil {
 		c.RBack(utils.R{Data: "json format err"}, err)
 	} else {
-		msg, err := o.Update(&user, "account", "nickName", "email", "deptId", "phoneNum", "status", "avatar")
+		msg, err := o.Update(&user, "account", "nickName", "email", "deptId", "phoneNum", "status", "file")
 		c.RBack(utils.R{Data: msg}, err)
 	}
 }

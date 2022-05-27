@@ -40,7 +40,7 @@ import {
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { LOGIN } from '@/store/mutation-types'
+import { BREAD_CRUMBS, LOGIN, OPEN_LEFT_MENU } from '@/store/mutation-types'
 import storeInstant from '@/utils/store'
 import { CURRENT_MENU } from '@/utils/constant'
 
@@ -109,6 +109,10 @@ const Login = defineComponent({
     // 初始化值
     function clearReset() {
       storeInstant.removeItem(CURRENT_MENU)
+      // 清空选中的左侧菜单openMenus
+      store.commit(OPEN_LEFT_MENU, '')
+      // 清空面包屑
+      store.commit(BREAD_CRUMBS, [])
     }
     return {
       formState,

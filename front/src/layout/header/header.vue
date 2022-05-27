@@ -18,7 +18,13 @@
       </div>
       <a-dropdown>
         <a class="ant-dropdown-link" @click="(e) => e.preventDefault()">
-          <a-avatar :size="50">
+          <span v-if="userInfo" class="nickName">
+            {{ userInfo.nickName }}
+          </span>
+          <template v-if="userInfo.file">
+            <a-avatar :src="userInfo.file.url" :size="50" />
+          </template>
+          <a-avatar v-else :size="50">
             <template #icon><UserOutlined /></template>
           </a-avatar>
         </a>
@@ -32,10 +38,13 @@
       </a-dropdown>
     </div>
   </a-layout-header>
-  <CommonDrawer :visible="visible" title="个人中心" @on-close="visible = false">
+  <CommonDrawer :footer="false" :visible="visible" title="个人中心" @on-close="visible = false">
     <a-form>
-      <a-form-item label="修改密码" v-bind="validateInfos.password">
+      <a-form-item label="旧密码" placeholder="请输入旧密码" v-bind="validateInfos.password">
         <a-input v-model:value="modelRef.password" />
+      </a-form-item>
+      <a-form-item label="新密码" placeholder="请输入新密码" v-bind="validateInfos.newPassword">
+        <a-input v-model:value="modelRef.newPassword" />
       </a-form-item>
       <a-form-item>
         <a-button type="primary" @click.prevent="onSubmit()">
@@ -55,11 +64,13 @@ import {
 import { computed, defineComponent, reactive, ref, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { Form } from 'ant-design-vue'
+import { Form, message } from 'ant-design-vue'
 import { COLLAPSED } from '@/store/mutation-types'
 import log from '@/utils/log'
 import CommonDrawer from '@/components/Drawer/Drawer.vue'
 import storeInstant from '@/utils/store'
+import http from '@/utils/request'
+import type { UserType } from '@/types/sys'
 
 export default defineComponent({
   name: 'CommonHeader',
@@ -73,19 +84,27 @@ export default defineComponent({
     const data = ref<string[]>(['个人中心', '退出'])
     const router = useRouter()
     const store = useStore()
+    const userInfo = computed<UserType>(() => store.state.sys.userInfo)
 
     // 个人中心
     const visible = ref(false)
     const { useForm } = Form
     const modelRef = reactive({
       password: '',
-      icon: '',
+      newPassword: '',
+      id: 0,
     })
-    const ruleRef = reactive({
+    const ruleRef = ref({
       password: [
         {
           required: true,
-          message: '请输入密码',
+          message: '请输入旧密码',
+        },
+      ],
+      newPassword: [
+        {
+          required: true,
+          message: '请输入新密码',
         },
       ],
     })
@@ -95,7 +114,19 @@ export default defineComponent({
     function onSubmit() {
       validate()
         .then(() => {
-          log.d(toRaw(modelRef), '表单值')
+          const data = toRaw(modelRef)
+          data.id = userInfo.value.id!
+          log.i(data, '表单值')
+          http({
+            url: 'user/password',
+            method: 'POST',
+            body: data,
+          }).then((res) => {
+            const data = res.data
+            log.i(data, '修改返回的值')
+            message.success('修改成功')
+            resetFields()
+          })
         })
         .catch((err) => {
           log.e(err, '表单验证错误')
@@ -119,6 +150,7 @@ export default defineComponent({
       store.commit(COLLAPSED)
     }
     const crumbs = computed(() => store.state.crumbs.list)
+
     return {
       // data
       data,
@@ -133,6 +165,7 @@ export default defineComponent({
       resetFields,
       modelRef,
       onSubmit,
+      userInfo,
     }
   },
 })
