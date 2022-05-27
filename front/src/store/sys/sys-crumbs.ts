@@ -1,5 +1,4 @@
 import { BREAD_CRUMBS, OPEN_LEFT_MENU } from '@/store/mutation-types'
-import log from '@/utils/log'
 import type { MenuType } from '@/types/sys'
 
 export interface PanesType {

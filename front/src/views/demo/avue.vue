@@ -1,3 +1,9 @@
+<template>
+  <BaseContainer>
+    <fs-crud ref="crudRef" v-bind="crudBinding" />
+  </BaseContainer>
+</template>
+
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
 import { useCrud, useExpose } from '@fast-crud/fast-crud'
@@ -38,9 +44,3 @@ function crudExpose(crudExpose: any): { crudOptions: any } {
   throw new Error('Function not implemented.')
 }
 </script>
-
-<template>
-  <BaseContainer>
-    <fs-crud ref="crudRef" v-bind="crudBinding" />
-  </BaseContainer>
-</template>

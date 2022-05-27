@@ -1,3 +1,133 @@
+<template>
+  <CommonButton v-bt-auth:add="{ title: true }" title="添加" icon-name="add" @change="ChangAdd" />
+  <a-table
+    style="margin-top: 15px"
+    :columns="tableData.columns"
+    :data-source="tableData.data"
+    :loading="tableData.loading"
+    row-key="id"
+    :pagination="{
+      total: tableData.total,
+    }"
+    @change="Change"
+  >
+    <template #bodyCell="{ column, text, record }">
+      <template v-if="column.key === 'status'">
+        <div :style="text === 0 ? { color: 'red' } : { color: 'green' }">
+          {{ formatStatus(text) }}
+        </div>
+      </template>
+      <template v-if="column.key === 'depart'">
+        {{ record.deptId }}
+      </template>
+      <template v-if="column.key === 'avatar'">
+        <a-tag v-if="!record.avatar" color="red">
+          暂无头像
+        </a-tag>
+        <img v-else class="avatar" :src="record.avatar" :alt="record.nickName">
+      </template>
+
+      <template v-if="column.key === 'action'">
+        <a-button
+          v-bt-auth:power
+          type="primary"
+          style="margin-right: 15px"
+          @click="Allocate(record)"
+        />
+        <a-button v-bt-auth:edit type="primary" style="margin-right: 15px" @click="Editor(record)" />
+        <a-button v-bt-auth:updatePassword danger style="margin-right: 15px" @click="updatePassword(record)" />
+        <a-popconfirm title="确定删除吗?" ok-text="删除" cancel-text="取消" @confirm="Del(record)">
+          <a-button v-bt-auth:del danger />
+        </a-popconfirm>
+      </template>
+    </template>
+  </a-table>
+  <CommonDrawer
+    :title="commonDrawerData.title"
+    :visible="commonDrawerData.visible"
+    :loading="commonDrawerData.loading"
+    ok-text="确定"
+    cancel-text="取消"
+    @on-ok="Submit()"
+    @on-close="commonDrawerData.visible = false"
+  >
+    <a-form
+      ref="formRef"
+      :label-col="{ span: 4 }"
+      :wrapper-col="{ span: 20 }"
+      name="avatar"
+    >
+      <a-form-item label="头像">
+        <ImageUpload v-model:list="formData.avatar" />
+      </a-form-item>
+      <a-form-item label="账号" v-bind="validateInfos.account">
+        <a-input v-model:value="formData.account" />
+      </a-form-item>
+      <a-form-item label="昵称" v-bind="validateInfos.nickName">
+        <a-input v-model:value="formData.nickName" />
+      </a-form-item>
+      <a-form-item label="部门" v-bind="validateInfos.deptId">
+        <a-tree-select
+          v-model:value="formData.deptId"
+          style="width: 100%"
+          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+          :tree-data="treeOptions.options"
+          placeholder="请选择部门"
+          tree-default-expand-all
+        />
+      </a-form-item>
+      <a-form-item label="状态" v-bind="validateInfos.status">
+        <a-radio-group v-model:value="formData.status" name="radioGroup">
+          <a-radio :value="0">
+            失效
+          </a-radio>
+          <a-radio :value="1">
+            有效
+          </a-radio>
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item label="邮箱" v-bind="validateInfos.email">
+        <a-input v-model:value="formData.email" />
+      </a-form-item>
+      <a-form-item label="手机号码" v-bind="validateInfos.phoneNum">
+        <a-input v-model:value="formData.phoneNum" />
+      </a-form-item>
+      <a-form-item v-if="!editId.id" v-bind="validateInfos.password">
+        <a-input v-model:value="formData.password" />
+      </a-form-item>
+    </a-form>
+  </CommonDrawer>
+  <CommonDrawer
+    title="角色列表"
+    ok-text="确定"
+    cancel-text="取消"
+    :visible="allocationTree.visible"
+    :loading="allocationTree.loading"
+    @on-close="Close"
+    @on-ok="SubmitOk"
+  >
+    <a-spin :spinning="allocationTree.loading">
+      <a-checkbox-group
+        v-if="roleList.length > 0"
+        v-model:value="selectkeys"
+        class="checkoutContainer"
+      >
+        <div v-for="(item, index) in roleList" :key="index">
+          <a-checkbox :value="item.id">
+            {{ item.remark }}
+          </a-checkbox>
+        </div>
+      </a-checkbox-group>
+      <a-empty v-else />
+    </a-spin>
+  </CommonDrawer>
+
+  <!-- 修改密码 -->
+  <a-modal v-model:visible="updatePasswdVis" title="修改密码" @ok="updatePasswdHandleOk">
+    <a-input v-model:value="password" placeholder="请输入新密码" />
+  </a-modal>
+</template>
+
 <script lang="ts">
 import {
   defineComponent, nextTick, onMounted, reactive, ref, toRaw,
@@ -399,136 +529,6 @@ const SysUser = defineComponent({
 
 export default SysUser
 </script>
-
-<template>
-  <CommonButton v-bt-auth:add="{ title: true }" title="添加" icon-name="add" @change="ChangAdd" />
-  <a-table
-    style="margin-top: 15px"
-    :columns="tableData.columns"
-    :data-source="tableData.data"
-    :loading="tableData.loading"
-    row-key="id"
-    :pagination="{
-      total: tableData.total,
-    }"
-    @change="Change"
-  >
-    <template #bodyCell="{ column, text, record }">
-      <template v-if="column.key === 'status'">
-        <div :style="text === 0 ? { color: 'red' } : { color: 'green' }">
-          {{ formatStatus(text) }}
-        </div>
-      </template>
-      <template v-if="column.key === 'depart'">
-        {{ record.deptId }}
-      </template>
-      <template v-if="column.key === 'avatar'">
-        <a-tag v-if="!record.avatar" color="red">
-          暂无头像
-        </a-tag>
-        <img v-else class="avatar" :src="record.avatar" :alt="record.nickName">
-      </template>
-
-      <template v-if="column.key === 'action'">
-        <a-button
-          v-bt-auth:power
-          type="primary"
-          style="margin-right: 15px"
-          @click="Allocate(record)"
-        />
-        <a-button v-bt-auth:edit type="primary" style="margin-right: 15px" @click="Editor(record)" />
-        <a-button v-bt-auth:updatePassword danger style="margin-right: 15px" @click="updatePassword(record)" />
-        <a-popconfirm title="确定删除吗?" ok-text="删除" cancel-text="取消" @confirm="Del(record)">
-          <a-button v-bt-auth:del danger />
-        </a-popconfirm>
-      </template>
-    </template>
-  </a-table>
-  <CommonDrawer
-    :title="commonDrawerData.title"
-    :visible="commonDrawerData.visible"
-    :loading="commonDrawerData.loading"
-    ok-text="确定"
-    cancel-text="取消"
-    @on-ok="Submit()"
-    @on-close="commonDrawerData.visible = false"
-  >
-    <a-form
-      ref="formRef"
-      :label-col="{ span: 4 }"
-      :wrapper-col="{ span: 20 }"
-      name="avatar"
-    >
-      <a-form-item label="头像">
-        <ImageUpload v-model:list="formData.avatar" />
-      </a-form-item>
-      <a-form-item label="账号" v-bind="validateInfos.account">
-        <a-input v-model:value="formData.account" />
-      </a-form-item>
-      <a-form-item label="昵称" v-bind="validateInfos.nickName">
-        <a-input v-model:value="formData.nickName" />
-      </a-form-item>
-      <a-form-item label="部门" v-bind="validateInfos.deptId">
-        <a-tree-select
-          v-model:value="formData.deptId"
-          style="width: 100%"
-          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-          :tree-data="treeOptions.options"
-          placeholder="请选择部门"
-          tree-default-expand-all
-        />
-      </a-form-item>
-      <a-form-item label="状态" v-bind="validateInfos.status">
-        <a-radio-group v-model:value="formData.status" name="radioGroup">
-          <a-radio :value="0">
-            失效
-          </a-radio>
-          <a-radio :value="1">
-            有效
-          </a-radio>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item label="邮箱" v-bind="validateInfos.email">
-        <a-input v-model:value="formData.email" />
-      </a-form-item>
-      <a-form-item label="手机号码" v-bind="validateInfos.phoneNum">
-        <a-input v-model:value="formData.phoneNum" />
-      </a-form-item>
-      <a-form-item v-if="!editId.id" v-bind="validateInfos.password">
-        <a-input v-model:value="formData.password" />
-      </a-form-item>
-    </a-form>
-  </CommonDrawer>
-  <CommonDrawer
-    title="角色列表"
-    ok-text="确定"
-    cancel-text="取消"
-    :visible="allocationTree.visible"
-    :loading="allocationTree.loading"
-    @on-close="Close"
-    @on-ok="SubmitOk"
-  >
-    <a-spin :spinning="allocationTree.loading">
-      <a-checkbox-group
-        v-if="roleList.length > 0"
-        v-model:value="selectkeys"
-        class="checkoutContainer"
-      >
-        <div v-for="(item, index) in roleList" :key="index">
-          <a-checkbox :value="item.id">
-            {{ item.remark }}
-          </a-checkbox>
-        </div>
-      </a-checkbox-group>
-      <a-empty v-else />
-    </a-spin>
-  </CommonDrawer>
-
-  <!-- 修改密码 -->
-  <a-modal v-model:visible="updatePasswdVis" title="修改密码" @ok="updatePasswdHandleOk">
-    <a-input v-model:value="password" placeholder="请输入新密码" />
-  </a-modal>
-</template>
 
 <style scoped lang="less">
 .checkoutContainer {

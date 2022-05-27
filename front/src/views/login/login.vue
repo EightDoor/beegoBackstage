@@ -1,3 +1,38 @@
+<template>
+  <div class="login">
+    <div class="container">
+      <h1>后台登录</h1>
+      <a-form
+        ref="formRef"
+        :model="formState"
+        :labe-col="labelCol"
+        :wrapper-col="wrapperCol"
+        :rules="rules"
+        class="form"
+      >
+        <a-form-item label="账户" name="name">
+          <a-input v-model:value="formState.name" />
+        </a-form-item>
+        <a-form-item label="密码" name="password">
+          <a-input-password
+            v-model:value="formState.password"
+            @pressEnter="onSubmit"
+          />
+        </a-form-item>
+        <a-form-item :wrapper-col="{ span: 18, offset: 6 }">
+          <a-button
+            type="primary"
+            :loading="submitData.loading"
+            @click="onSubmit"
+          >
+            登录
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </div>
+  </div>
+</template>
+
 <script lang="ts">
 import {
   defineComponent, reactive, ref, toRaw,
@@ -88,41 +123,6 @@ const Login = defineComponent({
 })
 export default Login
 </script>
-
-<template>
-  <div class="login">
-    <div class="container">
-      <h1>后台登录</h1>
-      <a-form
-        ref="formRef"
-        :model="formState"
-        :labe-col="labelCol"
-        :wrapper-col="wrapperCol"
-        :rules="rules"
-        class="form"
-      >
-        <a-form-item label="账户" name="name">
-          <a-input v-model:value="formState.name" />
-        </a-form-item>
-        <a-form-item label="密码" name="password">
-          <a-input-password
-            v-model:value="formState.password"
-            @pressEnter="onSubmit"
-          />
-        </a-form-item>
-        <a-form-item :wrapper-col="{ span: 18, offset: 6 }">
-          <a-button
-            type="primary"
-            :loading="submitData.loading"
-            @click="onSubmit"
-          >
-            登录
-          </a-button>
-        </a-form-item>
-      </a-form>
-    </div>
-  </div>
-</template>
 
 <style lang="less" scoped>
 @import "login.less";

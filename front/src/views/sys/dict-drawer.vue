@@ -1,3 +1,60 @@
+<template>
+  <CommonDrawer
+    title="字典配置"
+    cancel-text="取消"
+    :visible="visible"
+    @on-close="Close()"
+  >
+    <a-button type="primary" @click="Add()">
+      添加
+    </a-button>
+    <a-table
+      :columns="tableData.columns"
+      :pagination="{
+        total: tableData.total,
+      }"
+      :data-source="tableData.data"
+      :loading="tableData.loading"
+    >
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.dataIndex === 'action'">
+          <a-button type="primary" class="button-right" @click="Edit(record)">
+            编辑
+          </a-button>
+          <a-popconfirm
+            title="确定删除吗?"
+            ok-text="删除"
+            cancel-text="取消"
+            @confirm="Del(record)"
+          >
+            <a-button type="primary" class="button-right" danger>
+              删除
+            </a-button>
+          </a-popconfirm>
+        </template>
+      </template>
+    </a-table>
+    <a-modal
+      v-model:visible="modalForm.visible"
+      :title="modalForm.title"
+      :confirm-loading="modalForm.loading"
+      @ok="handleOk"
+    >
+      <a-form ref="formRef" :model="formData" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-form-item label="字典名称" name="label">
+          <a-input v-model:value="formData.label" />
+        </a-form-item>
+        <a-form-item label="字典值" name="value">
+          <a-input v-model:value="formData.value" />
+        </a-form-item>
+        <a-form-item label="描述" name="describe">
+          <a-textarea v-model:value="formData.describe" allow-clear />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+  </CommonDrawer>
+</template>
+
 <script lang="ts">
 import {
   defineComponent, reactive, ref, toRaw,
@@ -177,60 +234,3 @@ const DictDrawer = defineComponent({
 })
 export default DictDrawer
 </script>
-
-<template>
-  <CommonDrawer
-    title="字典配置"
-    cancel-text="取消"
-    :visible="visible"
-    @on-close="Close()"
-  >
-    <a-button type="primary" @click="Add()">
-      添加
-    </a-button>
-    <a-table
-      :columns="tableData.columns"
-      :pagination="{
-        total: tableData.total,
-      }"
-      :data-source="tableData.data"
-      :loading="tableData.loading"
-    >
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.dataIndex === 'action'">
-          <a-button type="primary" class="button-right" @click="Edit(record)">
-            编辑
-          </a-button>
-          <a-popconfirm
-            title="确定删除吗?"
-            ok-text="删除"
-            cancel-text="取消"
-            @confirm="Del(record)"
-          >
-            <a-button type="primary" class="button-right" danger>
-              删除
-            </a-button>
-          </a-popconfirm>
-        </template>
-      </template>
-    </a-table>
-    <a-modal
-      v-model:visible="modalForm.visible"
-      :title="modalForm.title"
-      :confirm-loading="modalForm.loading"
-      @ok="handleOk"
-    >
-      <a-form ref="formRef" :model="formData" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
-        <a-form-item label="字典名称" name="label">
-          <a-input v-model:value="formData.label" />
-        </a-form-item>
-        <a-form-item label="字典值" name="value">
-          <a-input v-model:value="formData.value" />
-        </a-form-item>
-        <a-form-item label="描述" name="describe">
-          <a-textarea v-model:value="formData.describe" allow-clear />
-        </a-form-item>
-      </a-form>
-    </a-modal>
-  </CommonDrawer>
-</template>

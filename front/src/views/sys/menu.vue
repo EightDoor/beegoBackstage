@@ -1,3 +1,113 @@
+<template>
+  <div class="space-margin-bottom">
+    <CommonButton
+      v-bt-auth:add="{ title: true }"
+      title="添加"
+      icon-name="add"
+      @change="ChangeClick()"
+    />
+  </div>
+  <a-table
+    :scroll="{ x: 500 }"
+    :columns="tableCont.columns"
+    row-key="id"
+    :data-source="tableCont.data"
+    :pagination="{
+      total: tableCont.total,
+      pageSize: 10000,
+      hideOnSinglePage: true,
+    }"
+    :loading="tableCont.loading"
+    @change="Change"
+  >
+    <template #bodyCell="{ column, record }">
+      <template v-if="column.key === 'action'">
+        <a-button v-bt-auth:edit type="primary" style="margin-right: 15px" @click="Editor(record)" />
+        <a-popconfirm title="确定删除吗?" ok-text="删除" cancel-text="取消" @confirm="Del(record)">
+          <a-button v-bt-auth:del danger />
+        </a-popconfirm>
+      </template>
+    </template>
+  </a-table>
+  <CommonDrawer
+    :title="drawerData.title"
+    :visible="drawerData.visible"
+    cancel-text="取消"
+    ok-text="确定"
+    :loading="drawerData.loading"
+    @onClose="onClose"
+    @onOk="onSubmit"
+  >
+    <a-form
+      ref="formRef"
+      :label-col="{ span: 4 }"
+      :wrapper-col="{ span: 20 }"
+    >
+      <a-form-item label="父级id" v-bind="validateInfos.parentId">
+        <a-tree-select
+          v-model:value="formData.parentId"
+          style="width: 100%"
+          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+          :tree-data="treeOptions.options"
+          placeholder="请选择"
+          tree-default-expand-all
+        />
+      </a-form-item>
+      <a-form-item label="名称" v-bind="validateInfos.title">
+        <a-input v-model:value="formData.title" />
+      </a-form-item>
+      <a-form-item label="菜单类型" v-bind="validateInfos.type">
+        <a-select v-model:value="formData.type">
+          <a-select-option
+            v-for="(item, index) in optionsType"
+            :key="index"
+            :value="item.value"
+          >
+            {{ item.label }}
+          </a-select-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item v-if="formData.type === 3" label="权限标识" v-bind="validateInfos.perms">
+        <a-input v-model:value="formData.perms" />
+      </a-form-item>
+      <template v-else>
+        <a-form-item label="菜单name" v-bind="validateInfos.name">
+          <a-input v-model:value="formData.name" />
+        </a-form-item>
+        <a-form-item label="是否首页" v-bind="validateInfos.isHome">
+          <a-radio-group v-model:value="formData.isHome">
+            <a-radio :value="1">
+              是
+            </a-radio>
+            <a-radio :value="0">
+              否
+            </a-radio>
+          </a-radio-group>
+        </a-form-item>
+        <a-form-item label="图标" v-bind="validateInfos.icon">
+          <a-input v-model:value="formData.icon" />
+        </a-form-item>
+        <a-form-item label="重定向地址" v-bind="validateInfos.redirect">
+          <a-input v-model:value="formData.redirect" />
+        </a-form-item>
+        <a-form-item label="是否隐藏" v-bind="validateInfos.hidden">
+          <a-radio-group v-model:value="formData.hidden" name="radioGroup">
+            <a-radio :value="0">
+              否
+            </a-radio>
+            <a-radio :value="1">
+              是
+            </a-radio>
+          </a-radio-group>
+        </a-form-item>
+      </template>
+      <a-form-item label="排序" v-bind="validateInfos.orderNum">
+        <a-input-number v-model:value="formData.orderNum" />
+      </a-form-item>
+    </a-form>
+  </CommonDrawer>
+</template>
+
 <script lang="ts">
 import {
   defineComponent, nextTick, onMounted, reactive, ref, toRaw, unref,
@@ -254,116 +364,6 @@ const SysMenu = defineComponent({
 })
 export default SysMenu
 </script>
-
-<template>
-  <div class="space-margin-bottom">
-    <CommonButton
-      v-bt-auth:add="{ title: true }"
-      title="添加"
-      icon-name="add"
-      @change="ChangeClick()"
-    />
-  </div>
-  <a-table
-    :scroll="{ x: 500 }"
-    :columns="tableCont.columns"
-    row-key="id"
-    :data-source="tableCont.data"
-    :pagination="{
-      total: tableCont.total,
-      pageSize: 10000,
-      hideOnSinglePage: true,
-    }"
-    :loading="tableCont.loading"
-    @change="Change"
-  >
-    <template #bodyCell="{ column, record }">
-      <template v-if="column.key === 'action'">
-        <a-button v-bt-auth:edit type="primary" style="margin-right: 15px" @click="Editor(record)" />
-        <a-popconfirm title="确定删除吗?" ok-text="删除" cancel-text="取消" @confirm="Del(record)">
-          <a-button v-bt-auth:del danger />
-        </a-popconfirm>
-      </template>
-    </template>
-  </a-table>
-  <CommonDrawer
-    :title="drawerData.title"
-    :visible="drawerData.visible"
-    cancel-text="取消"
-    ok-text="确定"
-    :loading="drawerData.loading"
-    @onClose="onClose"
-    @onOk="onSubmit"
-  >
-    <a-form
-      ref="formRef"
-      :label-col="{ span: 4 }"
-      :wrapper-col="{ span: 20 }"
-    >
-      <a-form-item label="父级id" v-bind="validateInfos.parentId">
-        <a-tree-select
-          v-model:value="formData.parentId"
-          style="width: 100%"
-          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-          :tree-data="treeOptions.options"
-          placeholder="请选择"
-          tree-default-expand-all
-        />
-      </a-form-item>
-      <a-form-item label="名称" v-bind="validateInfos.title">
-        <a-input v-model:value="formData.title" />
-      </a-form-item>
-      <a-form-item label="菜单类型" v-bind="validateInfos.type">
-        <a-select v-model:value="formData.type">
-          <a-select-option
-            v-for="(item, index) in optionsType"
-            :key="index"
-            :value="item.value"
-          >
-            {{ item.label }}
-          </a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item v-if="formData.type === 3" label="权限标识" v-bind="validateInfos.perms">
-        <a-input v-model:value="formData.perms" />
-      </a-form-item>
-      <template v-else>
-        <a-form-item label="菜单name" v-bind="validateInfos.name">
-          <a-input v-model:value="formData.name" />
-        </a-form-item>
-        <a-form-item label="是否首页" v-bind="validateInfos.isHome">
-          <a-radio-group v-model:value="formData.isHome">
-            <a-radio :value="1">
-              是
-            </a-radio>
-            <a-radio :value="0">
-              否
-            </a-radio>
-          </a-radio-group>
-        </a-form-item>
-        <a-form-item label="图标" v-bind="validateInfos.icon">
-          <a-input v-model:value="formData.icon" />
-        </a-form-item>
-        <a-form-item label="重定向地址" v-bind="validateInfos.redirect">
-          <a-input v-model:value="formData.redirect" />
-        </a-form-item>
-        <a-form-item label="是否隐藏" v-bind="validateInfos.hidden">
-          <a-radio-group v-model:value="formData.hidden" name="radioGroup">
-            <a-radio :value="0">
-              否
-            </a-radio>
-            <a-radio :value="1">
-              是
-            </a-radio>
-          </a-radio-group>
-        </a-form-item>
-      </template>
-      <a-form-item label="排序" v-bind="validateInfos.orderNum">
-        <a-input-number v-model:value="formData.orderNum" />
-      </a-form-item>
-    </a-form>
-  </CommonDrawer>
-</template>
 
 <style scoped lang="less">
 @import "./depart.less";

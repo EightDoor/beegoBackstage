@@ -1,3 +1,18 @@
+<template>
+  <a-modal
+    v-model:visible="commdrawerData.visible"
+    :title="title"
+    :width="width"
+    :confirm-loading="commdrawerData.loading"
+    @cancel="onCancel"
+    @ok="onOk"
+  >
+    <div class="drawerContainer">
+      <slot />
+    </div>
+  </a-modal>
+</template>
+
 <script lang="ts">
 import { defineComponent, reactive, watch } from 'vue'
 
@@ -80,21 +95,6 @@ const CommonDrawer = defineComponent({
 
 export default CommonDrawer
 </script>
-
-<template>
-  <a-modal
-    v-model:visible="commdrawerData.visible"
-    :title="title"
-    :width="width"
-    :confirm-loading="commdrawerData.loading"
-    @cancel="onCancel"
-    @ok="onOk"
-  >
-    <div class="drawerContainer">
-      <slot />
-    </div>
-  </a-modal>
-</template>
 
 <style lang="less" scoped>
 @import './Drawer.less';

@@ -1,3 +1,26 @@
+<template>
+  <a-menu
+    v-model:openKeys="menusInfo.openKeys"
+    v-model:selectedKeys="menusInfo.selectedKeys"
+    mode="inline"
+    theme="dark"
+    :inline-collapsed="collapsed"
+    :collapsed="collapsed"
+  >
+    <template v-for="item in getMenus">
+      <template v-if="!item.children">
+        <a-menu-item :key="item.key" @click="jumpTo(item)">
+          <!-- 图标 -->
+          <span>{{ item.title }}</span>
+        </a-menu-item>
+      </template>
+      <template v-else>
+        <SubMenu :key="item.key" :menu-info="item" />
+      </template>
+    </template>
+  </a-menu>
+</template>
+
 <script lang="ts">
 import {
   computed,
@@ -63,29 +86,6 @@ export default defineComponent({
   },
 })
 </script>
-
-<template>
-  <a-menu
-    v-model:openKeys="menusInfo.openKeys"
-    v-model:selectedKeys="menusInfo.selectedKeys"
-    mode="inline"
-    theme="dark"
-    :inline-collapsed="collapsed"
-    :collapsed="collapsed"
-  >
-    <template v-for="item in getMenus">
-      <template v-if="!item.children">
-        <a-menu-item :key="item.key" @click="jumpTo(item)">
-          <!-- 图标 -->
-          <span>{{ item.title }}</span>
-        </a-menu-item>
-      </template>
-      <template v-else>
-        <SubMenu :key="item.key" :menu-info="item" />
-      </template>
-    </template>
-  </a-menu>
-</template>
 
 <style scoped lang="less">
 @import "./menu.less";

@@ -175,16 +175,25 @@ function listToTreeMenus(jsonData: MenuType[], parentIdItem = { id: 0, path: '',
       // 组合路由跳转地址
       item.path = `${parentIdItem.path}${item.path}`
       if (parentIdItem.title) {
-        // 组合面包屑
-        item.crumb = `${parentIdItem.title},${item.title}`
+        if (parentIdItem.crumb) {
+          // 组合面包屑
+          item.crumb = `${parentIdItem.crumb},${item.title}`
+        }
+        else {
+          // 组合面包屑
+          item.crumb = `${parentIdItem.title},${item.title}`
+        }
       }
       else {
         item.crumb = item.title
       }
-      if (parentIdItem.id)
-        item.menuOpenKeys = `${parentIdItem.id},${item.id}`
-      else
-        item.menuOpenKeys = `${item.id}`
+      if (parentIdItem.id) {
+        if (parentIdItem.menuOpenKeys)
+          item.menuOpenKeys = `${parentIdItem.menuOpenKeys},${item.id}`
+        else
+          item.menuOpenKeys = `${parentIdItem.id},${item.id}`
+      }
+      else { item.menuOpenKeys = `${item.id}` }
       const result = listToTreeMenus(jsonData, item)
       if (result && result.length > 0)
         item.children = result
@@ -259,10 +268,8 @@ export default {
               if (currentData) {
                 store.commit(OPEN_LEFT_MENU, currentData)
                 // 面包屑默认选中
-                if (currentData.crumb) {
-                  log.i(currentData.crumb, 'currentData.crumb')
+                if (currentData.crumb)
                   store.commit(BREAD_CRUMBS, currentData.crumb.split(','))
-                }
               }
               commit(PERMISSIONBUTTONS, res)
               commit(USERINFOMENUS, res)

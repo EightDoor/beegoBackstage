@@ -1,3 +1,20 @@
+<template>
+  <a-table
+    :data-source="dataSource"
+    :columns="columns"
+    :pagination="{
+      total: page.total,
+    }"
+    @change="change"
+  >
+    <template #bodyCell="{ column, record }">
+      <template v-if="column.dataIndex === 'createdAt'">
+        {{ formatTime(record.createdAt) }}
+      </template>
+    </template>
+  </a-table>
+</template>
+
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
 import { dateUtil } from 'zhoukai_utils'
@@ -74,20 +91,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<template>
-  <a-table
-    :data-source="dataSource"
-    :columns="columns"
-    :pagination="{
-      total: page.total,
-    }"
-    @change="change"
-  >
-    <template #bodyCell="{ column, record }">
-      <template v-if="column.dataIndex === 'createdAt'">
-        {{ formatTime(record.createdAt) }}
-      </template>
-    </template>
-  </a-table>
-</template>

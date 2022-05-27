@@ -1,3 +1,21 @@
+<template>
+  <div>
+    <a-upload
+      v-model:file-list="fileList"
+      :action="Config.qiniuUploadUrl"
+      :multiple="true"
+      :data="extendedParam"
+      list-type="picture"
+      @change="handleChange"
+    >
+      <a-button>
+        <UploadOutlined />
+        上传
+      </a-button>
+    </a-upload>
+  </div>
+</template>
+
 <script lang="ts">
 import { UploadOutlined } from '@ant-design/icons-vue'
 import type { PropType } from 'vue'
@@ -121,23 +139,5 @@ export default defineComponent({
   },
 })
 </script>
-
-<template>
-  <div>
-    <a-upload
-      v-model:file-list="fileList"
-      :action="Config.qiniuUploadUrl"
-      :multiple="true"
-      :data="extendedParam"
-      list-type="picture"
-      @change="handleChange"
-    >
-      <a-button>
-        <UploadOutlined />
-        上传
-      </a-button>
-    </a-upload>
-  </div>
-</template>
 
 <style scoped lang="less"></style>

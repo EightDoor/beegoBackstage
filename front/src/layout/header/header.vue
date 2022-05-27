@@ -1,3 +1,51 @@
+<template>
+  <a-layout-header class="container">
+    <div class="content">
+      <div class="button-icon-container">
+        <div @click="ToggleCollapsed()">
+          <MenuUnfoldOutlined v-if="collapsed" class="button-icon" />
+          <MenuFoldOutlined v-else class="button-icon" />
+        </div>
+        <a-breadcrumb>
+          <a-breadcrumb-item
+            v-for="(item, index) in crumbs"
+            :key="index"
+            class="button-breadcrumb"
+          >
+            {{ item }} {{ index > 0 && index + 1 !== crumbs.length ? '/' : '' }}
+          </a-breadcrumb-item>
+        </a-breadcrumb>
+      </div>
+      <a-dropdown>
+        <a class="ant-dropdown-link" @click="(e) => e.preventDefault()">
+          <a-avatar :size="50">
+            <template #icon><UserOutlined /></template>
+          </a-avatar>
+        </a>
+        <template #overlay>
+          <a-menu>
+            <a-menu-item v-for="(item, index) in data" :key="index">
+              <a @click="GoTo(item)">{{ item }}</a>
+            </a-menu-item>
+          </a-menu>
+        </template>
+      </a-dropdown>
+    </div>
+  </a-layout-header>
+  <CommonDrawer :visible="visible" title="个人中心" @on-close="visible = false">
+    <a-form>
+      <a-form-item label="修改密码" v-bind="validateInfos.password">
+        <a-input v-model:value="modelRef.password" />
+      </a-form-item>
+      <a-form-item>
+        <a-button type="primary" @click.prevent="onSubmit()">
+          更改
+        </a-button>
+      </a-form-item>
+    </a-form>
+  </CommonDrawer>
+</template>
+
 <script lang="ts">
 import {
   MenuFoldOutlined,
@@ -89,54 +137,6 @@ export default defineComponent({
   },
 })
 </script>
-
-<template>
-  <a-layout-header class="container">
-    <div class="content">
-      <div class="button-icon-container">
-        <div @click="ToggleCollapsed()">
-          <MenuUnfoldOutlined v-if="collapsed" class="button-icon" />
-          <MenuFoldOutlined v-else class="button-icon" />
-        </div>
-        <a-breadcrumb>
-          <a-breadcrumb-item
-            v-for="(item, index) in crumbs"
-            :key="index"
-            class="button-breadcrumb"
-          >
-            {{ item }} {{ index > 0 && index + 1 !== crumbs.length ? '/' : '' }}
-          </a-breadcrumb-item>
-        </a-breadcrumb>
-      </div>
-      <a-dropdown>
-        <a class="ant-dropdown-link" @click="(e) => e.preventDefault()">
-          <a-avatar :size="50">
-            <template #icon><UserOutlined /></template>
-          </a-avatar>
-        </a>
-        <template #overlay>
-          <a-menu>
-            <a-menu-item v-for="(item, index) in data" :key="index">
-              <a @click="GoTo(item)">{{ item }}</a>
-            </a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown>
-    </div>
-  </a-layout-header>
-  <CommonDrawer :visible="visible" title="个人中心" @on-close="visible = false">
-    <a-form>
-      <a-form-item label="修改密码" v-bind="validateInfos.password">
-        <a-input v-model:value="modelRef.password" />
-      </a-form-item>
-      <a-form-item>
-        <a-button type="primary" @click.prevent="onSubmit()">
-          更改
-        </a-button>
-      </a-form-item>
-    </a-form>
-  </CommonDrawer>
-</template>
 
 <style scoped lang="less">
 @import 'header.less';

@@ -1,3 +1,29 @@
+<template>
+  <div class="container">
+    <!--    <a-tabs -->
+    <!--      v-model:activeKey="activeKey" -->
+    <!--      hide-add -->
+    <!--      type="editable-card" -->
+    <!--      @change="OnChange" -->
+    <!--      @edit="OnEdit" -->
+    <!--    > -->
+    <!--      <a-tab-pane -->
+    <!--        v-for="(pane, index) in panes" -->
+    <!--        :key="index" -->
+    <!--        :tab="pane.title" -->
+    <!--        :closable="pane.closable" -->
+    <!--      > -->
+    <!--        <slot /> -->
+    <!--      </a-tab-pane> -->
+    <!--      <template #rightExtra> -->
+    <!--        <a-button style="padding-right: 15px" type="primary" @click="closeAllTab"> -->
+    <!--          关闭全部 -->
+    <!--        </a-button> -->
+    <!--      </template> -->
+    <!--    </a-tabs> -->
+  </div>
+</template>
+
 <script lang="ts">
 import {
   createVNode,
@@ -55,32 +81,6 @@ export default defineComponent({
   },
 })
 </script>
-
-<template>
-  <div class="container">
-    <!--    <a-tabs -->
-    <!--      v-model:activeKey="activeKey" -->
-    <!--      hide-add -->
-    <!--      type="editable-card" -->
-    <!--      @change="OnChange" -->
-    <!--      @edit="OnEdit" -->
-    <!--    > -->
-    <!--      <a-tab-pane -->
-    <!--        v-for="(pane, index) in panes" -->
-    <!--        :key="index" -->
-    <!--        :tab="pane.title" -->
-    <!--        :closable="pane.closable" -->
-    <!--      > -->
-    <!--        <slot /> -->
-    <!--      </a-tab-pane> -->
-    <!--      <template #rightExtra> -->
-    <!--        <a-button style="padding-right: 15px" type="primary" @click="closeAllTab"> -->
-    <!--          关闭全部 -->
-    <!--        </a-button> -->
-    <!--      </template> -->
-    <!--    </a-tabs> -->
-  </div>
-</template>
 
 <style lang="less" scoped>
 @import "index.less";
