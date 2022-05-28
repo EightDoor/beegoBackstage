@@ -1,6 +1,7 @@
 package main
 
 import (
+	"beegoBackstage/controllers/ErrorControllers"
 	"beegoBackstage/models"
 	_ "beegoBackstage/routers"
 	"fmt"
@@ -32,10 +33,8 @@ func init() {
 
 func main() {
 	logs.Debug(beego.BConfig.RunMode)
-	if beego.BConfig.RunMode == "dev" {
-		beego.BConfig.WebConfig.DirectoryIndex = true
-		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
-	}
+	// 注册自定义错误
+	beego.ErrorController(&ErrorControllers.ErrorController{})
 
 	beego.Run()
 }
