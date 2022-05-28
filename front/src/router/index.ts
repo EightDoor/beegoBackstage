@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import nprogress from 'nprogress'
 import { canUserAccess } from '@/authority'
-import 'nprogress/nprogress.css' // progress bar style
+import 'nprogress/nprogress.css'
 
 import Login from '@/views/login/login.vue'
 import NotFound from '@/views/other/not-found.vue'

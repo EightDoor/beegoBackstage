@@ -17,3 +17,4 @@
 /conf/app.conf
 *.memprof
 *.tar.gz
+/static/upload/**

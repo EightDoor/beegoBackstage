@@ -1,3 +1,12 @@
+<template>
+  <a-button :type="type" @click="CommonClick()">
+    <template v-if="iconName" #icon>
+      <PlusOutlined v-if="iconName === 'add'" />
+    </template>
+    {{ title }}
+  </a-button>
+</template>
+
 <script lang="ts">
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
@@ -37,12 +46,3 @@ const CommonButton = defineComponent({
 
 export default CommonButton
 </script>
-
-<template>
-  <a-button :type="type" @click="CommonClick()">
-    <template v-if="iconName" #icon>
-      <PlusOutlined v-if="iconName === 'add'" />
-    </template>
-    {{ title }}
-  </a-button>
-</template>

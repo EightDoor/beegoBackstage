@@ -1,3 +1,61 @@
+<template>
+  <div class="space-margin-bottom">
+    <CommonButton
+      v-bt-auth:add="{ title: true }"
+      title="添加"
+      icon-name="add"
+      @change="ChangeClick()"
+    />
+  </div>
+  <a-table
+    :columns="tableCont.columns"
+    row-key="id"
+    :data-source="tableCont.data"
+    :pagination="{
+      total: tableCont.total,
+    }"
+    :loading="tableCont.loading"
+    @change="Change"
+  >
+    <template #bodyCell="{ column, record }">
+      <template v-if="column.key === 'action'">
+        <a-button v-bt-auth:edit type="primary" style="margin-right: 15px" @click="Editor(record)" />
+        <a-popconfirm title="确定删除吗?" ok-text="删除" cancel-text="取消" @confirm="Del(record)">
+          <a-button v-bt-auth:del danger />
+        </a-popconfirm>
+      </template>
+    </template>
+  </a-table>
+  <CommonDrawer
+    :title="drawerData.title"
+    :visible="drawerData.visible"
+    cancel-text="取消"
+    ok-text="确定"
+    :loading="drawerData.loading"
+    @onClose="drawerData.visible = false"
+    @onOk="onSubmit"
+  >
+    <a-form ref="formRef" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+      <a-form-item label="父级id" v-bind="validateInfos.parentId">
+        <a-tree-select
+          v-model:value="formData.parentId"
+          style="width: 100%"
+          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+          :tree-data="treeOptions.options"
+          placeholder="请选择"
+          tree-default-expand-all
+        />
+      </a-form-item>
+      <a-form-item label="名称" v-bind="validateInfos.name">
+        <a-input v-model:value="formData.name" />
+      </a-form-item>
+      <a-form-item label="排序" v-bind="validateInfos.orderNum">
+        <a-input-number v-model:value="formData.orderNum" />
+      </a-form-item>
+    </a-form>
+  </CommonDrawer>
+</template>
+
 <script lang="ts">
 import {
   defineComponent, nextTick, onMounted, reactive, ref, toRaw,
@@ -182,64 +240,6 @@ const SysDepart = defineComponent({
 })
 export default SysDepart
 </script>
-
-<template>
-  <div class="space-margin-bottom">
-    <CommonButton
-      v-bt-auth:add="{ title: true }"
-      title="添加"
-      icon-name="add"
-      @change="ChangeClick()"
-    />
-  </div>
-  <a-table
-    :columns="tableCont.columns"
-    row-key="id"
-    :data-source="tableCont.data"
-    :pagination="{
-      total: tableCont.total,
-    }"
-    :loading="tableCont.loading"
-    @change="Change"
-  >
-    <template #bodyCell="{ column, record }">
-      <template v-if="column.key === 'action'">
-        <a-button v-bt-auth:edit type="primary" style="margin-right: 15px" @click="Editor(record)" />
-        <a-popconfirm title="确定删除吗?" ok-text="删除" cancel-text="取消" @confirm="Del(record)">
-          <a-button v-bt-auth:del danger />
-        </a-popconfirm>
-      </template>
-    </template>
-  </a-table>
-  <CommonDrawer
-    :title="drawerData.title"
-    :visible="drawerData.visible"
-    cancel-text="取消"
-    ok-text="确定"
-    :loading="drawerData.loading"
-    @onClose="drawerData.visible = false"
-    @onOk="onSubmit"
-  >
-    <a-form ref="formRef" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
-      <a-form-item label="父级id" v-bind="validateInfos.parentId">
-        <a-tree-select
-          v-model:value="formData.parentId"
-          style="width: 100%"
-          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-          :tree-data="treeOptions.options"
-          placeholder="请选择"
-          tree-default-expand-all
-        />
-      </a-form-item>
-      <a-form-item label="名称" v-bind="validateInfos.name">
-        <a-input v-model:value="formData.name" />
-      </a-form-item>
-      <a-form-item label="排序" v-bind="validateInfos.orderNum">
-        <a-input-number v-model:value="formData.orderNum" />
-      </a-form-item>
-    </a-form>
-  </CommonDrawer>
-</template>
 
 <style scoped lang="less">
 @import "./depart.less";

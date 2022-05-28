@@ -1,5 +1,32 @@
+<template>
+  <a-modal
+    v-model:visible="commdrawerData.visible"
+    :title="title"
+    :width="width"
+    destroy-on-close
+    :footer="props.footer ? undefined : null"
+    @cancel="onCancel"
+  >
+    <div class="drawerContainer">
+      <slot />
+    </div>
+    <template #footer>
+      <div v-if="props.footer">
+        <a-button key="back" :loading="commdrawerData.loading" styl="margin-right: 15px" @click="onCancel">
+          取消
+        </a-button>
+        <a-button key="submit" :loading="commdrawerData.loading" type="primary" @click="onOk">
+          确定
+        </a-button>
+      </div>
+    </template>
+  </a-modal>
+</template>
+
 <script lang="ts">
-import { defineComponent, reactive, watch } from 'vue'
+import { defineComponent, h, reactive, watch } from 'vue'
+import { Button } from 'ant-design-vue'
+import log from '@/utils/log'
 
 export interface DrawerProps {
   visible: boolean
@@ -39,6 +66,10 @@ const CommonDrawer = defineComponent({
       type: Boolean,
       default: false,
     },
+    footer: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['on-close', 'on-ok'],
   setup(props, { emit }) {
@@ -65,8 +96,13 @@ const CommonDrawer = defineComponent({
     watch(
       () => props.visible,
       (data) => {
+        log.d(data, 'Modal - Data')
         commdrawerData.visible = data
         commdrawerData.loading = false
+      },
+      {
+        immediate: true,
+        deep: true,
       },
     )
     return {
@@ -74,27 +110,13 @@ const CommonDrawer = defineComponent({
       onCancel,
       onOk,
       onClose,
+      props,
     }
   },
 })
 
 export default CommonDrawer
 </script>
-
-<template>
-  <a-modal
-    v-model:visible="commdrawerData.visible"
-    :title="title"
-    :width="width"
-    :confirm-loading="commdrawerData.loading"
-    @cancel="onCancel"
-    @ok="onOk"
-  >
-    <div class="drawerContainer">
-      <slot />
-    </div>
-  </a-modal>
-</template>
 
 <style lang="less" scoped>
 @import './Drawer.less';

@@ -1,5 +1,4 @@
 // get brower
-import log from '@/utils/log'
 
 export function GetCurrentBrowser() {
   const ua = navigator.userAgent.toLocaleLowerCase()

@@ -1,3 +1,38 @@
+<template>
+  <div class="login">
+    <div class="container">
+      <h1>后台登录</h1>
+      <a-form
+        ref="formRef"
+        :model="formState"
+        :labe-col="labelCol"
+        :wrapper-col="wrapperCol"
+        :rules="rules"
+        class="form"
+      >
+        <a-form-item label="账户" name="name">
+          <a-input v-model:value="formState.name" />
+        </a-form-item>
+        <a-form-item label="密码" name="password">
+          <a-input-password
+            v-model:value="formState.password"
+            @pressEnter="onSubmit"
+          />
+        </a-form-item>
+        <a-form-item :wrapper-col="{ span: 18, offset: 6 }">
+          <a-button
+            type="primary"
+            :loading="submitData.loading"
+            @click="onSubmit"
+          >
+            登录
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </div>
+  </div>
+</template>
+
 <script lang="ts">
 import {
   defineComponent, reactive, ref, toRaw,
@@ -5,7 +40,7 @@ import {
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { LOGIN } from '@/store/mutation-types'
+import { BREAD_CRUMBS, CLEAR_LOGIN_INFO, LOGIN, OPEN_LEFT_MENU } from '@/store/mutation-types'
 import storeInstant from '@/utils/store'
 import { CURRENT_MENU } from '@/utils/constant'
 
@@ -73,7 +108,7 @@ const Login = defineComponent({
 
     // 初始化值
     function clearReset() {
-      storeInstant.removeItem(CURRENT_MENU)
+      store.commit(CLEAR_LOGIN_INFO)
     }
     return {
       formState,
@@ -88,41 +123,6 @@ const Login = defineComponent({
 })
 export default Login
 </script>
-
-<template>
-  <div class="login">
-    <div class="container">
-      <h1>后台登录</h1>
-      <a-form
-        ref="formRef"
-        :model="formState"
-        :labe-col="labelCol"
-        :wrapper-col="wrapperCol"
-        :rules="rules"
-        class="form"
-      >
-        <a-form-item label="账户" name="name">
-          <a-input v-model:value="formState.name" />
-        </a-form-item>
-        <a-form-item label="密码" name="password">
-          <a-input-password
-            v-model:value="formState.password"
-            @pressEnter="onSubmit"
-          />
-        </a-form-item>
-        <a-form-item :wrapper-col="{ span: 18, offset: 6 }">
-          <a-button
-            type="primary"
-            :loading="submitData.loading"
-            @click="onSubmit"
-          >
-            登录
-          </a-button>
-        </a-form-item>
-      </a-form>
-    </div>
-  </div>
-</template>
 
 <style lang="less" scoped>
 @import "login.less";

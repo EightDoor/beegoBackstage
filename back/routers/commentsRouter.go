@@ -459,9 +459,45 @@ func init() {
 
     beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:UserController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:UserController"],
         beego.ControllerComments{
+            Method: "UpdateUserAvatar",
+            Router: `/userInfo/updateAvatar`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:UserController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/SysControllers:UserController"],
+        beego.ControllerComments{
             Method: "UserRoleList",
             Router: `/userRoleList/:id`,
             AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["beegoBackstage/controllers/UploadControllers:UploadController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/UploadControllers:UploadController"],
+        beego.ControllerComments{
+            Method: "FileUpload",
+            Router: `/upload`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["beegoBackstage/controllers/UploadControllers:UploadController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/UploadControllers:UploadController"],
+        beego.ControllerComments{
+            Method: "Get",
+            Router: `/upload/:id`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["beegoBackstage/controllers/UploadControllers:UploadController"] = append(beego.GlobalControllerRouter["beegoBackstage/controllers/UploadControllers:UploadController"],
+        beego.ControllerComments{
+            Method: "FileDel",
+            Router: `/upload/:id`,
+            AllowHTTPMethods: []string{"delete"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

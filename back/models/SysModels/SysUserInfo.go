@@ -22,7 +22,7 @@ func GetUserInfoData(id int) (SysUserInfo, error) {
 	var sysUser SysUser
 	o := orm.NewOrm()
 	// 查询用户信息
-	userErr := o.QueryTable(SysUser{}).Filter("id", id).One(&sysUser)
+	userErr := o.QueryTable(SysUser{}).Filter("id", id).RelatedSel().One(&sysUser)
 	if userErr != nil {
 		return sysUserInfo, userErr
 	}
@@ -61,8 +61,8 @@ func GetUserInfoData(id int) (SysUserInfo, error) {
 	if menusErr != nil {
 		return sysUserInfo, menusErr
 	}
-	// 查询出来重复的数据，去重处理
 
+	// 查询出来重复的数据，去重处理
 	sysUserInfo.Menus = removeDuplicate(sysMenu)
 	logs.Info(sysMenu, "用户拥有菜单、角色列表")
 	return sysUserInfo, nil

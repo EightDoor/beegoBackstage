@@ -1,3 +1,27 @@
+<template>
+  <CommonDrawer
+    title="权限分配"
+    ok-text="确定"
+    cancel-text="取消"
+    :visible="visible"
+    :loading="loading"
+    @on-close="DClose()"
+    @on-ok="DSubmit()"
+  >
+    <a-spin :spinning="treeData.spinningLoading">
+      <a-tree
+        v-model:checkedKeys="treeData.checkedKeys"
+        checkable
+        check-strictly
+        default-expand-all
+        :selected-keys="treeData.selectedKeys"
+        :tree-data="treeData.data"
+        @select="onSelect"
+      />
+    </a-spin>
+  </CommonDrawer>
+</template>
+
 <script lang="ts">
 import {
   defineComponent, onMounted, reactive, toRaw, watch,
@@ -98,27 +122,3 @@ const CommonTree = defineComponent({
 })
 export default CommonTree
 </script>
-
-<template>
-  <CommonDrawer
-    title="权限分配"
-    ok-text="确定"
-    cancel-text="取消"
-    :visible="visible"
-    :loading="loading"
-    @on-close="DClose()"
-    @on-ok="DSubmit()"
-  >
-    <a-spin :spinning="treeData.spinningLoading">
-      <a-tree
-        v-model:checkedKeys="treeData.checkedKeys"
-        checkable
-        check-strictly
-        default-expand-all
-        :selected-keys="treeData.selectedKeys"
-        :tree-data="treeData.data"
-        @select="onSelect"
-      />
-    </a-spin>
-  </CommonDrawer>
-</template>

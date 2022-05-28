@@ -1,5 +1,4 @@
 import { BREAD_CRUMBS, OPEN_LEFT_MENU } from '@/store/mutation-types'
-import log from '@/utils/log'
 import type { MenuType } from '@/types/sys'
 
 export interface PanesType {
@@ -33,6 +32,8 @@ export default {
     [OPEN_LEFT_MENU](state: CrumbsStoreType, payload: MenuType) {
       if (payload.menuOpenKeys)
         state.menuOpenKeys = payload.menuOpenKeys.split(',')
+      else
+        state.menuOpenKeys = []
     },
   },
 }

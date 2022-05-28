@@ -1,3 +1,23 @@
+<template>
+  <div>
+    <a-upload
+      v-model:file-list="fileList"
+      :action="Config.uploadUrl"
+      :multiple="true"
+      :max-count="props.limit"
+      :data="extendedParam"
+      :headers="headers"
+      list-type="picture"
+      @change="handleChange"
+    >
+      <a-button>
+        <UploadOutlined />
+        上传
+      </a-button>
+    </a-upload>
+  </div>
+</template>
+
 <script lang="ts">
 import { UploadOutlined } from '@ant-design/icons-vue'
 import type { PropType } from 'vue'
@@ -6,14 +26,16 @@ import {
   markRaw,
   onMounted,
   reactive,
-  ref,
+  ref, toRaw,
   watch,
 } from 'vue'
 import { message } from 'ant-design-vue'
+import { isArray, isObject } from 'lodash-es'
 import Config from '@/config'
 import log from '@/utils/log'
 import http from '@/utils/request'
-import type { FileItem } from '@/types'
+import type { FileBusiness, FileItem } from '@/types'
+import { TOKEN } from '@/utils/constant'
 
 interface FileInfo {
   file: FileItem
@@ -22,38 +44,26 @@ interface FileInfo {
 }
 
 export default defineComponent({
+  name: 'CommImageUpload',
   components: {
     UploadOutlined,
   },
-  props: {
-    list: {
-      type: Array as PropType<Array<FileItem>>,
-      required: true,
-      default: () => [],
-    },
-    limit: {
-      type: Number,
-      default: 10,
-    },
-  },
+  props: ['list', 'limit'],
+  emits: ['update:list'],
   setup(props, { emit }) {
+    const headers = ref()
     const fileList = ref<FileItem[]>([])
     const isFirst = ref(false)
     const extendedParam = reactive({
-      token: '',
     })
 
-    function delFile(key: string) {
+    function delFile(key?: number) {
       http({
-        url: 'upload/del',
-        method: 'POST',
+        url: `upload/${key}`,
+        method: 'DELETE',
         body: key,
-      }).then((res) => {
-        log.d(res, '删除文件结果')
-        if (!res.data)
-          message.success('删除成功')
-        else
-          message.error(JSON.stringify(res.data))
+      }).then(() => {
+        message.success('删除成功')
       })
     }
 
@@ -63,46 +73,57 @@ export default defineComponent({
 
       resFileList = resFileList.map((file) => {
         if (file.status === 'done') {
-          if (file.response)
-            file.url = `${Config.qiniuShowUrl}/${file.response.key}`
+          log.d(file.response, 'file.response')
+          if (file.response) {
+            file.data = file.response.data
+            file.url = file.response.data.url
+          }
         }
         return file
       })
 
       const { file } = info
       if (file.status === 'removed') {
-        if (file.url) {
-          const { url } = file
-          file.url = ''
-          // 读取文件key 删除
-          const key = url.substring(url.lastIndexOf('/') + 1)
-          delFile(key)
+        if (file.data) {
+          log.d(file, 'file')
+          delFile(file.data.id)
         }
       }
 
       fileList.value = markRaw(resFileList)
-      const result = resFileList.filter(item => item.url)
-      emit('update:list', result)
+      const result = resFileList.filter(item => item.data)
+      const list: FileBusiness[] = []
+      result.forEach((item) => {
+        list.push(item.data as FileBusiness)
+      })
+      if (props.limit === 1 && list.length > 0)
+        emit('update:list', list[0])
+      else
+        emit('update:list', list)
     }
 
-    function getFileToken() {
-      http({
-        url: 'upload/zk',
-        method: 'GET',
-      }).then((res) => {
-        extendedParam.token = res.data
-      })
-    }
     onMounted(() => {
-      getFileToken()
+      headers.value = {
+        Authorization: `Bearer ${localStorage.getItem(TOKEN)}`,
+      }
     })
 
     watch(
       () => props.list,
-      (newVal) => {
-        if (newVal && !isFirst.value) {
-          fileList.value = markRaw(newVal)
-          isFirst.value = true
+      (newVal: FileBusiness | FileBusiness[] | null) => {
+        log.d(newVal, 'watch - 文件')
+        if (newVal) {
+          if (!isFirst.value) {
+            const newData = toRaw(newVal)
+            if (isObject(newData))
+              fileList.value = [newData as FileBusiness]
+            else if (isArray(newData))
+              fileList.value = newData as FileBusiness[]
+            isFirst.value = true
+          }
+        }
+        else {
+          fileList.value = []
         }
       },
       {
@@ -117,27 +138,11 @@ export default defineComponent({
       Config,
       extendedParam,
       fileList,
+      headers,
+      props,
     }
   },
 })
 </script>
-
-<template>
-  <div>
-    <a-upload
-      v-model:file-list="fileList"
-      :action="Config.qiniuUploadUrl"
-      :multiple="true"
-      :data="extendedParam"
-      list-type="picture"
-      @change="handleChange"
-    >
-      <a-button>
-        <UploadOutlined />
-        上传
-      </a-button>
-    </a-upload>
-  </div>
-</template>
 
 <style scoped lang="less"></style>

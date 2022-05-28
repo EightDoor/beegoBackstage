@@ -1,3 +1,66 @@
+<template>
+  <CommonButton v-bt-auth:add icon-name="add" @change="ChangAdd" />
+  <a-table
+    style="margin-top: 15px"
+    :columns="tableData.columns"
+    :data-source="tableData.data"
+    :loading="tableData.loading"
+    row-key="id"
+    :pagination="{
+      total: tableData.total,
+    }"
+    @change="Change"
+  >
+    <template #bodyCell="{ column, text, record }">
+      <template v-if="column.key === 'status'">
+        {{ formatStatus(text) }}
+      </template>
+      <template v-if="column.key === 'action'">
+        <a-button
+          v-bt-auth:power
+          type="primary"
+          style="margin-right: 15px"
+          @click="PowerAllocation()"
+        />
+
+        <a-button v-bt-auth:edit type="primary" style="margin-right: 15px" @click="Editor(record)" />
+        <a-button
+          v-bt-auth:setting
+          type="primary"
+          style="margin-right: 15px"
+          @click="Setting(record)"
+        />
+        <a-popconfirm title="确定删除吗?" ok-text="删除" cancel-text="取消" @confirm="Del(record)">
+          <a-button v-bt-auth:del danger />
+        </a-popconfirm>
+      </template>
+    </template>
+  </a-table>
+
+  <CommonDrawer
+    :title="commonDrawerData.title"
+    :visible="commonDrawerData.visible"
+    :loading="commonDrawerData.loading"
+    ok-text="确定"
+    cancel-text="取消"
+    @on-ok="Submit()"
+    @on-close="commonDrawerData.visible = false"
+  >
+    <a-form ref="formRef" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+      <a-form-item v-bind="validateInfos.name" label="字典名称">
+        <a-input v-model:value="formData.name" />
+      </a-form-item>
+      <a-form-item v-bind="validateInfos.serialNumber" label="字典编号">
+        <a-input v-model:value="formData.serialNumber" />
+      </a-form-item>
+      <a-form-item v-bind="validateInfos.describe" label="描述">
+        <a-input v-model:value="formData.describe" />
+      </a-form-item>
+    </a-form>
+  </CommonDrawer>
+  <DictDrawer ref="RefDictDrawer" />
+</template>
+
 <script lang="ts">
 import {
   defineComponent, nextTick, onMounted, reactive, ref, toRaw,
@@ -186,66 +249,3 @@ const SysDictView = defineComponent({
 
 export default SysDictView
 </script>
-
-<template>
-  <CommonButton v-bt-auth:add icon-name="add" @change="ChangAdd" />
-  <a-table
-    style="margin-top: 15px"
-    :columns="tableData.columns"
-    :data-source="tableData.data"
-    :loading="tableData.loading"
-    row-key="id"
-    :pagination="{
-      total: tableData.total,
-    }"
-    @change="Change"
-  >
-    <template #bodyCell="{ column, text, record }">
-      <template v-if="column.key === 'status'">
-        {{ formatStatus(text) }}
-      </template>
-      <template v-if="column.key === 'action'">
-        <a-button
-          v-bt-auth:power
-          type="primary"
-          style="margin-right: 15px"
-          @click="PowerAllocation()"
-        />
-
-        <a-button v-bt-auth:edit type="primary" style="margin-right: 15px" @click="Editor(record)" />
-        <a-button
-          v-bt-auth:setting
-          type="primary"
-          style="margin-right: 15px"
-          @click="Setting(record)"
-        />
-        <a-popconfirm title="确定删除吗?" ok-text="删除" cancel-text="取消" @confirm="Del(record)">
-          <a-button v-bt-auth:del danger />
-        </a-popconfirm>
-      </template>
-    </template>
-  </a-table>
-
-  <CommonDrawer
-    :title="commonDrawerData.title"
-    :visible="commonDrawerData.visible"
-    :loading="commonDrawerData.loading"
-    ok-text="确定"
-    cancel-text="取消"
-    @on-ok="Submit()"
-    @on-close="commonDrawerData.visible = false"
-  >
-    <a-form ref="formRef" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
-      <a-form-item v-bind="validateInfos.name" label="字典名称">
-        <a-input v-model:value="formData.name" />
-      </a-form-item>
-      <a-form-item v-bind="validateInfos.serialNumber" label="字典编号">
-        <a-input v-model:value="formData.serialNumber" />
-      </a-form-item>
-      <a-form-item v-bind="validateInfos.describe" label="描述">
-        <a-input v-model:value="formData.describe" />
-      </a-form-item>
-    </a-form>
-  </CommonDrawer>
-  <DictDrawer ref="RefDictDrawer" />
-</template>

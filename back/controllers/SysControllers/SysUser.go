@@ -21,7 +21,7 @@ type UserController struct {
 func (c *UserController) Get() {
 	var user []*SysModels.SysUser
 	o := orm.NewOrm()
-	result := o.QueryTable(SysModels.SysUser{})
+	result := o.QueryTable(SysModels.SysUser{}).RelatedSel()
 	c.RPaging(utils.RPage{OrmResult: result, Data: &user})
 }
 
@@ -75,7 +75,7 @@ func (c *UserController) Update() {
 	if err != nil {
 		c.RBack(utils.R{Data: "json format err"}, err)
 	} else {
-		msg, err := o.Update(&user, "account", "nickName", "email", "deptId", "phoneNum", "status", "avatar")
+		msg, err := o.Update(&user, "account", "nickName", "email", "deptId", "phoneNum", "status", "file")
 		c.RBack(utils.R{Data: msg}, err)
 	}
 }
@@ -189,6 +189,29 @@ func (c *UserController) GetTokenUserInfo() {
 		c.RError(utils.R{
 			Msg:  "headers Authorization 不存在",
 			Code: models.NO_AUTHORIZATION,
+		})
+	}
+}
+
+// UpdateUserAvatar 修改用户头像
+// @router /userInfo/updateAvatar [post]
+func (c *UserController) UpdateUserAvatar() {
+	var sysUserUpdateAvatar SysModels.SysUserUpdateAvatar
+	c.GetBodyToJson(&sysUserUpdateAvatar)
+	c.CustomValid(&sysUserUpdateAvatar)
+
+	o := orm.NewOrm()
+	result, err := o.QueryTable(SysModels.SysUser{}).Filter("id", sysUserUpdateAvatar.Id).Update(orm.Params{
+		"file_id": sysUserUpdateAvatar.File.Id,
+	})
+	if err != nil {
+		c.RError(utils.R{
+			Msg: err.Error(),
+		})
+	} else {
+		c.RSuccess(utils.R{
+			Msg:  "修改成功",
+			Data: result,
 		})
 	}
 }

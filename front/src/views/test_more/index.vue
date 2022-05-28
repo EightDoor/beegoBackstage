@@ -1,3 +1,7 @@
+<template>
+  测试多级菜单
+</template>
+
 <script lang="ts">
 import { defineComponent } from 'vue'
 
@@ -10,7 +14,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<template>
-  测试多级菜单
-</template>

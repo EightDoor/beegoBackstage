@@ -7,11 +7,11 @@ import { cloneDeep } from 'lodash-es'
 import store from '../index'
 import {
   BREAD_CRUMBS,
+  CLEAR_LOGIN_INFO,
   COLLAPSED,
+  JUMP_LOGIN,
   LOGIN,
-  OPEN_LEFT_MENU,
-  SETUSERINFO,
-  SET_MENUS_MUTATION, SET_SYS, USERINFOMENUS,
+  OPEN_LEFT_MENU, SETUSERINFO, SET_MENUS_MUTATION, SET_SYS, USERINFOMENUS,
 } from '@/store/mutation-types'
 import type { LoginType, MenuType, UserInformation, UserType } from '@/types/sys'
 import http from '@/utils/request'
@@ -175,16 +175,25 @@ function listToTreeMenus(jsonData: MenuType[], parentIdItem = { id: 0, path: '',
       // 组合路由跳转地址
       item.path = `${parentIdItem.path}${item.path}`
       if (parentIdItem.title) {
-        // 组合面包屑
-        item.crumb = `${parentIdItem.title},${item.title}`
+        if (parentIdItem.crumb) {
+          // 组合面包屑
+          item.crumb = `${parentIdItem.crumb},${item.title}`
+        }
+        else {
+          // 组合面包屑
+          item.crumb = `${parentIdItem.title},${item.title}`
+        }
       }
       else {
         item.crumb = item.title
       }
-      if (parentIdItem.id)
-        item.menuOpenKeys = `${parentIdItem.id},${item.id}`
-      else
-        item.menuOpenKeys = `${item.id}`
+      if (parentIdItem.id) {
+        if (parentIdItem.menuOpenKeys)
+          item.menuOpenKeys = `${parentIdItem.menuOpenKeys},${item.id}`
+        else
+          item.menuOpenKeys = `${parentIdItem.id},${item.id}`
+      }
+      else { item.menuOpenKeys = `${item.id}` }
       const result = listToTreeMenus(jsonData, item)
       if (result && result.length > 0)
         item.children = result
@@ -205,6 +214,20 @@ export default {
     collapsed: false,
   },
   mutations: {
+    // 跳转登录页面
+    [JUMP_LOGIN]() {
+      localStorage.clear()
+      storeInstant.clear()
+      window.location.href = '/login'
+    },
+    // 清除登录信息
+    [CLEAR_LOGIN_INFO]() {
+      storeInstant.removeItem(CURRENT_MENU)
+      // 清空选中的左侧菜单openMenus
+      store.commit(OPEN_LEFT_MENU, '')
+      // 清空面包屑
+      store.commit(BREAD_CRUMBS, [])
+    },
     [COLLAPSED](state: SysStoreType): void {
       state.collapsed = !state.collapsed
     },
@@ -259,10 +282,8 @@ export default {
               if (currentData) {
                 store.commit(OPEN_LEFT_MENU, currentData)
                 // 面包屑默认选中
-                if (currentData.crumb) {
-                  log.i(currentData.crumb, 'currentData.crumb')
+                if (currentData.crumb)
                   store.commit(BREAD_CRUMBS, currentData.crumb.split(','))
-                }
               }
               commit(PERMISSIONBUTTONS, res)
               commit(USERINFOMENUS, res)

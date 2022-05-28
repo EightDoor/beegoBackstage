@@ -1,3 +1,24 @@
+<template>
+  <a-sub-menu :key="menuInfo.key" v-bind="$attrs">
+    <template #title>
+      <span>
+        <!-- 图标 -->
+        {{ menuInfo.title }}</span>
+    </template>
+    <template v-for="item in menuInfo.children">
+      <template v-if="!item.children">
+        <a-menu-item :key="item.key" @click="jumpTo(item)">
+          <!-- 图标 -->
+          <span>{{ item.title }}</span>
+        </a-menu-item>
+      </template>
+      <template v-else>
+        <sub-menu :key="item.key" :menu-info="item" />
+      </template>
+    </template>
+  </a-sub-menu>
+</template>
+
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
@@ -32,24 +53,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<template>
-  <a-sub-menu :key="menuInfo.key" v-bind="$attrs">
-    <template #title>
-      <span>
-        <!-- 图标 -->
-        {{ menuInfo.title }}</span>
-    </template>
-    <template v-for="item in menuInfo.children">
-      <template v-if="!item.children">
-        <a-menu-item :key="item.key" @click="jumpTo(item)">
-          <!-- 图标 -->
-          <span>{{ item.title }}</span>
-        </a-menu-item>
-      </template>
-      <template v-else>
-        <sub-menu :key="item.key" :menu-info="item" />
-      </template>
-    </template>
-  </a-sub-menu>
-</template>
