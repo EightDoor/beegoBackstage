@@ -3,7 +3,7 @@ import axios from 'axios'
 import { message, notification } from 'ant-design-vue'
 import log from './log'
 import type { CommonResponse } from '@/types/type'
-import { RequestAuthorizedFailed, TOKEN } from '@/utils/constant'
+import { RequestStatusMsg, TOKEN } from '@/utils/constant'
 import { ClearInfo } from '@/utils/index'
 import * as sysTool from '@/utils/systemTool'
 
@@ -39,7 +39,7 @@ instance.interceptors.response.use(
     if (response.status === 200 && data.code === 0) {
       // 请求成功
     }
-    else if (data.code === RequestAuthorizedFailed) {
+    else if (data.code === RequestStatusMsg.RequestAuthorizedFailed) {
       message.info('token失效, 请重新登录')
       await ClearInfo()
     }

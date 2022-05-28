@@ -1,5 +1,8 @@
-// token验证失败
-export const RequestAuthorizedFailed = -101
+// 状态码从100开始
+export enum RequestStatusMsg {
+  UNKNOWN_ERROR = 100, // 未知错误
+  RequestAuthorizedFailed = 101, // 登录token鉴权失败
+}
 export const TOKEN = 'TOKEN'
 // 选中的面包屑列表
 export const PERMISSIONBUTTONS = 'PERMISSIONBUTTONS'
