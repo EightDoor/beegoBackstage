@@ -11,6 +11,7 @@
 - controller 统一继承 `utils.BaseController`
 ## 待做
 - [ ] 统一返回字段createdAt、updatedAt、deletedAt 统一格式化返回
+- [x] 默认错误码返回处理(401、403、404、500、503)
 ## 使用
 - 表单校验
   - **注意**需要在格式化json之后执行
@@ -86,5 +87,10 @@
 - 文件上传
   - 使用
   ```go
-    
+    // models
+    type xxx struct {
+        FileModels.FileBusiness
+    }
+    // 数据库表添加file_id 字段，设置当前表外键file_id为file表的id
+    // controllers 数据查询，需要添加  xxx.RelatedSel() (使用关系查询)
   ```
