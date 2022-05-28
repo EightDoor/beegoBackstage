@@ -1,14 +1,14 @@
 package JournalModels
 
 import (
-	CommModels "beegoBackstage/commModels"
+	"beegoBackstage/commModel"
 	"beegoBackstage/models/SysModels"
 	"github.com/beego/beego/v2/client/orm"
 	"github.com/beego/beego/v2/core/logs"
 )
 
 type LogLogin struct {
-	CommModels.BaseModel
+	commModel.BaseModel
 	Equipment string             `json:"equipment"`
 	User      *SysModels.SysUser `json:"user" orm:"rel(fk)"`
 	Ip        string             `json:"ip"`

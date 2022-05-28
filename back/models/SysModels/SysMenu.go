@@ -1,12 +1,12 @@
 package SysModels
 
 import (
-	CommModels "beegoBackstage/commModels"
+	"beegoBackstage/commModel"
 	"github.com/beego/beego/v2/client/orm"
 )
 
 type SysMenu struct {
-	CommModels.BaseModel
+	commModel.BaseModel
 	OrderNum int    `json:"orderNum"`
 	Redirect string `json:"redirect"`
 	Icon     string `json:"icon"`

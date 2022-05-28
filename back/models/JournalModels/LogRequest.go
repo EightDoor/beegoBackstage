@@ -1,14 +1,14 @@
 package JournalModels
 
 import (
-	CommModels "beegoBackstage/commModels"
+	"beegoBackstage/commModel"
 	"beegoBackstage/models/SysModels"
 	"github.com/beego/beego/v2/client/orm"
 	"github.com/beego/beego/v2/core/logs"
 )
 
 type LogRequest struct {
-	CommModels.BaseModel
+	commModel.BaseModel
 	Params         string             `json:"params"`
 	RequestAddress string             `json:"requestAddress"`
 	Ip             string             `json:"ip"`

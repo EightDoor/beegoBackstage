@@ -76,7 +76,6 @@ func (c *BaseController) RError(result R) {
 }
 
 // RPaging 分页返回
-// TODO 待改进，是否可以去掉dataInfo参数，去掉存在问题(根据反射获取不到对应的struct结构)
 func (c *BaseController) RPaging(rPage RPage) {
 	result := new(rPaging)
 	rData := new(rPagingData)
@@ -130,7 +129,7 @@ func formatJsonCall(result *R) {
 	}
 }
 
-// 格式化json rPaging
+// rPaging 格式化json
 func formatJsonRPagingCall(result *rPaging) {
 	if _, dataErr := json.Marshal(&result.Data); dataErr != nil {
 		logs.Error(dataErr, "传入的data json 转换失败")
@@ -140,8 +139,7 @@ func formatJsonRPagingCall(result *rPaging) {
 	}
 }
 
-// GetBodyToJson
-// body接受参数解析 JSON
+// GetBodyToJson body接受参数解析 JSON
 func (c *BaseController) GetBodyToJson(data interface{}) {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, data)
 	if err != nil {

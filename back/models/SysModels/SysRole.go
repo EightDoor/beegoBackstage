@@ -1,13 +1,13 @@
 package SysModels
 
 import (
-	CommModels "beegoBackstage/commModels"
+	"beegoBackstage/commModel"
 	"github.com/beego/beego/v2/client/orm"
 	"github.com/beego/beego/v2/core/logs"
 )
 
 type SysRole struct {
-	CommModels.BaseModel
+	commModel.BaseModel
 	Remark   string `json:"remark"`
 	RoleName string `json:"roleName" valid:"Required" label:"角色名称"`
 }

@@ -1,4 +1,4 @@
-package CommModels
+package commModel
 
 import (
 	"github.com/beego/beego/v2/core/validation"

@@ -1,9 +1,11 @@
 package SysModels
 
-import CommModels "beegoBackstage/commModels"
+import (
+	"beegoBackstage/commModel"
+)
 
 type SysRoleMenu struct {
-	CommModels.BaseModel
+	commModel.BaseModel
 	RoleId int `json:"roleId" valid:"Required" label:"角色id"`
 	MenuId int `json:"menuId" valid:"Required" label:"菜单id"`
 }

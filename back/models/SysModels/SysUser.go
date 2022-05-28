@@ -1,12 +1,12 @@
 package SysModels
 
 import (
-	CommModels "beegoBackstage/commModels"
+	"beegoBackstage/commModel"
 	"beegoBackstage/models/FileModels"
 )
 
 type SysUser struct {
-	CommModels.BaseModel
+	commModel.BaseModel
 	FileModels.FileBusiness
 	Account  string `json:"account" valid:"Required" label:"账户名称"`
 	NickName string `json:"nickName" valid:"Required" label:"姓名"`

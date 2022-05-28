@@ -4,6 +4,7 @@ import (
 	"beegoBackstage/controllers/ErrorControllers"
 	"beegoBackstage/models"
 	_ "beegoBackstage/routers"
+	_ "beegoBackstage/utils"
 	"fmt"
 	"github.com/beego/beego/v2/client/orm"
 	"github.com/beego/beego/v2/core/logs"
@@ -31,14 +32,12 @@ func mysqlInit() {
 	}
 }
 
-func init() {
-	mysqlInit()
-}
-
 func main() {
-	logs.Debug(beego.BConfig.RunMode)
+	logs.Debug(beego.BConfig.RunMode, "runMode")
 	// 注册自定义错误
 	beego.ErrorController(&ErrorControllers.ErrorController{})
+	// 初始化数据库
+	mysqlInit()
 
 	beego.Run()
 }

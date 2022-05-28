@@ -1,9 +1,11 @@
 package FileModels
 
-import CommModels "beegoBackstage/commModels"
+import (
+	"beegoBackstage/commModel"
+)
 
 type File struct {
-	CommModels.BaseModel
+	commModel.BaseModel
 	FileName    string `json:"fileName"`
 	Url         string `json:"url"`
 	FileSize    int64  `json:"fileSize"`
