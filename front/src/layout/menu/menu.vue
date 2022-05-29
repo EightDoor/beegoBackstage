@@ -1,13 +1,14 @@
 <template>
   <a-menu
     v-model:selectedKeys="menusInfo.selectedKeys"
-    :open-keys="menusInfo.openKeys"
+    v-model:open-keys="menusInfo.openKeys"
     mode="inline"
     theme="dark"
     :inline-collapsed="collapsed"
     :collapsed="collapsed"
-    @openChange="onOpenChange"
+    <!-- --@openChange="onOpenChange"
   >
+    >
     <template v-for="item in getMenus">
       <template v-if="!item.children">
         <a-menu-item :key="item.key" @click="jumpTo(item)">
@@ -81,23 +82,24 @@ export default defineComponent({
     const getMenus = computed(() => store.state.sys.menus)
     const getAllMenus = computed(() => store.state.sys.userInfoMenus)
 
-    const onOpenChange = (openKeys: number[]) => {
-      const rootSubmenuKeys: number[] = []
-      getAllMenus.value.forEach((item: MenuType) => {
-        rootSubmenuKeys.push(item.id)
-      })
-      const latestOpenKey = openKeys.find(key => !menusInfo.openKeys.includes(key))
-      if (!rootSubmenuKeys.includes(latestOpenKey!))
-        menusInfo.openKeys = openKeys
-      else
-        menusInfo.openKeys = latestOpenKey ? [latestOpenKey] : []
-    }
+    // TODO 展开父级菜单，多级菜单有问题
+    // const onOpenChange = (openKeys: number[]) => {
+    //   const rootSubmenuKeys: number[] = []
+    //   getAllMenus.value.forEach((item: MenuType) => {
+    //     rootSubmenuKeys.push(item.id)
+    //   })
+    //   const latestOpenKey = openKeys.find(key => !menusInfo.openKeys.includes(key))
+    //   if (!rootSubmenuKeys.includes(latestOpenKey!))
+    //     menusInfo.openKeys = openKeys
+    //   else
+    //     menusInfo.openKeys = latestOpenKey ? [latestOpenKey] : []
+    // }
     return {
       menusInfo,
       getMenus,
       collapsed: computed(() => store.state.sys.collapsed),
       jumpTo,
-      onOpenChange,
+      // onOpenChange,
     }
   },
 })
