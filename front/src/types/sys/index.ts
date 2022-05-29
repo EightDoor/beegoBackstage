@@ -57,7 +57,7 @@ export interface RoleType extends CommonTableList {
 
 export interface LoginType {
   account: string
-  pass_word: string
+  password: string
 }
 
 interface Role {

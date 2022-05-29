@@ -310,7 +310,7 @@ export default {
       return new Promise<string>((resolve, reject) => {
         const body = {
           username: payload.account,
-          password: payload.pass_word,
+          password: payload.password,
         }
         http<GetToken>({
           url: 'login',

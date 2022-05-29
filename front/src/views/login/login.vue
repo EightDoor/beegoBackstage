@@ -40,9 +40,8 @@ import {
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { BREAD_CRUMBS, CLEAR_LOGIN_INFO, LOGIN, OPEN_LEFT_MENU } from '@/store/mutation-types'
-import storeInstant from '@/utils/store'
-import { CURRENT_MENU } from '@/utils/constant'
+import { CLEAR_LOGIN_INFO, LOGIN } from '@/store/mutation-types'
+import log from '@/utils/log'
 
 interface LoginType {
   name: string
@@ -89,7 +88,7 @@ const Login = defineComponent({
           store
             .dispatch(LOGIN, {
               account: data.name,
-              pass_word: data.password,
+              password: data.password,
             })
             .then(() => {
               submitData.loading = false
@@ -97,7 +96,8 @@ const Login = defineComponent({
               message.success('登录成功!')
               router.push('/')
             })
-            .catch(() => {
+            .catch((err) => {
+              log.e(err, '登录-err')
               submitData.loading = false
             })
         })
