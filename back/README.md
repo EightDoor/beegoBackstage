@@ -5,6 +5,9 @@
 - 注解路由生成 `bee generate routers`
 # 打包
 - `bee pack -be GOOS=linux -be GOARCH=amd64` 打包资源为tar.gz, 服务器使用ubuntu
+- docker打包
+  - 打包 `docker build . -t beego_backstage` 
+  - 运行 `docker run -p 8098:8098 beego_backstage`
 ## 注意
 
 - 注解路由 controller 下创建文件`// @router / [get]` 前后不能存在别的内容,否则无法生成路由
