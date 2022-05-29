@@ -6,9 +6,7 @@
     theme="dark"
     :inline-collapsed="collapsed"
     :collapsed="collapsed"
-    <!-- --@openChange="onOpenChange"
   >
-    >
     <template v-for="item in getMenus">
       <template v-if="!item.children">
         <a-menu-item :key="item.key" @click="jumpTo(item)">
