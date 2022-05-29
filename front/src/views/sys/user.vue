@@ -265,8 +265,8 @@ const SysUser = defineComponent({
       tableData.loading = true
       http<UserType>({
         url: `user${searchParam({
-          limit: 10,
-          page: 1,
+          pageSize: tableData.pageSize,
+          pageNum: tableData.pageNum,
         })}`,
         method: 'GET',
       }).then((res) => {
@@ -282,8 +282,8 @@ const SysUser = defineComponent({
     function getDepartList() {
       http<DepartType>({
         url: `/dept${searchParam({
-          page: 1,
-          limit: 1000,
+          pageNum: 1,
+          pageSize: 1000,
         })}`,
         method: 'GET',
       }).then((res) => {
@@ -301,8 +301,8 @@ const SysUser = defineComponent({
     function getRoleList() {
       http<RoleType>({
         url: `/role${searchParam({
-          page: 1,
-          limit: 1000,
+          pageNum: 1,
+          pageSize: 1000,
         })}`,
         method: 'get',
       }).then((res) => {

@@ -71,12 +71,9 @@ func (c *UploadController) FileUpload() {
 		file.FileName = h.Filename
 		file.FileSize = h.Size
 		configPath, _ := web.AppConfig.String("uploadUrl")
-		env, _ := web.AppConfig.String("runmode")
 		file.Url = configPath + fileName
-		if env == "dev" {
-			// 开发环境直接拼接存储地址
-			file.Url = configPath + fPath
-		}
+		// 拼接存储地址
+		file.Url = configPath + fPath
 		file.StoragePath = fPath
 		o := orm.NewOrm()
 		result, insertErr := o.Insert(file)

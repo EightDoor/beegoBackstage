@@ -140,8 +140,8 @@ const SysDepart = defineComponent({
       tableCont.loading = true
       http<DepartType>({
         url: `/dept${searchParam({
-          page: tableCont.pageNum,
-          limit: tableCont.pageSize,
+          pageNum: tableCont.pageNum,
+          pageSize: tableCont.pageSize,
         })}`,
         method: 'GET',
       }).then((res) => {

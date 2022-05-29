@@ -12,7 +12,10 @@ interface ParamsType {
  * 接口请求 查询条件
  * @param params
  */
-const searchParam = (params: any) => {
+const searchParam = (params: {
+  pageSize: number
+  pageNum: number
+}) => {
   let param = '?'
   for (const item in params)
     param += `${item}=${params[item]}&`

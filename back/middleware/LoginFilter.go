@@ -56,7 +56,13 @@ var FilterUser = func(ctx *context.Context) {
 		sysUser.Id = userId
 		logRequest.Ip = ctx.Input.Header("customIp")
 		logRequest.User = &sysUser
-		logRequest.RequestAddress = ctx.Request.RequestURI
+		isUrlIdentification := strings.Index(ctx.Request.RequestURI, "?")
+		if isUrlIdentification == -1 {
+			logRequest.RequestAddress = ctx.Request.RequestURI
+		} else {
+			logRequest.RequestAddress = ctx.Request.RequestURI[0:isUrlIdentification]
+		}
+
 		logRequest.Method = ctx.Request.Method
 		// 解析body
 		var m map[string]interface{}
