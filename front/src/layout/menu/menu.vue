@@ -1,11 +1,12 @@
 <template>
   <a-menu
-    v-model:openKeys="menusInfo.openKeys"
     v-model:selectedKeys="menusInfo.selectedKeys"
+    :open-keys="menusInfo.openKeys"
     mode="inline"
     theme="dark"
     :inline-collapsed="collapsed"
     :collapsed="collapsed"
+    @openChange="onOpenChange"
   >
     <template v-for="item in getMenus">
       <template v-if="!item.children">
@@ -36,6 +37,7 @@ import { commSetData } from './menu-comm'
 import type { MenuItem, MenusInfo } from '@/types/layout/menu'
 
 import log from '@/utils/log'
+import type { MenuType } from '@/types/sys'
 
 export default defineComponent({
   name: 'CommonMenu',
@@ -76,12 +78,26 @@ export default defineComponent({
       deep: true,
       immediate: true,
     })
+    const getMenus = computed(() => store.state.sys.menus)
+    const getAllMenus = computed(() => store.state.sys.userInfoMenus)
+
+    const onOpenChange = (openKeys: number[]) => {
+      const rootSubmenuKeys: number[] = []
+      getAllMenus.value.forEach((item: MenuType) => {
+        rootSubmenuKeys.push(item.id)
+      })
+      const latestOpenKey = openKeys.find(key => !menusInfo.openKeys.includes(key))
+      if (!rootSubmenuKeys.includes(latestOpenKey!))
+        menusInfo.openKeys = openKeys
+      else
+        menusInfo.openKeys = latestOpenKey ? [latestOpenKey] : []
+    }
     return {
       menusInfo,
-      getMenus: computed(() => store.state.sys.menus),
+      getMenus,
       collapsed: computed(() => store.state.sys.collapsed),
-
       jumpTo,
+      onOpenChange,
     }
   },
 })
