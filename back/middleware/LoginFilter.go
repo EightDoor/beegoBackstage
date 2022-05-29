@@ -31,15 +31,19 @@ var FilterUser = func(ctx *context.Context) {
 		ctx.JSONResp(r)
 	}
 
+	// TODO 正常开发可以去掉
 	// 读取配置值
 	env, _ := web.AppConfig.String("runmode")
 	if env == "prod" {
 		// TODO 过滤PUT、DELETE、POST 不能操作
-		if ctx.Request.Method == "PUT" || ctx.Request.Method == "DELETE" || ctx.Request.Method == "POST" {
-			r.Msg = "演示版本，不可以操作"
-			r.Data = ""
-			r.Code = models.DEMO_ENV
-			ctx.JSONResp(r)
+		// 超级管理员不可以操作
+		if userId == 11 {
+			if ctx.Request.Method == "PUT" || ctx.Request.Method == "DELETE" || ctx.Request.Method == "POST" {
+				r.Msg = "演示版本，不可以操作"
+				r.Data = ""
+				r.Code = models.DEMO_ENV
+				ctx.JSONResp(r)
+			}
 		}
 	}
 
