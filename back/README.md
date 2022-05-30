@@ -4,15 +4,12 @@
 - 进程内监控 访问: [http://localhost:8088/](http://localhost:8088/)
 - 注解路由生成 `bee generate routers`
 # 打包
-- `bee pack -be GOOS=linux -be GOARCH=amd64` 打包资源为tar.gz, 服务器使用ubuntu
+- 直接打包 `bee pack -be GOOS=linux -be GOARCH=amd64` 打包资源为tar.gz, 服务器使用ubuntu
 - docker打包
-  - 打包 `docker build . -t beego_backstage` 
-  - 上传docker hub `docker tag beego_backstage xxx/beego_backstage` xxx 为自己的docker用户名
-  - 服务器上，执行 `docker login` 先登录
-    - 执行 `docker pull xxx/beego_backstage:1.0` 拉取镜像
-    - 运行 `docker run -d -p 8098:8098 xxx/beego_backstage`
-    - 查看容器列表 `docker ps`
-    - 查看日志 `docker logs -f (container id)`
+  - 打包 `docker build . -t beego_backstage:version`  version 版本号
+  - 运行 `docker run -d -p 8098:8098 xxx/beego_backstage:version`
+  - 查看容器列表 `docker ps`
+  - 查看日志 `docker logs -f (container id)`
 ## 注意
 
 - 注解路由 controller 下创建文件`// @router / [get]` 前后不能存在别的内容,否则无法生成路由
