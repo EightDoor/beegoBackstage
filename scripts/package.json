@@ -12,12 +12,10 @@
   "license": "ISC",
   "devDependencies": {
     "inquirer": "^8.2.4",
+    "node-ssh": "^12.0.4",
     "nodemon": "^2.0.16",
     "shelljs": "^0.8.5",
-    "ssh2-sftp-client": "^8.1.0",
-    "zhoukai_utils": "^2.0.0"
-  },
-  "dependencies": {
-    "ssh2": "^1.10.0"
+    "zhoukai_utils": "^2.0.0",
+    "zip-local": "^0.3.5"
   }
 }

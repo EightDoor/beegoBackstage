@@ -3,12 +3,12 @@
     "host": "",
     "user": "",
     "passwd": "",
-    "remotePath": ""
+    "remotePath": "/www/wwwroot/beegobackstage.start6.cn/dist.tar.gz"
   },
   "back": {
     "host": "",
     "user": "",
     "passwd": "",
-    "remotePath": ""
+    "remotePath": "/www/wwwroot/default/beegoBackstage/back.tar.gz"
   }
 }

@@ -5,11 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9a893104-d33b-41d6-8735-ac62ae66a8a3" name="Changes" comment="feat: 重置密码">
-      <change afterPath="$PROJECT_DIR$/scripts/setting.template.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back/ssh/start.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back/ssh/stop.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/back/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/back/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/front/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/.eslintrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/pnpm-lock.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/setting.template.json" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/setting.template.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +83,7 @@
       <option name="presentableId" value="Default" />
       <updated>1653897111521</updated>
       <workItem from="1653897113837" duration="7988000" />
+      <workItem from="1653916368124" duration="7570000" />
     </task>
     <servers />
   </component>
@@ -95,6 +100,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat: middleware" />
