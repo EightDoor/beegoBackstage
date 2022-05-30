@@ -10,6 +10,7 @@ import (
 	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
 	_ "github.com/go-sql-driver/mysql"
+	"os"
 )
 
 // 数据库连接
@@ -33,6 +34,9 @@ func mysqlInit() {
 }
 
 func main() {
+	env := os.Getenv("APP_RUN_MODE")
+	logs.Debug(env, "APP_RUN_MODE环境变量")
+
 	logs.Debug(beego.BConfig.RunMode, "runMode")
 	// 注册自定义错误
 	beego.ErrorController(&ErrorControllers.ErrorController{})

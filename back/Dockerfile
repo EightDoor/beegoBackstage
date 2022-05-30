@@ -6,6 +6,7 @@ ENV GO111MODULE=on \
     GOOS=linux \
     GOARCH=amd64 \
     ProRunMode=prod \
+    APP_RUN_MODE=prod \
     GOPROXY=https://proxy.golang.com.cn,direct
 
 # 移动到工作目录: /build
@@ -33,8 +34,10 @@ COPY ./static /static
 # 从builder镜像中把/dist/beegoBackstage 拷贝到当前目录
 COPY --from=builder /build/beegoBackstage /
 
+ENV APP_RUN_MODE=prod
+
 # 声明服务端口
 EXPOSE 8098
 
 # 需要的命令
-CMD ["conf/app.conf","/beegoBackstage"]
+CMD ["/beegoBackstage"]
