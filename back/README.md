@@ -16,7 +16,7 @@
 - controller 统一继承 `utils.BaseController`
 - 默认使用 beego.ErrorController(&ErrorControllers.ErrorController{}) 拦截错误请求，500无法拦截(原因没找到)。采用utils/InterceptionError RecoverFunc统一拦截错误
 ## 待做
-- [ ] 统一返回字段createdAt、updatedAt、deletedAt 统一格式化返回
+- [x] 统一返回字段createdAt、updatedAt 不存在的直接不显示
 - [x] 默认错误码返回处理(401、403、404、500、503)
 ## 使用
 - 表单校验

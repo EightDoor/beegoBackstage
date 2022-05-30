@@ -6,10 +6,10 @@ import (
 )
 
 type BaseModel struct {
-	Id        int       `json:"id" orm:"auto"`
-	CreatedAt time.Time `json:"createdAt" orm:"auto_now_add;type(datetime)"`
-	UpdatedAt time.Time `json:"updatedAt" orm:"auto_now;type(datetime)"`
-	DeletedAt time.Time `json:"deletedAt" orm:"-"`
+	Id        int        `json:"id" orm:"auto"`
+	CreatedAt *time.Time `json:"createdAt,omitempty" orm:"auto_now_add;type(datetime)"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty" orm:"auto_now;type(datetime);"`
+	DeletedAt *time.Time `json:"-" orm:"-"`
 }
 
 // Valid 自定义校验
