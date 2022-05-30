@@ -1,1 +1,4 @@
 .history
+scripts/node_modules
+scripts/setting.json
+scripts/*.tar.gz

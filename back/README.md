@@ -4,8 +4,8 @@
 - 进程内监控 访问: [http://localhost:8088/](http://localhost:8088/)
 - 注解路由生成 `bee generate routers`
 # 打包
-- 直接打包 `bee pack -be GOOS=linux -be GOARCH=amd64` 打包资源为tar.gz, 服务器使用ubuntu
-- docker打包
+- 方式1：直接打包 `bee pack -be GOOS=linux -be GOARCH=amd64` 打包资源为tar.gz, 服务器使用ubuntu
+- 方式2：docker打包
   - 打包 `docker build . -t beego_backstage:version`  version 版本号
   - 运行 `docker run -d -p 8098:8098 xxx/beego_backstage:version`
   - 查看容器列表 `docker ps`

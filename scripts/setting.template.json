@@ -1,0 +1,14 @@
+{
+  "front": {
+    "host": "",
+    "user": "",
+    "passwd": "",
+    "remotePath": ""
+  },
+  "back": {
+    "host": "",
+    "user": "",
+    "passwd": "",
+    "remotePath": ""
+  }
+}
