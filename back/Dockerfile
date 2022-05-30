@@ -28,6 +28,7 @@ RUN go build -o beegoBackstage .
 ###################
 FROM scratch
 
+RUN mkdir ./static
 COPY ./conf /conf
 COPY ./static /static
 
