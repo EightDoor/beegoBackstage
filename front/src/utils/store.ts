@@ -1,7 +1,7 @@
 import localforage from 'localforage'
 
 const localInstant = localforage.createInstance({
-  name: 'vue3-admin-nest',
+  name: 'vue3-go-admin',
 })
 
 const store = {

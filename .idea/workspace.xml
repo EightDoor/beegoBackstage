@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9a893104-d33b-41d6-8735-ac62ae66a8a3" name="Changes" comment="feat: 重置密码">
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/setting.template.json" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/setting.template.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/front/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/utils/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/utils/store.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +55,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="pnpm" />
     <property name="settings.editor.selected.configurable" value="settings.javascript.linters.eslint" />
+    <property name="ts.external.directory.path" value="C:\Users\zhoukai\Desktop\go-project\beegoBackstage\front\node_modules\typescript\lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -76,7 +79,9 @@
       <option name="presentableId" value="Default" />
       <updated>1653897111521</updated>
       <workItem from="1653897113837" duration="7988000" />
-      <workItem from="1653916368124" duration="7793000" />
+      <workItem from="1653916368124" duration="7894000" />
+      <workItem from="1654006271328" duration="15000" />
+      <workItem from="1654227129397" duration="53000" />
     </task>
     <servers />
   </component>
