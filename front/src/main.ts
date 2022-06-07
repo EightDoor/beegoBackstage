@@ -4,6 +4,9 @@ import ui from '@fast-crud/ui-antdv'
 import { FastCrud } from '@fast-crud/fast-crud'
 import App from './App.vue'
 
+// svg 注册
+import 'virtual:svg-icons-register'
+
 // 路由
 import router from './router/index'
 // ant-design-vue

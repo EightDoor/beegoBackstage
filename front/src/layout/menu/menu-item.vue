@@ -1,15 +1,24 @@
 <template>
   <a-sub-menu :key="menuInfo.key" v-bind="$attrs">
     <template #title>
-      <span>
+      <div>
         <!-- 图标 -->
-        {{ menuInfo.title }}</span>
+        <div class="menu_item_container">
+          <template v-if="menuInfo.icon">
+            <MenuIcon :name="menuInfo.icon" />
+          </template>
+          <span>{{ menuInfo.title }}</span>
+        </div>
+      </div>
     </template>
     <template v-for="item in menuInfo.children">
       <template v-if="!item.children">
         <a-menu-item :key="item.key" @click="jumpTo(item)">
           <!-- 图标 -->
-          <span>{{ item.title }}</span>
+          <div class="menu_item_container">
+            <MenuIcon v-if="item.icon" :name="item.icon" />
+            <span>{{ item.title }}</span>
+          </div>
         </a-menu-item>
       </template>
       <template v-else>
@@ -24,10 +33,14 @@ import { defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { commSetData } from './menu-comm'
+import MenuIcon from './menu-icon.vue'
 import type { MenuItem } from '@/types/layout/menu'
 
 export default defineComponent({
   name: 'SubMenu',
+  components: {
+    MenuIcon,
+  },
   props: {
     menuInfo: {
       type: Object,
@@ -53,3 +66,11 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="less" scoped>
+.menu_item_container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+</style>

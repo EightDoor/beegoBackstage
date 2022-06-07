@@ -85,7 +85,12 @@
           </a-radio-group>
         </a-form-item>
         <a-form-item label="图标" v-bind="validateInfos.icon">
-          <a-input v-model:value="formData.icon" />
+          <a-input-group compact>
+            <a-input v-model:value="formData.icon" style="width: calc(100% - 200px)" />
+            <a-button type="primary" @click="selectIcon">
+              选择图标
+            </a-button>
+          </a-input-group>
         </a-form-item>
         <a-form-item label="重定向地址" v-bind="validateInfos.redirect">
           <a-input v-model:value="formData.redirect" />
@@ -106,6 +111,20 @@
       </a-form-item>
     </a-form>
   </CommonDrawer>
+
+  <CommonDrawer
+    :footer="false"
+    title="选择图标"
+    cancel-text="取消"
+    :visible="iconSelectVisible"
+    @onClose="onIconClose"
+  >
+    <ul class="drawer_icon">
+      <li v-for="(item, index) of iconList" :key="index" @click="clickIcon(item)">
+        <SvgIcon :name="item" />
+      </li>
+    </ul>
+  </CommonDrawer>
 </template>
 
 <script lang="ts">
@@ -118,6 +137,7 @@ import { Form, message } from 'ant-design-vue'
 import type { Method } from 'axios'
 import { cloneDeep } from 'lodash-es'
 import type { Rule } from 'ant-design-vue/lib/form'
+import SvgIcon from '@/components/SvgIcon/index.vue'
 import CommonButton from '@/components/Button/Button.vue'
 import type { DrawerProps } from '@/components/Drawer/Drawer.vue'
 import CommonDrawer from '@/components/Drawer/Drawer.vue'
@@ -133,6 +153,7 @@ const SysMenu = defineComponent({
   components: {
     CommonButton,
     CommonDrawer,
+    SvgIcon,
   },
   setup() {
     const useForm = Form.useForm
@@ -339,6 +360,19 @@ const SysMenu = defineComponent({
     function onClose() {
       drawerData.visible = false
     }
+    // 选择图标
+    const iconSelectVisible = ref(false)
+    const iconList = ref(['dept', 'dict', 'menu', 'role', 'user'])
+    function selectIcon() {
+      iconSelectVisible.value = true
+    }
+    function onIconClose() {
+      iconSelectVisible.value = false
+    }
+    function clickIcon(val: string) {
+      formData.icon = val
+      iconSelectVisible.value = false
+    }
 
     return {
       tableCont,
@@ -347,6 +381,11 @@ const SysMenu = defineComponent({
       treeOptions,
       Change,
       optionsType,
+      selectIcon,
+      iconSelectVisible,
+      onIconClose,
+      iconList,
+      clickIcon,
 
       // table
       Editor,
@@ -367,4 +406,15 @@ export default SysMenu
 
 <style scoped lang="less">
 @import "./depart.less";
+.drawer_icon {
+  display: flex;
+  flex-direction: row;
+  li {
+    list-style: none;
+    margin-right: 15px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
 </style>

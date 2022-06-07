@@ -10,8 +10,13 @@
     <template v-for="item in getMenus">
       <template v-if="!item.children">
         <a-menu-item :key="item.key" @click="jumpTo(item)">
-          <!-- 图标 -->
-          <span>{{ item.title }}</span>
+          <div class="menu_item_container">
+            <!-- 图标 -->
+            <template v-if="item.icon">
+              <MenuIcon :name="item.icon" />
+            </template>
+            <span>{{ item.title }}</span>
+          </div>
         </a-menu-item>
       </template>
       <template v-else>
@@ -33,15 +38,16 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import SubMenu from './menu-item.vue'
 import { commSetData } from './menu-comm'
+import MenuIcon from './menu-icon.vue'
 import type { MenuItem, MenusInfo } from '@/types/layout/menu'
 
 import log from '@/utils/log'
-import type { MenuType } from '@/types/sys'
 
 export default defineComponent({
   name: 'CommonMenu',
   components: {
     SubMenu,
+    MenuIcon,
   },
   setup() {
     const router = useRouter()
@@ -60,7 +66,7 @@ export default defineComponent({
     async function jumpTo(item: MenuItem) {
       if (item.path) {
         await commSetData(item)
-        router.push({
+        await router.push({
           path: item.path,
         })
       }
@@ -105,4 +111,9 @@ export default defineComponent({
 
 <style scoped lang="less">
 @import "./menu.less";
+.menu_item_container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
 </style>
